@@ -55,8 +55,7 @@
                            : `https://www.youtube.com/results?search_query=${encodeURIComponent(val)}`;
       
       // Redireciona pelo proxy do Cloudflare
-      const proxyUrl = `https://simpleblock-proxy.adriancantero-stack.workers.dev/proxy/${encodeURIComponent(target)}`;
-      window.location.href = proxyUrl;
+      const proxyUrl = `https://simpleblock-proxy.adrian-cantero1.workers.dev/proxy/${encodeURIComponent(target)}`;
     }
     
     document.getElementById('url').addEventListener('keydown', e => { if(e.key==='Enter') navigate(); });
