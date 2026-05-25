@@ -10,7 +10,7 @@
   
   <!-- SEO Otimização Extrema -->
   <meta name="description" content="LivrePlay Music é a sua plataforma de streaming de música livre de anúncios. Ouça em segundo plano, crie playlists e curta sem interrupções.">
-  <meta name="keywords" content="livreplay music, spotify gratis sem anuncios, ouvir musica background, player music gratis, sem propagandas youtube music">
+  <meta name="keywords" content="livreplay-v7, spotify gratis sem anuncios, ouvir musica background, player music gratis, sem propagandas youtube music">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://livreplay.com/music/">
   
@@ -395,6 +395,127 @@
     }
     @keyframes spin { to{transform:rotate(360deg)} }
 
+    /* ================= HOME DISCOVERY SCREEN ================= */
+    .home-greeting {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .home-greeting span {
+      background: linear-gradient(90deg, #1db954, #1ed760, #4ade80);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .home-section-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    /* Artistas - scroll horizontal */
+    .artists-scroll-wrapper {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin: 0 -32px;
+      padding: 0 32px;
+    }
+    .artists-scroll-wrapper::-webkit-scrollbar { display: none; }
+    .artists-scroll-row {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+      padding-bottom: 8px;
+    }
+    .artist-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 120px;
+      flex-shrink: 0;
+    }
+    .artist-card:hover { transform: translateY(-4px); }
+    .artist-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .artist-card:hover .artist-avatar {
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(29,185,84,0.3);
+    }
+    .artist-name {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 120px;
+      color: #fff;
+    }
+    .artist-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Categorias - grid de cards coloridos */
+    .genre-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .genre-card {
+      position: relative;
+      border-radius: 12px;
+      padding: 20px 16px;
+      cursor: pointer;
+      overflow: hidden;
+      min-height: 80px;
+      display: flex;
+      align-items: flex-end;
+      transition: var(--transition);
+    }
+    .genre-card:hover { transform: scale(1.03); filter: brightness(1.1); }
+    .genre-card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .genre-card-emoji {
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      font-size: 36px;
+      opacity: 0.9;
+      transform: rotate(-15deg);
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .artist-card { width: 90px; }
+      .artist-avatar { width: 90px; height: 90px; }
+      .genre-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .artists-scroll-wrapper { margin: 0 -12px; padding: 0 12px; }
+    }
+
     /* ================= BARRA DE CONTROLE DO PLAYER INFERIOR ================= */
     .player-bar {
       position: fixed;
@@ -564,6 +685,7 @@
       background: var(--text-main);
       border-radius: 2px;
       width: 80%;
+      pointer-events: none;
     }
     .volume-slider-track:hover .volume-slider-fill {
       background: var(--accent);
@@ -608,6 +730,7 @@
       .music-author { font-size: 9px; }
       .art-wrapper { margin-bottom: 8px; }
       .top-bar { padding: 12px 16px; }
+      #shareTrackBtn { display: none !important; }
       .now-playing-thumb {
         width: 48px !important;
         height: 48px !important;
@@ -615,6 +738,30 @@
         min-height: 48px !important;
         flex-shrink: 0 !important;
       }
+    }
+    /* Toast de notificação */
+    .toast {
+      position: fixed;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30,30,30,0.95);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
@@ -629,7 +776,11 @@
       </a>
 
       <nav class="nav-menu">
-        <button class="nav-item active" onclick="switchView('busca')" id="menuBusca">
+        <button class="nav-item active" onclick="switchView('home')" id="menuHome">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="switchView('busca')" id="menuBusca">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <span>Buscar</span>
         </button>
@@ -642,6 +793,13 @@
           <span>Recentes</span>
         </button>
       </nav>
+      
+      <div style="margin-top: 16px; padding: 0 12px;">
+        <button class="nav-item" onclick="openSupportModal()" style="color: var(--primary); font-weight: 700; background: rgba(29, 185, 84, 0.1);">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>Apoiar Projeto</span>
+        </button>
+      </div>
 
       <div class="library-section">
         <div style="display: flex; align-items: center; justify-content: space-between; padding-right: 8px; margin-bottom: 8px;">
@@ -671,9 +829,45 @@
         </div>
       </div>
 
+      <!-- View: Home Discovery -->
+      <div class="view-container" id="viewHome">
+        <div>
+          <p class="home-greeting">Bem-vindo ao <span>LivrePlay</span></p>
+          <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Descubra músicas, artistas e muito mais</p>
+        </div>
+
+        <!-- Artistas em Alta -->
+        <div>
+          <h2 class="home-section-title">🔥 Artistas em Alta</h2>
+          <div class="artists-scroll-wrapper">
+            <div class="artists-scroll-row" id="trendingArtistsRow">
+              <!-- Populado dinamicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Categorias / Gêneros -->
+        <div>
+          <h2 class="home-section-title">🎵 Explorar Gêneros</h2>
+          <div class="genre-grid" id="genreGrid">
+            <!-- Populado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Internacionais -->
+        <div>
+          <h2 class="home-section-title">🌎 Artistas Internacionais</h2>
+          <div class="artists-scroll-wrapper">
+            <div class="artists-scroll-row" id="internationalArtistsRow">
+              <!-- Populado dinamicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- View: Buscar/Resultados -->
-      <div class="view-container" id="viewBusca">
-        <h2 class="view-title" id="searchHeader">Músicas Populares</h2>
+      <div class="view-container" id="viewBusca" style="display: none;">
+        <h2 class="view-title" id="searchHeader">Resultados</h2>
         <div class="loading-spinner" id="spinner"></div>
         <div class="music-grid" id="searchGrid">
           <!-- Populado dinamicamente -->
@@ -732,6 +926,9 @@
       <button class="heart-toggle-btn" id="addToPlaylistBtn" onclick="addCurrentToPlaylistPrompt()" style="margin-left: 8px; display: none;" title="Adicionar à Playlist">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
       </button>
+      <button class="heart-toggle-btn" id="shareMobileBtn" onclick="shareCurrentTrack()" style="margin-left: 8px; display: none;" title="Compartilhar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
     </div>
 
     <!-- Controles Centrais -->
@@ -760,11 +957,17 @@
       </div>
     </div>
 
-    <!-- Controles de Volume -->
+    <!-- Controles de Volume + Compartilhar -->
     <div class="volume-controls">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      <div class="volume-slider-track">
-        <div class="volume-slider-fill"></div>
+      <button id="shareBtn" onclick="shareCurrentTrack()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;transition:var(--transition);margin-right:12px;" title="Compartilhar" aria-label="Compartilhar música" id="shareTrackBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;transition:var(--transition);" aria-label="Mute">
+        <svg id="volIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <svg id="volMuteIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg>
+      </button>
+      <div class="volume-slider-track" id="volumeTrack">
+        <div class="volume-slider-fill" id="volumeFill" style="width:80%;"></div>
       </div>
     </div>
   </footer>
@@ -772,6 +975,26 @@
   <!-- Player Iframe Oculto de Fallback de Altíssima Resiliência - posicionado de forma fixa e visível para o iOS processar o áudio do iframe -->
   <div style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: 1;">
     <iframe id="youtubeIframe" name="youtubeIframe" src="about:blank" allow="autoplay; encrypted-media" style="width: 100%; height: 100%; border: none;"></iframe>
+  </div>
+
+  <!-- Modal Apoio -->
+  <div class="playlist-modal-overlay" id="supportModalOverlay" onclick="closeSupportModal(event)" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div class="playlist-modal-content" style="background: #181818; padding: 32px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <h2 style="margin-bottom: 16px; font-size: 24px; color: #fff;">Apoie o LivrePlay ☕</h2>
+      <p style="margin-bottom: 24px; color: var(--text-muted); font-size: 14px; line-height: 1.5;">O LivrePlay é 100% gratuito e livre de anúncios. Se este projeto ajuda o seu dia a dia, considere fazer uma doação para nos ajudar a manter os servidores no ar!</p>
+      
+      <div style="background: #282828; padding: 16px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #333;">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">CHAVE PIX ALEATÓRIA</p>
+        <p style="font-family: monospace; font-size: 14px; color: #fff; word-break: break-all; user-select: all;" id="pixKeyDisplay">072cf5fd-e9f3-4a17-b077-35d83578c9c9</p>
+      </div>
+      
+      <button onclick="copyPixKey()" style="background: var(--primary); color: #000; border: none; padding: 14px 24px; border-radius: 24px; font-weight: 700; width: 100%; cursor: pointer; transition: transform 0.2s; font-size: 16px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        Copiar Chave PIX
+      </button>
+      <button onclick="closeSupportModalForce()" style="background: transparent; color: var(--text-muted); border: none; padding: 12px; margin-top: 12px; cursor: pointer; font-size: 14px;">
+        Fechar
+      </button>
+    </div>
   </div>
 
   <script>
@@ -870,11 +1093,14 @@
             setPlayState(data.info.playerState === 1);
           }
           if (data.info.currentTime !== undefined) {
-            playerCurrentTime = data.info.currentTime;
+            // Evita que o iframe congele o tempo em 0 (bug comum em embeds/livestreams do YT)
+            if (data.info.currentTime > 0 || playerCurrentTime < 1) {
+              playerCurrentTime = data.info.currentTime;
+            }
             document.getElementById('currentTimeLabel').innerText = formatTime(playerCurrentTime);
             
             if (playerDuration > 0) {
-              const pct = (playerCurrentTime / playerDuration) * 100;
+              const pct = Math.min((playerCurrentTime / playerDuration) * 100, 100);
               document.getElementById('progressFill').style.width = `${pct}%`;
             }
             
@@ -1178,6 +1404,9 @@
 
     // Executar busca do usuário
     async function performSearch(query) {
+      // Sempre mostra a view de busca ao pesquisar
+      switchView('busca');
+      
       const spinner = document.getElementById('spinner');
       const grid = document.getElementById('searchGrid');
       const header = document.getElementById('searchHeader');
@@ -1195,6 +1424,109 @@
       } finally {
         spinner.style.display = 'none';
       }
+    }
+
+    // Renderizar Home Discovery Screen
+    // Embaralha array (Fisher-Yates) e retorna os primeiros `n` itens
+    function shufflePick(arr, n) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a.slice(0, n);
+    }
+
+    function renderHomeScreen() {
+      // === Artistas Brasileiros em Alta (pool de 12, exibe 8 aleatórios) ===
+      const allBrazilianArtists = [
+        { name: 'Ana Castela', tag: 'Sertanejo', search: 'Ana Castela', avatar: 'https://i.ytimg.com/vi/3Yf5VvPvHjQ/mqdefault.jpg' },
+        { name: 'Zé Vaqueiro', tag: 'Forró', search: 'Zé Vaqueiro', avatar: 'https://i.ytimg.com/vi/V4e5-qXCxYg/mqdefault.jpg' },
+        { name: 'Gusttavo Lima', tag: 'Sertanejo', search: 'Gusttavo Lima', avatar: 'https://i.ytimg.com/vi/OgE00Qz9T0s/mqdefault.jpg' },
+        { name: 'Marília Mendonça', tag: 'Sertanejo', search: 'Marília Mendonça', avatar: 'https://i.ytimg.com/vi/5fDPznvFyU4/mqdefault.jpg' },
+        { name: 'Wesley Safadão', tag: 'Forró / Axé', search: 'Wesley Safadão', avatar: 'https://i.ytimg.com/vi/GNxaH_ioRj8/mqdefault.jpg' },
+        { name: 'Jorge & Mateus', tag: 'Sertanejo', search: 'Jorge e Mateus', avatar: 'https://i.ytimg.com/vi/FmPJh3Yz8uE/mqdefault.jpg' },
+        { name: 'Anitta', tag: 'Pop / Funk', search: 'Anitta', avatar: 'https://i.ytimg.com/vi/S0LjqRGFiVo/mqdefault.jpg' },
+        { name: 'Ivete Sangalo', tag: 'Axé / Pop', search: 'Ivete Sangalo', avatar: 'https://i.ytimg.com/vi/5vFZmFtO9JA/mqdefault.jpg' },
+        { name: 'Luan Santana', tag: 'Sertanejo', search: 'Luan Santana', avatar: 'https://i.ytimg.com/vi/TKNEMjHFKnQ/mqdefault.jpg' },
+        { name: 'Xand Avião', tag: 'Forró', search: 'Xand Avião', avatar: 'https://i.ytimg.com/vi/MZQ5a8bFJbg/mqdefault.jpg' },
+        { name: 'Pedro Sampaio', tag: 'Funk / Pop', search: 'Pedro Sampaio', avatar: 'https://i.ytimg.com/vi/dDuAQT4mLW8/mqdefault.jpg' },
+        { name: 'Simone Mendes', tag: 'Sertanejo', search: 'Simone Mendes', avatar: 'https://i.ytimg.com/vi/xJpVYT3XMYA/mqdefault.jpg' },
+      ];
+
+      const rowBR = document.getElementById('trendingArtistsRow');
+      rowBR.innerHTML = '';
+      shufflePick(allBrazilianArtists, 8).forEach(a => {
+        const el = document.createElement('div');
+        el.className = 'artist-card';
+        el.title = a.name;
+        el.onclick = () => performSearch(a.search + ' music');
+        el.innerHTML = `
+          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#1db954,#191414)'">
+          <span class="artist-name">${a.name}</span>
+          <span class="artist-tag">${a.tag}</span>
+        `;
+        rowBR.appendChild(el);
+      });
+
+      // === Gêneros / Categorias (pool de 12, exibe 8 aleatórios) ===
+      const allGenres = [
+        { title: 'Sertanejo', emoji: '🤠', colors: ['#8B4513', '#D2691E'] },
+        { title: 'Funk Brasileiro', emoji: '🎤', colors: ['#6B21A8', '#A855F7'] },
+        { title: 'Pagode & Samba', emoji: '🥁', colors: ['#1e3a5f', '#2563EB'] },
+        { title: 'Forró', emoji: '🪗', colors: ['#7C2D12', '#EA580C'] },
+        { title: 'Axé', emoji: '🌴', colors: ['#14532D', '#16A34A'] },
+        { title: 'MPB', emoji: '🎸', colors: ['#44403C', '#78716C'] },
+        { title: 'Rap Brasileiro', emoji: '🎧', colors: ['#1C1917', '#44403C'] },
+        { title: 'Pop Internacional', emoji: '⭐', colors: ['#1E3A5F', '#1D4ED8'] },
+        { title: 'Rock Clássico', emoji: '🎸', colors: ['#3B0764', '#7C3AED'] },
+        { title: 'Lo-Fi & Chill', emoji: '☕', colors: ['#0C4A6E', '#0284C7'] },
+        { title: 'K-Pop', emoji: '🌸', colors: ['#9D174D', '#EC4899'] },
+        { title: 'Reggaeton', emoji: '🔥', colors: ['#7C2D12', '#C2410C'] },
+      ];
+
+      const genreGrid = document.getElementById('genreGrid');
+      genreGrid.innerHTML = '';
+      shufflePick(allGenres, 8).forEach(g => {
+        const el = document.createElement('div');
+        el.className = 'genre-card';
+        el.style.background = `linear-gradient(135deg, ${g.colors[0]}, ${g.colors[1]})`;
+        el.onclick = () => performSearch(g.title + ' musica');
+        el.innerHTML = `
+          <span class="genre-card-title">${g.title}</span>
+          <span class="genre-card-emoji">${g.emoji}</span>
+        `;
+        genreGrid.appendChild(el);
+      });
+
+      // === Artistas Internacionais (pool de 10, exibe 7 aleatórios) ===
+      const allIntlArtists = [
+        { name: 'Bad Bunny', tag: 'Reggaeton', search: 'Bad Bunny', avatar: 'https://i.ytimg.com/vi/kTlv5_Bs8aw/mqdefault.jpg' },
+        { name: 'Taylor Swift', tag: 'Pop', search: 'Taylor Swift', avatar: 'https://i.ytimg.com/vi/q3zqJs7JUCQ/mqdefault.jpg' },
+        { name: 'The Weeknd', tag: 'R&B / Pop', search: 'The Weeknd', avatar: 'https://i.ytimg.com/vi/XXYlFuWiqLg/mqdefault.jpg' },
+        { name: 'Drake', tag: 'Hip-Hop', search: 'Drake', avatar: 'https://i.ytimg.com/vi/uxpDa-c-4Mc/mqdefault.jpg' },
+        { name: 'Dua Lipa', tag: 'Pop / Dance', search: 'Dua Lipa', avatar: 'https://i.ytimg.com/vi/oygrmJFKYZY/mqdefault.jpg' },
+        { name: 'Billie Eilish', tag: 'Alternative', search: 'Billie Eilish', avatar: 'https://i.ytimg.com/vi/DyDfgMOUjCI/mqdefault.jpg' },
+        { name: 'Post Malone', tag: 'Hip-Hop / Pop', search: 'Post Malone', avatar: 'https://i.ytimg.com/vi/UceaB4D0jpo/mqdefault.jpg' },
+        { name: 'Karol G', tag: 'Reggaeton', search: 'Karol G', avatar: 'https://i.ytimg.com/vi/91BU7o_0oq0/mqdefault.jpg' },
+        { name: 'Ed Sheeran', tag: 'Pop', search: 'Ed Sheeran', avatar: 'https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg' },
+        { name: 'Olivia Rodrigo', tag: 'Pop / Alt', search: 'Olivia Rodrigo', avatar: 'https://i.ytimg.com/vi/cii6ruuycQA/mqdefault.jpg' },
+      ];
+
+      const rowIntl = document.getElementById('internationalArtistsRow');
+      rowIntl.innerHTML = '';
+      shufflePick(allIntlArtists, 7).forEach(a => {
+        const el = document.createElement('div');
+        el.className = 'artist-card';
+        el.title = a.name;
+        el.onclick = () => performSearch(a.search + ' music');
+        el.innerHTML = `
+          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#1e3a5f,#1d4ed8)'">
+          <span class="artist-name">${a.name}</span>
+          <span class="artist-tag">${a.tag}</span>
+        `;
+        rowIntl.appendChild(el);
+      });
     }
 
     // Renderizar o Grid de Cards
@@ -1261,15 +1593,13 @@
       saveToHistory(trackItem);
       updateFavoriteButtonState(videoId);
       document.getElementById('addToPlaylistBtn').style.display = 'block';
+      document.getElementById('shareMobileBtn').style.display = 'block';
 
       // Reseta o player híbrido para áudio nativo padrão (iOS agora também roda nativo perfeitamente sem o método load())
       activeEngine = 'audio';
       document.getElementById('youtubeIframe').src = 'about:blank';
 
-      // Pre-aquecimento nativo síncrono para garantir permissão de reprodução de mídia
-      silentAudio.play().catch(() => {});
-
-      // Buscar a stream nativa
+      // Buscar a stream nativa (sem pre-aquecer silentAudio aqui para evitar o bug do duplo clique)
       prefetchAudioStream(videoId).then(() => {
         if (activeTrackId === videoId) {
           document.getElementById('spinner').style.display = 'none';
@@ -1308,32 +1638,53 @@
       }
     }
 
-    // Monitoramento em tempo real de reprodução e progresso
-    silentAudio.addEventListener('timeupdate', () => {
-      playerCurrentTime = silentAudio.currentTime;
-      document.getElementById('currentTimeLabel').innerText = formatTime(playerCurrentTime);
-      
-      if (playerDuration > 0) {
-        const pct = (playerCurrentTime / playerDuration) * 100;
-        document.getElementById('progressFill').style.width = `${pct}%`;
-      }
+    // Sincroniza o estado visual do botão play/pause com o áudio nativo
+    silentAudio.addEventListener('playing', () => {
+      if (activeEngine === 'audio') setPlayState(true);
+    });
+    silentAudio.addEventListener('pause', () => {
+      if (activeEngine === 'audio') setPlayState(false);
+    });
 
+    // Polling garantido a cada 500ms — funciona tanto para engine 'audio' quanto 'iframe'
+    function updateProgressDisplay(currentTime) {
+      playerCurrentTime = currentTime;
+      document.getElementById('currentTimeLabel').innerText = formatTime(currentTime);
+      if (playerDuration > 0) {
+        const pct = Math.min((currentTime / playerDuration) * 100, 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+      }
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
         try {
-          if (playerDuration > 0 && playerCurrentTime <= playerDuration) {
-            navigator.mediaSession.setPositionState({
-              duration: playerDuration,
-              playbackRate: 1.0,
-              position: playerCurrentTime
-            });
+          if (playerDuration > 0 && currentTime <= playerDuration) {
+            navigator.mediaSession.setPositionState({ duration: playerDuration, playbackRate: 1.0, position: currentTime });
           }
         } catch (e) {}
+      }
+    }
+
+    setInterval(() => {
+      if (!currentlyPlayingVideo) return;
+      if (activeEngine === 'audio' && !silentAudio.paused) {
+        // Áudio nativo — lê currentTime diretamente
+        updateProgressDisplay(silentAudio.currentTime);
+      }
+      // Para iframe: incrementa o tempo automaticamente (postMessage nem sempre é confiável)
+      if (activeEngine === 'iframe' && playStateIsPlaying) {
+        playerCurrentTime += 0.5;
+        updateProgressDisplay(playerCurrentTime);
+      }
+    }, 500);
+
+    // timeupdate como backup de alta frequência para o engine de áudio
+    silentAudio.addEventListener('timeupdate', () => {
+      if (activeEngine === 'audio') {
+        updateProgressDisplay(silentAudio.currentTime);
       }
     });
 
     silentAudio.addEventListener('ended', () => {
       setPlayState(false);
-      // Auto-play próximo recomendado como playlist dinâmica!
       playNextRecommended();
     });
 
@@ -1651,7 +2002,11 @@
       document.querySelectorAll('.view-container').forEach(c => c.style.display = 'none');
       document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
       
-      if (viewName === 'busca') {
+      if (viewName === 'home') {
+        document.getElementById('viewHome').style.display = 'flex';
+        const menuHome = document.getElementById('menuHome');
+        if (menuHome) menuHome.classList.add('active');
+      } else if (viewName === 'busca') {
         document.getElementById('viewBusca').style.display = 'flex';
         document.getElementById('menuBusca').classList.add('active');
       } else if (viewName === 'favoritos') {
@@ -1723,11 +2078,144 @@
       // Carrega instâncias dinâmicas do Invidious em segundo plano imediatamente
       loadDynamicInstances();
       
-      // Carrega músicas populares na tela inicial como padrão ("Músicas Populares")
-      const popularTracks = ['Música Acústica Chillout', 'Lo-Fi Beats Study Music', 'Top Hits Acoustic Pop Covers'];
-      const randomQuery = popularTracks[Math.floor(Math.random() * popularTracks.length)];
-      performSearch(randomQuery);
+      // Renderiza a tela Home de descoberta (artistas e gêneros)
+      renderHomeScreen();
     });
+
+    // ================= APOIO =================
+    function openSupportModal() {
+      document.getElementById('supportModalOverlay').style.display = 'flex';
+    }
+
+    function closeSupportModalForce() {
+      document.getElementById('supportModalOverlay').style.display = 'none';
+    }
+
+    function closeSupportModal(e) {
+      if (e.target.id === 'supportModalOverlay') {
+        closeSupportModalForce();
+      }
+    }
+
+    async function copyPixKey() {
+      const key = document.getElementById('pixKeyDisplay').innerText;
+      try {
+        await navigator.clipboard.writeText(key);
+        showToast('✅ Chave PIX copiada!');
+        setTimeout(closeSupportModalForce, 1500);
+      } catch(e) {
+        showToast('Não foi possível copiar');
+      }
+    }
+
+    // ================= COMPARTILHAR =================
+    function showToast(msg) {
+      let toast = document.getElementById('shareToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'shareToast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    async function shareCurrentTrack() {
+      if (!currentlyPlayingVideo) {
+        showToast('Nenhuma música tocando');
+        return;
+      }
+      const title = currentlyPlayingVideo.title || 'Música';
+      const artist = currentlyPlayingVideo.author || '';
+      const videoId = currentlyPlayingVideo.videoId;
+      const url = `https://www.youtube.com/watch?v=${videoId}`;
+      const text = `🎵 ${title}${artist ? ' — ' + artist : ''}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: text, text: text, url });
+        } catch (e) {
+          // user cancelled — ignora
+        }
+      } else {
+        // Fallback: copia para área de transferência
+        try {
+          await navigator.clipboard.writeText(`${text}\n${url}`);
+          showToast('✅ Link copiado!');
+        } catch (e) {
+          showToast('Não foi possível copiar');
+        }
+      }
+    }
+
+    // ================= CONTROLE DE VOLUME =================
+    let isMuted = false;
+    let volumeBeforeMute = 0.8;
+
+    function setVolume(v) {
+      v = Math.max(0, Math.min(1, v));
+      silentAudio.volume = v;
+      document.getElementById('volumeFill').style.width = (v * 100) + '%';
+      
+      // Sincroniza o volume do iframe (YouTube API espera 0-100)
+      sendIframeCommand('setVolume', [v * 100]);
+
+      // Atualiza ícone
+      const muted = v === 0;
+      document.getElementById('volIcon').style.display = muted ? 'none' : 'block';
+      document.getElementById('volMuteIcon').style.display = muted ? 'block' : 'none';
+      localStorage.setItem('livreplay_volume', v);
+    }
+
+    function toggleMute() {
+      if (isMuted || silentAudio.volume === 0) {
+        isMuted = false;
+        setVolume(volumeBeforeMute || 0.8);
+      } else {
+        volumeBeforeMute = silentAudio.volume;
+        isMuted = true;
+        setVolume(0);
+      }
+    }
+
+    // Clique no track de volume
+    function getVolumeFromEvent(e, track) {
+      const rect = track.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      return Math.max(0, Math.min(1, x / rect.width));
+    }
+
+    (function initVolumeSlider() {
+      const track = document.getElementById('volumeTrack');
+      if (!track) return;
+      let dragging = false;
+
+      track.addEventListener('mousedown', (e) => {
+        dragging = true;
+        setVolume(getVolumeFromEvent(e, track));
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (dragging) setVolume(getVolumeFromEvent(e, track));
+      });
+      window.addEventListener('mouseup', () => { dragging = false; });
+
+      // Touch support
+      track.addEventListener('touchstart', (e) => {
+        dragging = true;
+        setVolume(getVolumeFromEvent(e, track));
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (dragging) setVolume(getVolumeFromEvent(e, track));
+      }, { passive: true });
+      window.addEventListener('touchend', () => { dragging = false; });
+
+      // Restaurar volume salvo
+      const saved = parseFloat(localStorage.getItem('livreplay_volume'));
+      setVolume(isNaN(saved) ? 0.8 : saved);
+    })();
 
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
