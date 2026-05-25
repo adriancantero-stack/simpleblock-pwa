@@ -11,21 +11,24 @@
     :root {
       --bg: #000000;
       --surface: rgba(255, 255, 255, 0.08);
-      --surface-hover: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.14);
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.6);
       --accent: #0a84ff;
       --accent-hover: #0071e3;
       --radius: 16px;
-      --radius-lg: 24px;
-      --radius-xl: 32px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.5);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100dvh;
@@ -34,353 +37,168 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
+      padding-top: calc(24px + var(--safe-top));
+      padding-bottom: calc(24px + var(--safe-bottom));
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Background gradiente sutil */
+    /* Background animado sutil */
     body::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at 30% 20%, rgba(10, 132, 255, 0.15) 0%, transparent 50%),
-                  radial-gradient(ellipse at 70% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+      top: -30%; left: -30%; width: 160%; height: 160%;
+      background: radial-gradient(ellipse at 20% 30%, rgba(10, 132, 255, 0.12) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 55%);
       z-index: 0;
-      animation: breathe 20s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.05) rotate(2deg); }
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 480px;
-      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* Logo */
-    .logo-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 32px;
-    }
-
-    .logo {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 8px 32px rgba(10, 132, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
-    }
-
-    .logo svg {
-      width: 32px;
-      height: 32px;
-      stroke: white;
-      fill: none;
-      stroke-width: 2;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Título */
-    h1 {
-      font-size: 40px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      text-align: center;
-      margin-bottom: 8px;
-      background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .subtitle {
-      font-size: 17px;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 40px;
-      font-weight: 400;
-      line-height: 1.4;
-    }
-
-    /* Barra de busca estilo Spotlight */
-    .search-container {
-      position: relative;
-      margin-bottom: 24px;
-    }
-
-    .search-box {
-      width: 100%;
-      padding: 16px 52px 16px 48px;
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius-lg);
-      color: var(--text-primary);
-      font-size: 17px;
-      font-family: inherit;
-      outline: none;
-      transition: var(--transition);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .search-box::placeholder {
-      color: var(--text-secondary);
-    }
-
-    .search-box:focus {
-      background: var(--surface-hover);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
-      color: var(--text-secondary);
+      animation: breathe 18s ease-in-out infinite;
       pointer-events: none;
     }
+    @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
 
+    .container {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 520px;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Logo */
+    .logo-wrapper { display:flex; justify-content:center; margin-bottom:28px; }
+    .logo {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
+      border-radius: 16px;
+      display: grid; place-items: center;
+      box-shadow: 0 6px 24px rgba(10,132,255,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative; overflow: hidden;
+    }
+    .logo::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%); }
+    .logo svg { width:28px; height:28px; stroke:#fff; fill:none; stroke-width:2; position:relative; z-index:1; }
+
+    /* Tipografia */
+    h1 {
+      font-size: clamp(32px, 8vw, 44px);
+      font-weight: 600; letter-spacing: -0.02em; text-align: center; margin-bottom: 6px;
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.85) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .subtitle {
+      font-size: clamp(15px, 4vw, 17px); color: var(--text-secondary); text-align: center; margin-bottom: 32px; line-height: 1.4;
+    }
+
+    /* Busca estilo Spotlight */
+    .search-container { position: relative; margin-bottom: 20px; }
+    .search-box {
+      width: 100%; padding: 16px 52px 16px 48px;
+      background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg); color: var(--text-primary);
+      font-size: 16px; font-family: inherit; outline: none;
+      transition: var(--transition); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      min-height: 52px;
+    }
+    .search-box::placeholder { color: var(--text-secondary); }
+    .search-box:focus { background: var(--surface-hover); border-color: var(--accent); box-shadow: var(--focus-ring); }
+    .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--text-secondary); pointer-events:none; }
     .go-btn {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      background: var(--accent);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: var(--transition);
+      position:absolute; right:8px; top:50%; transform:translateY(-50%);
+      width:40px; height:40px; background:var(--accent); border:none; border-radius:12px;
+      color:#fff; cursor:pointer; display:grid; place-items:center; transition:var(--transition);
     }
+    .go-btn:hover, .go-btn:focus { background:var(--accent-hover); box-shadow:var(--focus-ring); }
+    .go-btn:active { transform:translateY(-50%) scale(0.94); }
+    .go-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.5; }
 
-    .go-btn:hover, .go-btn:focus {
-      background: var(--accent-hover);
-      transform: translateY(-50%) scale(1.05);
-    }
-
-    .go-btn:active {
-      transform: translateY(-50%) scale(0.95);
-    }
-
-    .go-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.5;
-    }
-
-    /* Botões secundários */
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-
+    /* Botões de ação */
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
     .action-btn {
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      color: var(--text-primary);
-      font-size: 15px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      padding:14px 16px; background:var(--surface); border:1px solid rgba(255,255,255,0.08);
+      border-radius:var(--radius); color:var(--text-primary); font-size:15px; font-weight:500;
+      font-family:inherit; cursor:pointer; transition:var(--transition);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); min-height:48px;
     }
+    .action-btn:hover, .action-btn:focus { background:var(--surface-hover); transform:translateY(-2px); box-shadow:var(--focus-ring); }
+    .action-btn:active { transform:translateY(0) scale(0.98); }
+    .action-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
 
-    .action-btn:hover, .action-btn:focus {
-      background: var(--surface-hover);
-      transform: translateY(-2px);
-    }
-
-    .action-btn:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .action-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-    }
-
-    /* Features grid */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
+    /* Features */
+    .features { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:24px; }
     .feature {
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: var(--radius);
-      padding: 20px 16px;
-      text-align: center;
-      transition: var(--transition);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background:var(--surface); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius);
+      padding:18px 12px; text-align:center; transition:var(--transition);
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); min-height:80px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
     }
-
-    .feature:hover, .feature:focus {
-      background: var(--surface-hover);
-      transform: translateY(-4px);
-    }
-
-    .feature-icon {
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    .feature-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .feature-desc {
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
+    .feature:hover, .feature:focus { background:var(--surface-hover); transform:translateY(-3px); box-shadow:var(--focus-ring); }
+    .feature-icon { font-size:22px; margin-bottom:6px; }
+    .feature-title { font-size:13px; font-weight:600; margin-bottom:2px; }
+    .feature-desc { font-size:11px; color:var(--text-secondary); }
 
     /* TV Notice */
     .tv-notice {
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      padding: 20px;
-      text-align: center;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background:var(--surface); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius);
+      padding:18px; text-align:center; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
     }
+    .tv-notice h3 { font-size:14px; font-weight:600; margin-bottom:6px; color:var(--accent); }
+    .tv-notice p { font-size:12px; color:var(--text-secondary); line-height:1.4; margin-bottom:10px; }
+    .platforms { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+    .platform-tag { background:rgba(255,255,255,0.08); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:500; color:var(--text-secondary); }
 
-    .tv-notice h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--accent);
-    }
+    /* Loading */
+    .loading { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:100; place-items:center; }
+    .loading.active { display:grid; }
+    .spinner { width:36px; height:36px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
 
-    .tv-notice p {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .platforms {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .platform-tag {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-    }
-
-    /* Modo TV */
-    .tv-mode .container { max-width: 640px; }
-    .tv-mode h1 { font-size: 48px; }
-    .tv-mode .subtitle { font-size: 19px; }
-    .tv-mode .search-box { padding: 20px 56px 20px 52px; font-size: 19px; }
-    .tv-mode .action-btn { padding: 18px 20px; font-size: 17px; }
-    .tv-mode .feature { padding: 24px 16px; }
-    .tv-mode .feature-icon { font-size: 32px; }
-
-    /* Animação de loading suave */
-    .loading {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(10px);
-      z-index: 100;
-      place-items: center;
-    }
-
-    .loading.active { display: grid; }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255,255,255,0.1);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 480px) {
-      .features { grid-template-columns: 1fr; }
+    /* ================= RESPONSIVIDADE ================= */
+    /* Mobile (< 768px) */
+    @media (max-width: 767px) {
       .actions { grid-template-columns: 1fr; }
-      h1 { font-size: 32px; }
+      .features { grid-template-columns: 1fr; }
+      .feature { flex-direction: row; gap: 12px; text-align: left; padding: 14px; }
+      .feature-icon { margin-bottom: 0; }
+      body { padding: 16px; padding-top: calc(16px + var(--safe-top)); padding-bottom: calc(16px + var(--safe-bottom)); }
+      .container { max-width: 100%; }
     }
+
+    /* Desktop (768px - 1400px) */
+    @media (min-width: 768px) and (max-width: 1399px) {
+      .features { grid-template-columns: repeat(3, 1fr); }
+      .feature { flex-direction: column; text-align: center; padding: 20px 12px; }
+      .feature-icon { margin-bottom: 6px; }
+    }
+
+    /* TV / Telas Grandes (> 1400px ou detecção UA) */
+    .tv-mode .container { max-width: 720px; }
+    .tv-mode h1 { font-size: 52px; }
+    .tv-mode .subtitle { font-size: 20px; margin-bottom: 40px; }
+    .tv-mode .search-box { padding: 20px 56px 20px 52px; font-size: 20px; min-height: 64px; border-radius: 24px; }
+    .tv-mode .go-btn { width: 48px; height: 48px; border-radius: 16px; }
+    .tv-mode .go-btn svg { width: 22px; height: 22px; }
+    .tv-mode .actions { gap: 16px; margin-bottom: 36px; }
+    .tv-mode .action-btn { padding: 18px 20px; font-size: 18px; min-height: 60px; border-radius: 16px; }
+    .tv-mode .features { gap: 16px; }
+    .tv-mode .feature { padding: 24px 16px; min-height: 100px; border-radius: 16px; }
+    .tv-mode .feature-icon { font-size: 28px; }
+    .tv-mode .feature-title { font-size: 15px; }
+    .tv-mode .feature-desc { font-size: 13px; }
+    .tv-mode .tv-notice { padding: 24px; border-radius: 16px; }
+    .tv-mode .tv-notice h3 { font-size: 18px; }
+    .tv-mode .tv-notice p { font-size: 15px; }
+    .tv-mode .platform-tag { font-size: 12px; padding: 6px 10px; }
+
+    /* Foco explícito para TV/Teclado */
+    .focusable:focus-visible { outline: none; box-shadow: var(--focus-ring); transform: scale(1.02); }
   </style>
 </head>
 <body>
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-  </div>
+  <div class="loading" id="loading"><div class="spinner"></div></div>
 
   <div class="container">
     <div class="logo-wrapper">
       <div class="logo">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
     </div>
 
@@ -388,82 +206,64 @@
     <p class="subtitle">YouTube sem anúncios.<br>Simples, rápido e elegante.</p>
 
     <div class="search-container">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-      </svg>
-      <input type="text" class="search-box" id="urlInput" placeholder="youtube.com ou pesquise..." autocomplete="off" onkeypress="handleKeyPress(event)">
-      <button class="go-btn" onclick="navigate()" aria-label="Abrir">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="search-box focusable" id="urlInput" placeholder="youtube.com ou pesquise..." autocomplete="off" onkeypress="handleKeyPress(event)">
+      <button class="go-btn focusable" onclick="navigate()" aria-label="Abrir">
         <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
 
     <div class="actions">
-      <button class="action-btn" onclick="installPWA()">
+      <button class="action-btn focusable" onclick="installPWA()">
         <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
         Instalar App
       </button>
-      <button class="action-btn" onclick="castToTV()">
+      <button class="action-btn focusable" onclick="castToTV()">
         <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4"/></svg>
         Transmitir TV
       </button>
     </div>
 
     <div class="features">
-      <div class="feature">
-        <div class="feature-icon">🛡️</div>
-        <div class="feature-title">Sem Anúncios</div>
-        <div class="feature-desc">Bloqueio total</div>
+      <div class="feature focusable" tabindex="0">
+        <div class="feature-icon">🛡️</div><div class="feature-title">Sem Anúncios</div><div class="feature-desc">Bloqueio total</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <div class="feature-title">Rápido</div>
-        <div class="feature-desc">Cache inteligente</div>
+      <div class="feature focusable" tabindex="0">
+        <div class="feature-icon">⚡</div><div class="feature-title">Rápido</div><div class="feature-desc">Cache inteligente</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">📱</div>
-        <div class="feature-title">Multi-plataforma</div>
-        <div class="feature-desc">Android/iOS/TV</div>
+      <div class="feature focusable" tabindex="0">
+        <div class="feature-icon">📱</div><div class="feature-title">Multi-plataforma</div><div class="feature-desc">Android/iOS/TV</div>
       </div>
     </div>
 
     <div class="tv-notice">
       <h3>Funciona na Smart TV</h3>
-      <p>
-        <strong>Android TV/Fire Stick:</strong> Instale o app APK<br>
-        <strong>Samsung/LG:</strong> Use o navegador ou espelhe<br>
-        <strong>Qualquer TV:</strong> Chromecast/AirPlay
-      </p>
+      <p><strong>Android TV/Fire Stick:</strong> Instale o app APK<br><strong>Samsung/LG:</strong> Use o navegador ou espelhe<br><strong>Qualquer TV:</strong> Chromecast/AirPlay</p>
       <div class="platforms">
-        <span class="platform-tag">Android</span>
-        <span class="platform-tag">iOS</span>
-        <span class="platform-tag">Android TV</span>
-        <span class="platform-tag">Tizen</span>
-        <span class="platform-tag">webOS</span>
+        <span class="platform-tag">Android</span><span class="platform-tag">iOS</span><span class="platform-tag">Android TV</span><span class="platform-tag">Tizen</span><span class="platform-tag">webOS</span>
       </div>
     </div>
   </div>
 
   <script>
-    // Detecta TV
-    const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1200;
+    // Detecção TV
+    const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1400;
     if (isTV) document.body.classList.add('tv-mode');
 
     // Navegação
     function navigate() {
       const val = document.getElementById('urlInput').value.trim() || 'youtube.com';
       const isUrl = val.includes('.') && !val.includes(' ');
-      const target = isUrl ? (val.startsWith('http') ? val : `https://${val}`) 
-                           : `https://www.youtube.com/results?search_query=${encodeURIComponent(val)}`;
+      const target = isUrl ? (val.startsWith('http') ? val : `https://${val}`) : `https://www.youtube.com/results?search_query=${encodeURIComponent(val)}`;
       const proxyUrl = `https://simpleblock-proxy.adrian-cantero1.workers.dev/proxy/${encodeURIComponent(target)}`;
       document.getElementById('loading').classList.add('active');
       window.location.href = proxyUrl;
     }
-
     function handleKeyPress(e) { if (e.key === 'Enter') navigate(); }
 
-    // PWA Install
+    // PWA
     let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
     function installPWA() {
       if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
       else { alert('Use o menu do navegador para instalar'); }
@@ -471,11 +271,8 @@
 
     // Cast
     function castToTV() {
-      if (navigator.presentation?.defaultRequest) {
-        navigator.presentation.defaultRequest.start().catch(() => alert('Nenhuma TV encontrada'));
-      } else {
-        alert('Use a função "Transmitir" do seu dispositivo');
-      }
+      if (navigator.presentation?.defaultRequest) { navigator.presentation.defaultRequest.start().catch(() => alert('Nenhuma TV encontrada')); }
+      else { alert('Use a função "Transmitir" do seu dispositivo'); }
     }
 
     // Service Worker
