@@ -909,7 +909,7 @@
         return new Promise((resolve, reject) => {
           let hasResolved = false;
           
-          const onPlaying = () => {
+          const onSuccess = () => {
             if (activeTrackId !== videoId) {
               cleanup();
               reject(new Error("Música trocada"));
@@ -951,7 +951,8 @@
           
           function cleanup() {
             clearTimeout(timeoutId);
-            silentAudio.removeEventListener('playing', onPlaying);
+            silentAudio.removeEventListener('loadedmetadata', onSuccess);
+            silentAudio.removeEventListener('playing', onSuccess);
             silentAudio.removeEventListener('error', onError);
             if (activeAudioCleanup === cleanup) {
               activeAudioCleanup = null;
@@ -960,7 +961,9 @@
           
           activeAudioCleanup = cleanup;
           
-          silentAudio.addEventListener('playing', onPlaying);
+          // Ouvintes de sucesso ultra-rápidos: loadedmetadata fires assim que os cabeçalhos respondem, sem esperar bufferizar toda a música!
+          silentAudio.addEventListener('loadedmetadata', onSuccess);
+          silentAudio.addEventListener('playing', onSuccess);
           silentAudio.addEventListener('error', onError);
           
           try {
