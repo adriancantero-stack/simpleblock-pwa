@@ -2,340 +2,436 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f0f0f">
-  <title>SimpleBlock - YouTube sem anúncios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SimpleBlock</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     :root {
-      --bg: #0f0f0f;
-      --card: rgba(255, 255, 255, 0.05);
-      --text: #ffffff;
-      --text-secondary: #a1a1aa;
-      --accent: #10b981;
-      --focus: #3b82f6;
+      --bg: #000000;
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-hover: rgba(255, 255, 255, 0.12);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --accent: #0a84ff;
+      --accent-hover: #0071e3;
+      --radius: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      color: var(--text-primary);
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
     }
-    
+
+    /* Background gradiente sutil */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 20%, rgba(10, 132, 255, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+      z-index: 0;
+      animation: breathe 20s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.05) rotate(2deg); }
+    }
+
     .container {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 600px;
-      animation: fadeIn 0.5s ease-out;
+      max-width: 480px;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    
+
+    /* Logo */
+    .logo-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
     .logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 20px;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
+      border-radius: 16px;
       display: grid;
       place-items: center;
-      margin: 0 auto 24px;
-      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 8px 32px rgba(10, 132, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative;
+      overflow: hidden;
     }
-    
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: 8px 16px;
-      border-radius: 9999px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 24px;
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
     }
-    
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+      stroke: white;
+      fill: none;
+      stroke-width: 2;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Título */
     h1 {
-      font-size: clamp(32px, 8vw, 48px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 12px;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    
+
     .subtitle {
+      font-size: 17px;
       color: var(--text-secondary);
-      font-size: clamp(16px, 3vw, 18px);
       text-align: center;
-      margin-bottom: 32px;
-      line-height: 1.5;
+      margin-bottom: 40px;
+      font-weight: 400;
+      line-height: 1.4;
     }
-    
-    .search-box {
-      display: flex;
-      gap: 12px;
+
+    /* Barra de busca estilo Spotlight */
+    .search-container {
+      position: relative;
       margin-bottom: 24px;
     }
-    
-    input {
-      flex: 1;
-      padding: 16px 20px;
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.05);
-      color: white;
-      font-size: 16px;
+
+    .search-box {
+      width: 100%;
+      padding: 16px 52px 16px 48px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: 17px;
+      font-family: inherit;
       outline: none;
-      transition: border-color 0.2s;
+      transition: var(--transition);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    
-    input:focus {
-      border-color: var(--focus);
+
+    .search-box::placeholder {
+      color: var(--text-secondary);
     }
-    
-    .btn {
-      padding: 16px 28px;
+
+    .search-box:focus {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    .go-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
       border: none;
       border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
+      color: white;
       cursor: pointer;
-      transition: transform 0.15s, opacity 0.2s;
+      display: grid;
+      place-items: center;
+      transition: var(--transition);
+    }
+
+    .go-btn:hover, .go-btn:focus {
+      background: var(--accent-hover);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .go-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    .go-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    /* Botões secundários */
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .action-btn {
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    
-    .btn:focus {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
+
+    .action-btn:hover, .action-btn:focus {
+      background: var(--surface-hover);
+      transform: translateY(-2px);
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+
+    .action-btn:active {
+      transform: translateY(0) scale(0.98);
     }
-    
-    .btn-primary:hover, .btn-primary:focus {
-      transform: scale(1.02);
-      opacity: 0.95;
+
+    .action-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
     }
-    
-    .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    
-    .btn-secondary:hover, .btn-secondary:focus {
-      background: rgba(255,255,255,0.15);
-    }
-    
+
+    /* Features grid */
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-bottom: 24px;
     }
-    
+
     .feature {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 16px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      padding: 20px 16px;
       text-align: center;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: var(--transition);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    
-    .feature:focus {
-      border-color: var(--focus);
-      transform: scale(1.02);
+
+    .feature:hover, .feature:focus {
+      background: var(--surface-hover);
+      transform: translateY(-4px);
     }
-    
+
     .feature-icon {
-      font-size: 28px;
+      font-size: 24px;
       margin-bottom: 8px;
     }
-    
+
     .feature-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
-    
+
     .feature-desc {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-secondary);
     }
-    
+
+    /* TV Notice */
     .tv-notice {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 24px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 20px;
       text-align: center;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    
+
     .tv-notice h3 {
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 600;
       margin-bottom: 8px;
-      color: #60a5fa;
+      color: var(--accent);
     }
-    
+
     .tv-notice p {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.5;
+      margin-bottom: 12px;
     }
-    
+
     .platforms {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
-      margin-top: 16px;
       flex-wrap: wrap;
     }
-    
+
     .platform-tag {
-      background: rgba(255,255,255,0.1);
-      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
+      color: var(--text-secondary);
     }
-    
-    /* Modo TV - Detectado automaticamente */
-    .tv-mode .container {
-      max-width: 900px;
+
+    /* Modo TV */
+    .tv-mode .container { max-width: 640px; }
+    .tv-mode h1 { font-size: 48px; }
+    .tv-mode .subtitle { font-size: 19px; }
+    .tv-mode .search-box { padding: 20px 56px 20px 52px; font-size: 19px; }
+    .tv-mode .action-btn { padding: 18px 20px; font-size: 17px; }
+    .tv-mode .feature { padding: 24px 16px; }
+    .tv-mode .feature-icon { font-size: 32px; }
+
+    /* Animação de loading suave */
+    .loading {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      place-items: center;
     }
-    
-    .tv-mode .btn {
-      padding: 24px 40px;
-      font-size: 20px;
+
+    .loading.active { display: grid; }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
-    
-    .tv-mode input {
-      padding: 20px 24px;
-      font-size: 20px;
-    }
-    
-    .tv-mode .feature {
-      padding: 24px;
-    }
-    
-    .tv-mode .feature-icon {
-      font-size: 40px;
-    }
-    
-    /* Foco visível para controle remoto */
-    .focusable:focus {
-      outline: 4px solid var(--focus);
-      outline-offset: 4px;
-      background: rgba(59, 130, 246, 0.2);
-    }
-    
-    @media (max-width: 640px) {
-      .search-box {
-        flex-direction: column;
-      }
-      .features {
-        grid-template-columns: 1fr 1fr;
-      }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .features { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="mainContainer">
-    <!-- Logo -->
-    <div class="logo">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        <path d="m9 12 2 2 4-4"/>
-      </svg>
-    </div>
-    
-    <!-- Badge -->
-    <div class="badge">
-      <span>✓</span>
-      <span id="statusText">Bloqueio ativo</span>
-    </div>
-    
-    <!-- Título -->
-    <h1>SimpleBlock</h1>
-    <p class="subtitle">YouTube sem anúncios em qualquer dispositivo<br>Android • iOS • Smart TV</p>
-    
-    <!-- Busca -->
-    <div class="search-box">
-      <input 
-        type="text" 
-        id="urlInput" 
-        placeholder="youtube.com ou pesquise..." 
-        class="focusable"
-        onkeypress="handleKeyPress(event)"
-        autofocus
-      >
-      <button class="btn btn-primary focusable" onclick="navigate()">
-        <span>Abrir</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="container">
+    <div class="logo-wrapper">
+      <div class="logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+      </div>
+    </div>
+
+    <h1>SimpleBlock</h1>
+    <p class="subtitle">YouTube sem anúncios.<br>Simples, rápido e elegante.</p>
+
+    <div class="search-container">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input type="text" class="search-box" id="urlInput" placeholder="youtube.com ou pesquise..." autocomplete="off" onkeypress="handleKeyPress(event)">
+      <button class="go-btn" onclick="navigate()" aria-label="Abrir">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
-    
-    <!-- Botões de ação -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
-      <button class="btn btn-secondary focusable" onclick="installPWA()">
-        📲 Instalar App
+
+    <div class="actions">
+      <button class="action-btn" onclick="installPWA()">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
+        Instalar App
       </button>
-      <button class="btn btn-secondary focusable" onclick="castToTV()">
-        📺 Transmitir TV
+      <button class="action-btn" onclick="castToTV()">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4"/></svg>
+        Transmitir TV
       </button>
     </div>
-    
-    <!-- Features -->
+
     <div class="features">
-      <div class="feature focusable" tabindex="0">
+      <div class="feature">
         <div class="feature-icon">🛡️</div>
         <div class="feature-title">Sem Anúncios</div>
         <div class="feature-desc">Bloqueio total</div>
       </div>
-      <div class="feature focusable" tabindex="0">
+      <div class="feature">
         <div class="feature-icon">⚡</div>
         <div class="feature-title">Rápido</div>
         <div class="feature-desc">Cache inteligente</div>
       </div>
-      <div class="feature focusable" tabindex="0">
+      <div class="feature">
         <div class="feature-icon">📱</div>
         <div class="feature-title">Multi-plataforma</div>
         <div class="feature-desc">Android/iOS/TV</div>
       </div>
-      <div class="feature focusable" tabindex="0">
-        <div class="feature-icon">🎮</div>
-        <div class="feature-title">Controle Remoto</div>
-        <div class="feature-desc">Navegação TV</div>
-      </div>
     </div>
-    
-    <!-- Aviso TV -->
-    <div class="tv-notice" id="tvNotice">
-      <h3>🎯 Funciona na Smart TV!</h3>
+
+    <div class="tv-notice">
+      <h3>Funciona na Smart TV</h3>
       <p>
         <strong>Android TV/Fire Stick:</strong> Instale o app APK<br>
-        <strong>Samsung/LG:</strong> Use o navegador da TV ou espelhe do celular<br>
-        <strong>Qualquer TV:</strong> Use Chromecast/AirPlay
+        <strong>Samsung/LG:</strong> Use o navegador ou espelhe<br>
+        <strong>Qualquer TV:</strong> Chromecast/AirPlay
       </p>
       <div class="platforms">
         <span class="platform-tag">Android</span>
@@ -346,89 +442,47 @@
       </div>
     </div>
   </div>
-  
+
   <script>
-    // Detecta se é TV
-    const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos|netcast/i.test(navigator.userAgent) || 
-                 window.innerWidth > 1200;
-    
-    if (isTV) {
-      document.body.classList.add('tv-mode');
-      document.getElementById('statusText').textContent = 'Modo TV ativado';
-    }
-    
+    // Detecta TV
+    const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1200;
+    if (isTV) document.body.classList.add('tv-mode');
+
     // Navegação
     function navigate() {
-      const input = document.getElementById('urlInput');
-      const val = input.value.trim() || 'youtube.com';
-      
+      const val = document.getElementById('urlInput').value.trim() || 'youtube.com';
       const isUrl = val.includes('.') && !val.includes(' ');
       const target = isUrl ? (val.startsWith('http') ? val : `https://${val}`) 
                            : `https://www.youtube.com/results?search_query=${encodeURIComponent(val)}`;
-      
       const proxyUrl = `https://simpleblock-proxy.adrian-cantero1.workers.dev/proxy/${encodeURIComponent(target)}`;
+      document.getElementById('loading').classList.add('active');
       window.location.href = proxyUrl;
     }
-    
-    function handleKeyPress(event) {
-      if (event.key === 'Enter') navigate();
-    }
-    
-    // Instalação PWA
+
+    function handleKeyPress(e) { if (e.key === 'Enter') navigate(); }
+
+    // PWA Install
     let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-    });
-    
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
     function installPWA() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-      } else {
-        alert('Use o menu do navegador para instalar');
-      }
+      if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
+      else { alert('Use o menu do navegador para instalar'); }
     }
-    
-    // Chromecast/AirPlay
+
+    // Cast
     function castToTV() {
-      if (navigator.presentation && navigator.presentation.defaultRequest) {
-        navigator.presentation.defaultRequest.start()
-          .then(conn => {
-            alert('Conectado à TV!');
-          })
-          .catch(() => {
-            alert('Nenhuma TV encontrada. Verifique se está na mesma rede.');
-          });
+      if (navigator.presentation?.defaultRequest) {
+        navigator.presentation.defaultRequest.start().catch(() => alert('Nenhuma TV encontrada'));
       } else {
         alert('Use a função "Transmitir" do seu dispositivo');
       }
     }
-    
-    // Navegação por teclado/controle remoto
-    document.addEventListener('keydown', (e) => {
-      const focusables = document.querySelectorAll('.focusable');
-      const current = document.activeElement;
-      let index = Array.from(focusables).indexOf(current);
-      
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        index = (index + 1) % focusables.length;
-        focusables[index].focus();
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        index = (index - 1 + focusables.length) % focusables.length;
-        focusables[index].focus();
-      } else if (e.key === 'Enter' && current.classList.contains('feature')) {
-        e.preventDefault();
-        navigate();
-      }
-    });
-    
+
     // Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
-    }
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(console.error);
+
+    // Foco automático
+    window.addEventListener('load', () => document.getElementById('urlInput').focus());
   </script>
 </body>
 </html>
