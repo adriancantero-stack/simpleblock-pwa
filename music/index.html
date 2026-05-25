@@ -475,11 +475,18 @@
     .ctrl-btn.active { color: var(--accent); }
     
     .ctrl-btn-play {
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
       background: #fff;
       border-radius: 50%;
       color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: none;
+      outline: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
     .ctrl-btn-play:hover {
       background: #fff;
@@ -734,7 +741,8 @@
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
         </button>
         <button class="ctrl-btn ctrl-btn-play" id="playBtn" onclick="togglePlayback()" aria-label="Reproduzir">
-          <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24" id="playIcon" style="fill: currentColor; width: 18px; height: 18px;"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24" id="pauseIcon" style="fill: currentColor; width: 18px; height: 18px; display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
         <button class="ctrl-btn" onclick="seekOffset(10)" aria-label="Avançar 10s">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
@@ -1366,12 +1374,17 @@
     function setPlayState(isPlaying) {
       playStateIsPlaying = isPlaying;
       const playIcon = document.getElementById('playIcon');
-      if (isPlaying) {
-        playIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
-        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
-      } else {
-        playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
-        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      const pauseIcon = document.getElementById('pauseIcon');
+      if (playIcon && pauseIcon) {
+        if (isPlaying) {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+          if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+        } else {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+          if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+        }
       }
     }
 
