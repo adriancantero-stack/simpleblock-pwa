@@ -119,6 +119,37 @@
     }
     @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
+    /* Botão Voltar para a Home do Portal */
+    .back-home-btn {
+      position: fixed;
+      top: calc(24px + var(--safe-top));
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 8px 16px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .back-home-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+    .back-home-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
     /* Logo */
     .logo-wrapper { display:flex; justify-content:center; margin-bottom:28px; }
     .logo {
@@ -883,6 +914,10 @@
 
   <!-- TELA INICIAL (DASHBOARD) -->
   <div class="container" id="homeView">
+    <a href="../" class="back-home-btn focusable">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span>Início</span>
+    </a>
     <div class="logo-wrapper">
       <div class="logo">
         <img src="../logo-video.png" alt="LivrePlay Logo" style="width: 100%; height: 100%; object-fit: contain;">
