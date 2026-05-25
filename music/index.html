@@ -35,6 +35,11 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
+    html {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
@@ -46,7 +51,9 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      overflow-x: hidden;
       position: relative;
+      width: 100%;
     }
 
     /* Layout Principal */
@@ -55,6 +62,7 @@
       display: flex;
       height: calc(100dvh - 96px); /* Espaço para o player de controle inferior */
       overflow: hidden;
+      overflow-x: hidden;
       padding-top: var(--safe-top);
       width: 100%;
     }
@@ -184,6 +192,7 @@
       display: flex;
       flex-direction: column;
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
       scrollbar-gutter: stable;
     }
@@ -752,9 +761,9 @@
     </div>
   </footer>
 
-  <!-- Player Iframe Oculto de Fallback de Altíssima Resiliência -->
-  <div style="position: absolute; width: 1px; height: 1px; left: -9999px; top: -9999px; overflow: hidden; pointer-events: none;">
-    <iframe id="youtubeIframe" name="youtubeIframe" src="about:blank" allow="autoplay; encrypted-media"></iframe>
+  <!-- Player Iframe Oculto de Fallback de Altíssima Resiliência - posicionado de forma fixa e visível para o iOS processar o áudio do iframe -->
+  <div style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: 1;">
+    <iframe id="youtubeIframe" name="youtubeIframe" src="about:blank" allow="autoplay; encrypted-media" style="width: 100%; height: 100%; border: none;"></iframe>
   </div>
 
   <script>
@@ -805,8 +814,8 @@
       silentAudio.loop = true;
       silentAudio.play().catch(() => {});
       
-      // Habilita API de áudio e autoplay e oculta a reprodução visual
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&mute=0&rel=0&modestbranding=1`;
+      // Habilita API de áudio e autoplay e oculta a reprodução visual (adiciona playsinline=1 para reprodução inline no iOS)
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&mute=0&rel=0&modestbranding=1&playsinline=1`;
       document.getElementById('youtubeIframe').src = embedUrl;
       console.log('Iniciada reprodução de resiliência total via Iframe oculto:', videoId);
       setPlayState(true);
@@ -1251,8 +1260,8 @@
       if (isIOS) {
         activeEngine = 'iframe';
         
-        // Carrega o iframe de forma síncrona diretamente no clique para burlar bloqueio de autoplay no iOS Safari
-        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&mute=0&rel=0&modestbranding=1`;
+        // Carrega o iframe de forma síncrona diretamente no clique para burlar bloqueio de autoplay no iOS Safari (com playsinline=1 obrigatório)
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&mute=0&rel=0&modestbranding=1&playsinline=1`;
         document.getElementById('youtubeIframe').src = embedUrl;
         
         // Toca o áudio silencioso síncrono em loop para permitir a reprodução continuar em segundo plano (background playback)
