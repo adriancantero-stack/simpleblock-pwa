@@ -290,6 +290,9 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
     }
     .music-card:hover {
       background: var(--bg-card-hover);
@@ -309,6 +312,7 @@
     .art-img {
       width: 100%;
       height: 100%;
+      max-width: 100%;
       object-fit: cover;
       transition: var(--transition);
     }
@@ -969,7 +973,7 @@
           try {
             silentAudio.src = url;
             silentAudio.loop = false;
-            silentAudio.load();
+            // Evita chamar load() para não revogar o desbloqueio de autoplay no iOS Safari
             silentAudio.play().catch(err => {
               if (err.name === 'NotAllowedError') {
                 console.log("Autoplay bloqueado pelo navegador, mas URL é válida.");
