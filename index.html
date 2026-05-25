@@ -1017,15 +1017,16 @@
             }
             currentAudioStreamUrl = streamUrl;
             
-            // Aponta o áudio local para a stream real do vídeo do YouTube
+            // Aponta o áudio local para a stream real do vídeo do YouTube e sincroniza com o progresso atual
             silentAudio.src = currentAudioStreamUrl;
             silentAudio.loop = false; // Áudio real, não precisa mais do loop de silêncio
+            silentAudio.currentTime = playerCurrentTime || 0;
             
-            // Toca o áudio de alta fidelidade nativo. Como isso está encadeado no clique
-            // físico inicial do usuário, os navegadores móveis (Safari iOS e Android Chrome)
-            // dão permissão total de reprodução em segundo plano e bloqueio de tela!
+            // Toca o áudio de alta fidelidade nativo. Como a tag já foi iniciada de forma síncrona
+            // no clique inicial do usuário, o iOS Safari permite trocar a origem (.src) e continuar
+            // tocando de forma programática sem bloquear!
             await silentAudio.play();
-            console.log('Stream de áudio de background ativa e tocando nativamente!');
+            console.log('Stream de áudio direta iniciada nativamente e sincronizada em:', playerCurrentTime);
           }
         }
       } catch (e) {
