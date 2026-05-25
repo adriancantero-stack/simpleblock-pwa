@@ -222,40 +222,32 @@
     .card-icon {
       width: 80px;
       height: 80px;
-      display: grid;
-      place-items: center;
-      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: var(--transition);
     }
     
     .card-video .card-icon {
-      background: rgba(10, 132, 255, 0.1);
-      color: var(--accent-blue);
-      box-shadow: inset 0 0 12px rgba(10, 132, 255, 0.1);
+      filter: drop-shadow(0 8px 16px rgba(10, 132, 255, 0.15));
     }
     .card-video:hover .card-icon {
-      background: var(--accent-blue);
-      color: #fff;
-      transform: scale(1.05);
-      box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35);
+      transform: scale(1.08);
+      filter: drop-shadow(0 12px 28px rgba(10, 132, 255, 0.45));
     }
 
     .card-music .card-icon {
-      background: rgba(48, 209, 88, 0.1);
-      color: var(--accent-green);
-      box-shadow: inset 0 0 12px rgba(48, 209, 88, 0.1);
+      filter: drop-shadow(0 8px 16px rgba(48, 209, 88, 0.15));
     }
     .card-music:hover .card-icon {
-      background: var(--accent-green);
-      color: #fff;
-      transform: scale(1.05);
-      box-shadow: 0 8px 24px rgba(48, 209, 88, 0.35);
+      transform: scale(1.08);
+      filter: drop-shadow(0 12px 28px rgba(48, 209, 88, 0.45));
     }
 
-    .card-icon svg {
-      width: 36px;
-      height: 36px;
-      stroke-width: 2.2;
+    .card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .card-title {
@@ -346,7 +338,7 @@
       <!-- Card LivrePlay Video -->
       <a href="./video/" class="portal-card card-video">
         <div class="card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" /><path d="M12 2v20M17 5H7M17 19H7M2 12h20" /></svg>
+          <img src="logo.png" alt="LivrePlay Video Logo">
         </div>
         <h2 class="card-title">LivrePlay Video</h2>
         <p class="card-desc">Assista aos seus vídeos e canais favoritos do YouTube sem anúncios, com carregamento instantâneo.</p>
@@ -356,7 +348,7 @@
       <!-- Card LivrePlay Music -->
       <a href="./music/" class="portal-card card-music">
         <div class="card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
+          <img src="logo-music.png" alt="LivrePlay Music Logo">
         </div>
         <h2 class="card-title">LivrePlay Music</h2>
         <p class="card-desc">Ouça suas músicas e álbuns favoritos sem limites e em segundo plano com a tela bloqueada.</p>
