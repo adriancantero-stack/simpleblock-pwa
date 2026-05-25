@@ -418,9 +418,11 @@
   <script>
     // Função de navegação (integra com seu proxy)
     function navigate() {
-      const proxyUrl = `https://simpleblock-proxy.adrian-cantero1.workers.dev/proxy/https://youtube.com`;
-      window.location.href = proxyUrl;
-    }
+  // Força a versão mobile (mais leve e compatível com proxy)
+  const target = 'https://m.youtube.com';
+  const proxyUrl = `https://simpleblock-proxy.adrian-cantero1.workers.dev/proxy/${encodeURIComponent(target)}`;
+  window.location.href = proxyUrl;
+}
     
     // Função de instalação PWA
     let deferredPrompt;
