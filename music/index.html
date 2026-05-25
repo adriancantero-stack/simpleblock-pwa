@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LivrePlay Music - Streaming de Música Sem Anúncios</title>
+  
+  <!-- SEO Otimização Extrema -->
+  <meta name="description" content="LivrePlay Music é a sua plataforma de streaming de música livre de anúncios. Ouça em segundo plano, crie playlists e curta sem interrupções.">
+  <meta name="keywords" content="livreplay music, spotify gratis sem anuncios, ouvir musica background, player music gratis, sem propagandas youtube music">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://livreplay.com/music/">
+  
+  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='lg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2330d158'/><stop offset='100%25' stop-color='%231db954'/></linearGradient></defs><rect width='100' height='100' rx='26' fill='url(%23lg)'/><path d='M9 18V5l12-2v13' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><circle cx='6' cy='18' r='3' fill='%23ffffff'/><circle cx='18' cy='16' r='3' fill='%23ffffff'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='lg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2330d158'/><stop offset='100%25' stop-color='%231db954'/></linearGradient></defs><rect width='100' height='100' rx='26' fill='url(%23lg)'/><path d='M9 18V5l12-2v13' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><circle cx='6' cy='18' r='3' fill='%23ffffff'/><circle cx='18' cy='16' r='3' fill='%23ffffff'/></svg>">
+  
+  <style>
+    :root {
+      --bg-dark: #070707;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.08);
+      --accent: #1db954;
+      --accent-hover: #1ed760;
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --border: rgba(255, 255, 255, 0.05);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Layout Principal */
+    .app-layout {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 96px); /* Espaço para o player de controle inferior */
+      overflow: hidden;
+      padding-top: var(--safe-top);
+    }
+
+    /* Sidebar Estilo Spotify */
+    .sidebar {
+      width: 280px;
+      background: #000;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      gap: 24px;
+    }
+    
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      padding-left: 8px;
+    }
+    .nav-logo svg {
+      width: 32px;
+      height: 32px;
+      filter: drop-shadow(0 4px 12px rgba(29, 185, 84, 0.3));
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 8px;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+    .nav-item:hover, .nav-item.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-item svg { width: 20px; height: 20px; }
+
+    .library-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .library-header {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding-left: 12px;
+    }
+    .library-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .library-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .library-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .lib-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .lib-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .lib-title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lib-author {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Área de Conteúdo Principal */
+    .main-content {
+      flex: 1;
+      background: linear-gradient(180deg, rgba(29, 185, 84, 0.06) 0%, var(--bg-dark) 40%);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Barra Superior de Busca */
+    .top-bar {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 7, 7, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .back-home-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 8px 16px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .back-home-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .back-home-btn svg { width: 14px; height: 14px; }
+
+    .search-box-container {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+    }
+    .search-input:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.2);
+    }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Conteúdo das Views */
+    .view-container {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+    .view-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Grid de Músicas (Álbuns) */
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 24px;
+    }
+
+    .music-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .music-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .art-wrapper {
+      position: relative;
+      aspect-ratio: 1/1;
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: #151515;
+    }
+    .art-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .music-card:hover .art-img {
+      transform: scale(1.04);
+    }
+
+    /* Botão de play flutuante verde estilo Spotify */
+    .play-float-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #000;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: var(--transition);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    .play-float-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+    .music-card:hover .play-float-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .play-float-btn:hover {
+      background: var(--accent-hover);
+      transform: scale(1.06) !important;
+    }
+
+    .music-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .music-title {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .music-author {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Spinner */
+    .loading-spinner {
+      display: none;
+      align-self: center;
+      justify-self: center;
+      margin: 40px auto;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.05);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ================= BARRA DE CONTROLE DO PLAYER INFERIOR ================= */
+    .player-bar {
+      height: 96px;
+      background: #111;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      padding-bottom: var(--safe-bottom);
+      position: relative;
+      z-index: 100;
+    }
+
+    .current-track-info {
+      width: 30%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .now-playing-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .now-playing-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+    .now-playing-title {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .now-playing-artist {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-controls-container {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .control-buttons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      display: grid;
+      place-items: center;
+    }
+    .ctrl-btn:hover { color: #fff; }
+    .ctrl-btn.active { color: var(--accent); }
+    
+    .ctrl-btn-play {
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border-radius: 50%;
+      color: #000;
+    }
+    .ctrl-btn-play:hover {
+      background: #fff;
+      transform: scale(1.06);
+    }
+    .ctrl-btn-play svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .time-stamp {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      width: 40px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      position: relative;
+    }
+    .progress-track:hover .progress-fill {
+      background: var(--accent-hover);
+    }
+    .progress-knob {
+      position: absolute;
+      right: -6px;
+      top: -4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .progress-track:hover .progress-knob {
+      opacity: 1;
+    }
+
+    .volume-controls {
+      width: 30%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .volume-slider-track {
+      width: 100px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+    .volume-slider-fill {
+      height: 100%;
+      background: var(--text-main);
+      border-radius: 2px;
+      width: 80%;
+    }
+    .volume-slider-track:hover .volume-slider-fill {
+      background: var(--accent);
+    }
+
+    .heart-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .heart-toggle-btn:hover { color: #ff3b30; }
+    .heart-toggle-btn.active { color: #ff3b30; }
+    .heart-toggle-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+    }
+    .heart-toggle-btn.active svg {
+      fill: currentColor;
+    }
+
+    /* Ajustes Responsivos */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .app-layout { height: calc(100vh - 84px); }
+      .player-bar {
+        height: 84px;
+        padding: 0 16px;
+      }
+      .current-track-info { width: 50%; }
+      .player-controls-container { width: 50%; }
+      .volume-controls { display: none; }
+      .view-container { padding: 16px; }
+      .music-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .top-bar { padding: 12px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Estilo Spotify -->
+    <aside class="sidebar">
+      <a href="../" class="nav-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+          <defs>
+            <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#30d158" />
+              <stop offset="100%" stop-color="#1db954" />
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="96" height="96" rx="26" fill="url(#navGrad)" />
+          <path d="M9 18V5l12-2v13" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="6" cy="18" r="3" fill="#ffffff"/>
+          <circle cx="18" cy="16" r="3" fill="#ffffff"/>
+        </svg>
+        <span>LivrePlay Music</span>
+      </a>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" onclick="switchView('busca')" id="menuBusca">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Buscar</span>
+        </button>
+        <button class="nav-item" onclick="switchView('favoritos')" id="menuFavoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>Favoritos</span>
+        </button>
+        <button class="nav-item" onclick="switchView('recentes')" id="menuRecentes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Recentes</span>
+        </button>
+      </nav>
+
+      <div class="library-section">
+        <span class="library-header">Minha Biblioteca</span>
+        <div class="library-list" id="libraryList">
+          <!-- Populado dinamicamente via JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+      <!-- Barra Superior -->
+      <div class="top-bar">
+        <a href="../" class="back-home-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <span>Início</span>
+        </a>
+        
+        <div class="search-box-container" id="searchBarContainer">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="search-input" id="musicSearchInput" placeholder="O que você quer ouvir hoje?" autocomplete="off" onkeypress="handleKeyPress(event)">
+        </div>
+      </div>
+
+      <!-- View: Buscar/Resultados -->
+      <div class="view-container" id="viewBusca">
+        <h2 class="view-title" id="searchHeader">Músicas Populares</h2>
+        <div class="loading-spinner" id="spinner"></div>
+        <div class="music-grid" id="searchGrid">
+          <!-- Populado dinamicamente -->
+        </div>
+      </div>
+
+      <!-- View: Favoritos -->
+      <div class="view-container" id="viewFavoritos" style="display: none;">
+        <h2 class="view-title">Favoritos</h2>
+        <div class="music-grid" id="favoritesGrid"></div>
+        <p class="empty-text" id="favEmpty" style="color: var(--text-muted); display: none;">Nenhuma música favoritada ainda.</p>
+      </div>
+
+      <!-- View: Recentes -->
+      <div class="view-container" id="viewRecentes" style="display: none;">
+        <h2 class="view-title">Recentes</h2>
+        <div class="music-grid" id="recentesGrid"></div>
+        <p class="empty-text" id="recentesEmpty" style="color: var(--text-muted); display: none;">Nenhuma música ouvida recentemente.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= PLAYER DE MÍDIA INFERIOR ================= -->
+  <footer class="player-bar">
+    <!-- Track Info -->
+    <div class="current-track-info">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="now-playing-thumb" id="playingThumb">
+      <div class="now-playing-details">
+        <span class="now-playing-title" id="playingTitle">Nenhuma música</span>
+        <span class="now-playing-artist" id="playingArtist">LivrePlay Music</span>
+      </div>
+      <button class="heart-toggle-btn" id="favPlayToggleBtn" onclick="toggleFavoriteCurrent()" style="margin-left: 12px; display: none;">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </button>
+    </div>
+
+    <!-- Controles Centrais -->
+    <div class="player-controls-container">
+      <div class="control-buttons">
+        <button class="ctrl-btn" onclick="seekOffset(-10)" aria-label="Retroceder 10s">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
+        </button>
+        <button class="ctrl-btn ctrl-btn-play" id="playBtn" onclick="togglePlayback()" aria-label="Reproduzir">
+          <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="seekOffset(10)" aria-label="Avançar 10s">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
+        </button>
+      </div>
+      
+      <div class="progress-bar-container">
+        <span class="time-stamp" id="currentTimeLabel">0:00</span>
+        <div class="progress-track" id="progressTrack" onclick="setProgress(event)">
+          <div class="progress-fill" id="progressFill">
+            <div class="progress-knob"></div>
+          </div>
+        </div>
+        <span class="time-stamp" id="durationLabel">0:00</span>
+      </div>
+    </div>
+
+    <!-- Controles de Volume -->
+    <div class="volume-controls">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <div class="volume-slider-track">
+        <div class="volume-slider-fill"></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Lista de instâncias saudáveis de busca
+    const FALLBACK_INSTANCES = [
+      'https://inv.thepixora.com',
+      'https://invidious.projectsegfau.lt',
+      'https://yewtu.be',
+      'https://invidious.lunar.icu',
+      'https://invidious.privacydev.net'
+    ];
+
+    const PIPED_API_INSTANCES = [
+      'https://api.piped.yt',
+      'https://pipedapi.kavin.rocks',
+      'https://piped-api.lunar.icu',
+      'https://pipedapi.tokhmi.xyz'
+    ];
+
+    let currentSearchResults = [];
+    let currentlyPlayingVideo = null;
+    let currentInvidiousInstance = 'https://yewtu.be';
+    let currentAudioStreamUrl = null;
+    let isBackgroundMode = false;
+
+    // Elemento de áudio nativo de background pré-aquecido
+    const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
+    silentAudio.loop = true;
+
+    let playerCurrentTime = 0;
+    let playerDuration = 0;
+
+    // Buscar e carregar a stream de áudio direta via Invidious latest_version M4A (itag 140)
+    async function prefetchAudioStream(videoId) {
+      currentAudioStreamUrl = null;
+      let lastError = null;
+      
+      let instancesToTry = [];
+      if (currentInvidiousInstance) {
+        instancesToTry.push(currentInvidiousInstance);
+      }
+      
+      try {
+        const res = await fetch('https://api.invidious.io/instances.json');
+        if (res.ok) {
+          const instancesJson = await res.json();
+          for (const [name, info] of instancesJson) {
+            if (info.type === 'https' && info.api && info.cors) {
+              const uri = info.uri || `https://${name}`;
+              if (!instancesToTry.includes(uri)) {
+                instancesToTry.push(uri);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao obter instâncias dinâmicas:', e);
+      }
+
+      FALLBACK_INSTANCES.forEach(inst => {
+        if (!instancesToTry.includes(inst)) {
+          instancesToTry.push(inst);
+        }
+      });
+
+      console.log('Extraindo áudio das instâncias de música:', instancesToTry);
+
+      for (const instance of instancesToTry) {
+        try {
+          const streamUrl = `${instance}/latest_version?id=${videoId}&itag=140`;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          
+          const headRes = await fetch(streamUrl, { method: 'HEAD', signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (headRes.ok || headRes.status === 302 || headRes.status === 307) {
+            currentAudioStreamUrl = streamUrl;
+            silentAudio.src = currentAudioStreamUrl;
+            silentAudio.loop = false;
+            silentAudio.currentTime = 0;
+            
+            silentAudio.load();
+            await silentAudio.play();
+            console.log(`Áudio iniciado via latest_version em: ${instance}`);
+            setPlayState(true);
+            return;
+          }
+        } catch (e) {
+          console.warn(`Erro no redirecionamento do latest_version em ${instance}:`, e);
+          lastError = e;
+        }
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          const res = await fetch(`${instance}/api/v1/videos/${videoId}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            const adaptiveFormats = data.adaptiveFormats || [];
+            const audioStream = adaptiveFormats.find(f => f.type?.includes('audio/mp4') || f.container === 'm4a')
+              || adaptiveFormats.find(f => f.type?.includes('audio'));
+              
+            if (audioStream && audioStream.url) {
+              let finalUrl = audioStream.url;
+              if (finalUrl.includes('googlevideo.com')) {
+                finalUrl = `${instance}/videoplayback${finalUrl.substring(finalUrl.indexOf('?'))}&local=true`;
+              }
+              currentAudioStreamUrl = finalUrl;
+              silentAudio.src = currentAudioStreamUrl;
+              silentAudio.loop = false;
+              silentAudio.currentTime = 0;
+              
+              silentAudio.load();
+              await silentAudio.play();
+              console.log(`Áudio iniciado via adaptiveFormats em: ${instance}`);
+              setPlayState(true);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn(`Erro na API do Invidious em ${instance}:`, e);
+          lastError = e;
+        }
+      }
+
+      // Backup final no Piped
+      for (const instance of PIPED_API_INSTANCES) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          const res = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            const audioStreams = data.audioStreams || [];
+            const bestStream = audioStreams.find(s => s.format === 'M4A' || s.mimeType?.includes('audio/mp4')) || audioStreams[0];
+            if (bestStream && bestStream.url) {
+              currentAudioStreamUrl = bestStream.url;
+              silentAudio.src = currentAudioStreamUrl;
+              silentAudio.loop = false;
+              silentAudio.currentTime = 0;
+              
+              silentAudio.load();
+              await silentAudio.play();
+              console.log(`Áudio iniciado via Piped backup em: ${instance}`);
+              setPlayState(true);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn(`Erro no Piped backup ${instance}:`, e);
+          lastError = e;
+        }
+      }
+
+      alert('Não foi possível carregar a música. Por favor, tente outra faixa ou recarregue a página.');
+      document.getElementById('spinner').style.display = 'none';
+    }
+
+    // Gerenciador de Buscas de Música
+    async function fetchSearch(query) {
+      let instancesToTry = [...FALLBACK_INSTANCES];
+      try {
+        const res = await fetch('https://api.invidious.io/instances.json');
+        if (res.ok) {
+          const instancesJson = await res.json();
+          const dynamicInstances = [];
+          for (const [name, info] of instancesJson) {
+            if (info.type === 'https' && info.api && info.cors) {
+              const uri = info.uri || `https://${name}`;
+              if (!dynamicInstances.includes(uri)) {
+                dynamicInstances.push(uri);
+              }
+            }
+          }
+          instancesToTry = [...new Set([...dynamicInstances, ...FALLBACK_INSTANCES])];
+        }
+      } catch (e) {
+        console.warn('Erro ao obter instâncias dinâmicas:', e);
+      }
+
+      // Otimiza a busca adicionando "audio" ou "lyric" se for um termo curto para focar em faixas musicais limpas
+      const optimizedQuery = query.length < 25 ? `${query} lyric` : query;
+
+      for (const instance of instancesToTry) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
+          const searchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(optimizedQuery)}&type=video`;
+          
+          const res = await fetch(searchUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data) && data.length > 0) {
+              currentInvidiousInstance = instance;
+              return data.filter(item => item.type === 'video');
+            }
+          }
+        } catch (e) {
+          console.warn(`Falha na busca em ${instance}:`, e);
+        }
+      }
+      throw new Error('Todas as instâncias de busca de música falharam.');
+    }
+
+    // Executar busca do usuário
+    async function performSearch(query) {
+      const spinner = document.getElementById('spinner');
+      const grid = document.getElementById('searchGrid');
+      const header = document.getElementById('searchHeader');
+      
+      spinner.style.display = 'block';
+      grid.innerHTML = '';
+      header.innerText = `Resultados para "${query}"`;
+      
+      try {
+        const results = await fetchSearch(query);
+        currentSearchResults = results;
+        renderGrid(results, grid);
+      } catch (err) {
+        alert(err.message || 'Erro ao pesquisar músicas.');
+      } finally {
+        spinner.style.display = 'none';
+      }
+    }
+
+    // Renderizar o Grid de Cards
+    function renderGrid(items, gridElement) {
+      gridElement.innerHTML = '';
+      if (!items || items.length === 0) {
+        gridElement.innerHTML = '<p class="empty-text" style="color: var(--text-muted); padding: 20px;">Nenhuma música encontrada.</p>';
+        return;
+      }
+
+      items.forEach(item => {
+        const videoId = item.videoId;
+        // Limpa títulos longos estilo YouTube para parecer música pura do Spotify
+        const cleanTitle = item.title.replace(/[\(\[][Ff]ull.*[\)\]]/, '')
+                                     .replace(/[\(\[][Oo]fficial.*[\)\]]/, '')
+                                     .replace(/[\(\[][Vv]ídeo.*[\)\]]/, '')
+                                     .replace(/[\(\[][L]yrics.*[\)\]]/i, '')
+                                     .trim();
+        const author = item.author;
+        const thumbnail = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+          || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+        
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.onclick = () => playMusic(item, cleanTitle);
+        
+        card.innerHTML = `
+          <div class="art-wrapper">
+            <img class="art-img" src="${thumbnail}" alt="${cleanTitle}" loading="lazy">
+            <div class="play-float-btn">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="music-info">
+            <h3 class="music-title">${cleanTitle}</h3>
+            <p class="music-author">${author}</p>
+          </div>
+        `;
+        gridElement.appendChild(card);
+      });
+    }
+
+    // Tocar a Música Escolhida
+    function playMusic(item, cleanTitle) {
+      const videoId = item.videoId;
+      const title = cleanTitle || item.title;
+      const author = item.author;
+      const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+        || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+      
+      document.getElementById('spinner').style.display = 'block';
+      
+      const trackItem = {
+        videoId: videoId,
+        title: title,
+        author: author,
+        lengthSeconds: item.lengthSeconds || 0,
+        videoThumbnails: item.videoThumbnails || []
+      };
+
+      currentlyPlayingVideo = trackItem;
+      saveToHistory(trackItem);
+      updateFavoriteButtonState(videoId);
+
+      // Pre-aquecimento nativo
+      silentAudio.play().catch(() => {});
+
+      // Buscar a stream nativa
+      prefetchAudioStream(videoId).then(() => {
+        document.getElementById('spinner').style.display = 'none';
+      });
+
+      // Atualizar o player inferior
+      document.getElementById('playingThumb').src = thumb;
+      document.getElementById('playingTitle').innerText = title;
+      document.getElementById('playingArtist').innerText = author;
+      document.getElementById('favPlayToggleBtn').style.display = 'block';
+      
+      playerDuration = item.lengthSeconds || 240; // 4 minutos padrão se não houver
+      document.getElementById('durationLabel').innerText = formatTime(playerDuration);
+
+      // Atualizar os controles de mídia no sistema operacional
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: title,
+            artist: author,
+            album: 'LivrePlay Music',
+            artwork: [
+              { src: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`, sizes: '320x180', type: 'image/jpeg' },
+              { src: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`, sizes: '480x360', type: 'image/jpeg' }
+            ]
+          });
+
+          navigator.mediaSession.setActionHandler('play', () => togglePlayback());
+          navigator.mediaSession.setActionHandler('pause', () => togglePlayback());
+          navigator.mediaSession.setActionHandler('seekbackward', () => seekOffset(-10));
+          navigator.mediaSession.setActionHandler('seekforward', () => seekOffset(10));
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    }
+
+    // Monitoramento em tempo real de reprodução e progresso
+    silentAudio.addEventListener('timeupdate', () => {
+      playerCurrentTime = silentAudio.currentTime;
+      document.getElementById('currentTimeLabel').innerText = formatTime(playerCurrentTime);
+      
+      if (playerDuration > 0) {
+        const pct = (playerCurrentTime / playerDuration) * 100;
+        document.getElementById('progressFill').style.width = `${pct}%`;
+      }
+
+      if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+        try {
+          if (playerDuration > 0 && playerCurrentTime <= playerDuration) {
+            navigator.mediaSession.setPositionState({
+              duration: playerDuration,
+              playbackRate: 1.0,
+              position: playerCurrentTime
+            });
+          }
+        } catch (e) {}
+      }
+    });
+
+    silentAudio.addEventListener('ended', () => {
+      setPlayState(false);
+      // Auto-play próximo recomendado como playlist dinâmica!
+      playNextRecommended();
+    });
+
+    function playNextRecommended() {
+      if (!currentlyPlayingVideo) return;
+      const related = currentSearchResults.filter(item => item.videoId !== currentlyPlayingVideo.videoId);
+      if (related.length > 0) {
+        // Pega a próxima da lista atual
+        const nextTrack = related[0];
+        playMusic(nextTrack);
+      }
+    }
+
+    // Play e Pause Controles
+    function togglePlayback() {
+      if (!currentlyPlayingVideo) return;
+      
+      if (silentAudio.paused) {
+        silentAudio.play().then(() => {
+          setPlayState(true);
+        });
+      } else {
+        silentAudio.pause();
+        setPlayState(false);
+      }
+    }
+
+    function setPlayState(isPlaying) {
+      const playIcon = document.getElementById('playIcon');
+      if (isPlaying) {
+        playIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+      } else {
+        playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      }
+    }
+
+    // Seek Avançar e Voltar
+    function seekOffset(offset) {
+      if (!currentlyPlayingVideo) return;
+      const target = Math.max(0, Math.min(playerDuration, silentAudio.currentTime + offset));
+      silentAudio.currentTime = target;
+    }
+
+    // Clicar na barra para avançar a música
+    function setProgress(event) {
+      if (!currentlyPlayingVideo || playerDuration === 0) return;
+      const track = document.getElementById('progressTrack');
+      const rect = track.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const width = rect.width;
+      const pct = clickX / width;
+      
+      silentAudio.currentTime = pct * playerDuration;
+    }
+
+    // Formatar segundos em tempo 0:00
+    function formatTime(sec) {
+      if (isNaN(sec) || sec === null) return '0:00';
+      const mins = Math.floor(sec / 60);
+      const secs = Math.floor(sec % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        const val = document.getElementById('musicSearchInput').value.trim();
+        if (val) performSearch(val);
+      }
+    }
+
+    // ================= GERENCIAMENTO DE HISTÓRICO E FAVORITOS (LOCAL) =================
+    function saveToHistory(track) {
+      let history = JSON.parse(localStorage.getItem('livreplay_music_history') || '[]');
+      history = history.filter(v => v.videoId !== track.videoId);
+      history.unshift(track);
+      if (history.length > 25) history.pop();
+      localStorage.setItem('livreplay_music_history', JSON.stringify(history));
+      renderLibrary();
+    }
+
+    function toggleFavoriteCurrent() {
+      if (!currentlyPlayingVideo) return;
+      const track = currentlyPlayingVideo;
+      let favorites = JSON.parse(localStorage.getItem('livreplay_music_favorites') || '[]');
+      const isFav = favorites.some(v => v.videoId === track.videoId);
+      
+      const btn = document.getElementById('favPlayToggleBtn');
+      if (isFav) {
+        favorites = favorites.filter(v => v.videoId !== track.videoId);
+        btn.classList.remove('active');
+      } else {
+        favorites.unshift(track);
+        btn.classList.add('active');
+      }
+      
+      localStorage.setItem('livreplay_music_favorites', JSON.stringify(favorites));
+      renderLibrary();
+      updateFavoriteButtonState(track.videoId);
+      
+      // Se a view de favoritos estiver aberta, re-renderiza ela na hora
+      if (document.getElementById('viewFavoritos').style.display === 'flex') {
+        renderFavoritesView();
+      }
+    }
+
+    function updateFavoriteButtonState(videoId) {
+      const favorites = JSON.parse(localStorage.getItem('livreplay_music_favorites') || '[]');
+      const isFav = favorites.some(v => v.videoId === videoId);
+      const btn = document.getElementById('favPlayToggleBtn');
+      if (btn) {
+        if (isFav) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    }
+
+    // Renderizar itens rápidos no menu lateral
+    function renderLibrary() {
+      const favorites = JSON.parse(localStorage.getItem('livreplay_music_favorites') || '[]');
+      const list = document.getElementById('libraryList');
+      list.innerHTML = '';
+      
+      if (favorites.length === 0) {
+        list.innerHTML = '<span style="font-size:12px; color:var(--text-muted); padding-left:12px;">Sua biblioteca está vazia.</span>';
+        return;
+      }
+
+      favorites.slice(0, 10).forEach(item => {
+        const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+          || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+          
+        const div = document.createElement('div');
+        div.className = 'library-item';
+        div.onclick = () => playMusic(item);
+        
+        div.innerHTML = `
+          <img class="lib-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+          <div class="lib-info">
+            <h4 class="lib-title">${item.title}</h4>
+            <p class="lib-author">${item.author}</p>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Alternador de Abas de Visibilidade (Busca, Favoritos, Recentes)
+    function switchView(viewName) {
+      document.querySelectorAll('.view-container').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      
+      if (viewName === 'busca') {
+        document.getElementById('viewBusca').style.display = 'flex';
+        document.getElementById('menuBusca').classList.add('active');
+      } else if (viewName === 'favoritos') {
+        document.getElementById('viewFavoritos').style.display = 'flex';
+        document.getElementById('menuFavoritos').classList.add('active');
+        renderFavoritesView();
+      } else if (viewName === 'recentes') {
+        document.getElementById('viewRecentes').style.display = 'flex';
+        document.getElementById('menuRecentes').classList.add('active');
+        renderRecentesView();
+      }
+    }
+
+    function renderFavoritesView() {
+      const favorites = JSON.parse(localStorage.getItem('livreplay_music_favorites') || '[]');
+      const grid = document.getElementById('favoritesGrid');
+      const empty = document.getElementById('favEmpty');
+      
+      if (favorites.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        renderGrid(favorites, grid);
+      }
+    }
+
+    function renderRecentesView() {
+      const history = JSON.parse(localStorage.getItem('livreplay_music_history') || '[]');
+      const grid = document.getElementById('recentesGrid');
+      const empty = document.getElementById('recentesEmpty');
+      
+      if (history.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        renderGrid(history, grid);
+      }
+    }
+
+    // Carregamento Inicial do App
+    window.addEventListener('DOMContentLoaded', async () => {
+      renderLibrary();
+      
+      // Carrega músicas populares na tela inicial como padrão ("Músicas Populares")
+      const popularTracks = ['Música Acústica Chillout', 'Lo-Fi Beats Study Music', 'Top Hits Acoustic Pop Covers'];
+      const randomQuery = popularTracks[Math.floor(Math.random() * popularTracks.length)];
+      performSearch(randomQuery);
+    });
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('../sw.js').catch(console.error);
+    }
+  </script>
+</body>
+</html>

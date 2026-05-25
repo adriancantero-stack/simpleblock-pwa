@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LivrePlay - Simples. Rápido. Sem Anúncios.</title>
+  
+  <!-- SEO Otimização Extrema & Metatags de Busca -->
+  <meta name="description" content="LivrePlay é uma plataforma de streaming de vídeo minimalista, super rápida e 100% livre de anúncios. Assista aos seus vídeos favoritos sem interrupções e com velocidade máxima.">
+  <meta name="keywords" content="livreplay, livre play, assistir sem anuncios, adblock youtube, player youtube sem anuncios, sem propagandas, player minimalista, pwa player, assistir videos online, reprodutor de video rapido, bloqueador de anuncios youtube">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://livreplay.com">
+  
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://livreplay.com">
+  <meta property="og:title" content="LivrePlay - Simples. Rápido. Sem Anúncios.">
+  <meta property="og:description" content="Assista aos seus vídeos favoritos sem anúncios, sem interrupções e com velocidade máxima. LivrePlay é simples, elegante e totalmente gratuito.">
+  <meta property="og:image" content="https://livreplay.com/favicon.svg">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://livreplay.com">
+  <meta name="twitter:title" content="LivrePlay - Simples. Rápido. Sem Anúncios.">
+  <meta name="twitter:description" content="Plataforma de streaming de vídeo minimalista, super rápida e livre de anúncios. Assista sem propagandas.">
+  <meta name="twitter:image" content="https://livreplay.com/favicon.svg">
+  
+  <!-- Schema.org Dados Estruturados para o Google (Rich Results & Sitelinks Search Box) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LivrePlay",
+    "url": "https://livreplay.com",
+    "description": "LivrePlay é uma plataforma de streaming de vídeo minimalista, super rápida e sem anúncios. Assista sem interrupções e de graça.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LivrePlay",
+    "url": "https://livreplay.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://livreplay.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='lg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2337a3ff'/><stop offset='100%25' stop-color='%234b36e3'/></linearGradient></defs><rect width='100' height='100' rx='26' fill='url(%23lg)'/><path fill-rule='evenodd' clip-rule='evenodd' d='M34 32.5 C34 27.5, 38.5 25.5, 43 25.5 L43.5 25.5 C46.5 25.5, 49.5 26.5, 52 28.5 L67.5 44 C70.5 47, 70.5 53, 67.5 56 L52 71.5 C49.5 73.5, 46.5 74.5, 43.5 74.5 L43 74.5 C38.5 74.5, 34 72.5, 34 67.5 L34 32.5 Z M45 39 C45 37.5, 46 37, 47 37.5 L57.5 48 C58.5 49, 58.5 51, 57.5 52 L47 62.5 C46 63, 45 62.5, 45 61 L45 39 Z' fill='%23ffffff'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='lg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2337a3ff'/><stop offset='100%25' stop-color='%234b36e3'/></linearGradient></defs><rect width='100' height='100' rx='26' fill='url(%23lg)'/><path fill-rule='evenodd' clip-rule='evenodd' d='M34 32.5 C34 27.5, 38.5 25.5, 43 25.5 L43.5 25.5 C46.5 25.5, 49.5 26.5, 52 28.5 L67.5 44 C70.5 47, 70.5 53, 67.5 56 L52 71.5 C49.5 73.5, 46.5 74.5, 43.5 74.5 L43 74.5 C38.5 74.5, 34 72.5, 34 67.5 L34 32.5 Z M45 39 C45 37.5, 46 37, 47 37.5 L57.5 48 C58.5 49, 58.5 51, 57.5 52 L47 62.5 C46 63, 45 62.5, 45 61 L45 39 Z' fill='%23ffffff'/></svg>">
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-hover: rgba(255, 255, 255, 0.14);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --accent: #0a84ff;
+      --accent-hover: #0071e3;
+      --radius: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.5);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      padding-top: calc(24px + var(--safe-top));
+      padding-bottom: calc(24px + var(--safe-bottom));
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background animado sutil */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -30%; left: -30%; width: 160%; height: 160%;
+      background: radial-gradient(ellipse at 20% 30%, rgba(10, 132, 255, 0.12) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 55%);
+      z-index: 0;
+      animation: breathe 18s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+
+    .container {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 580px;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Logo */
+    .logo-wrapper { display:flex; justify-content:center; margin-bottom:28px; }
+    .logo {
+      width: 64px; height: 64px;
+      display: grid; place-items: center;
+      position: relative;
+      filter: drop-shadow(0 8px 24px rgba(10, 132, 255, 0.45));
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .logo:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 12px 32px rgba(10, 132, 255, 0.65));
+    }
+
+    /* Tipografia */
+    h1 {
+      font-size: clamp(32px, 8vw, 44px);
+      font-weight: 600; letter-spacing: -0.02em; text-align: center; margin-bottom: 6px;
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.85) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .subtitle {
+      font-size: clamp(15px, 4vw, 17px); color: var(--text-secondary); text-align: center; margin-bottom: 32px; line-height: 1.4;
+    }
+
+    /* Busca estilo Spotlight */
+    .search-container { position: relative; margin-bottom: 36px; width: 100%; }
+    .search-box {
+      width: 100%; padding: 16px 52px 16px 48px;
+      background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg); color: var(--text-primary);
+      font-size: 16px; font-family: inherit; outline: none;
+      transition: var(--transition); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      min-height: 52px;
+    }
+    .search-box::placeholder { color: var(--text-secondary); }
+    .search-box:focus { background: var(--surface-hover); border-color: var(--accent); box-shadow: var(--focus-ring); }
+    .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--text-secondary); pointer-events:none; }
+    .go-btn {
+      position:absolute; right:8px; top:50%; transform:translateY(-50%);
+      width:40px; height:40px; background:var(--accent); border:none; border-radius:12px;
+      color:#fff; cursor:pointer; display:grid; place-items:center; transition:var(--transition);
+    }
+    .go-btn:hover, .go-btn:focus { background:var(--accent-hover); box-shadow:var(--focus-ring); }
+    .go-btn:active { transform:translateY(-50%) scale(0.94); }
+    .go-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.5; }
+
+
+    .action-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    /* Removed old features and tv notice styles to keep it ultra-minimalist and elegant */
+
+    /* Loading */
+    .loading { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:100; place-items:center; }
+    .loading.active { display:grid; }
+    .spinner { width:36px; height:36px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ================= TELA DE RESULTADOS DE BUSCA (NATIVA PREMIUM) ================= */
+    .search-results-view {
+      display: none;
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px;
+      padding-top: calc(24px + var(--safe-top));
+      padding-bottom: calc(24px + var(--safe-bottom));
+      z-index: 10;
+      animation: fadeIn 0.4s ease;
+    }
+    .search-results-view.active {
+      display: block;
+    }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .search-container.compact {
+      flex: 1;
+      min-width: 260px;
+      margin-bottom: 0;
+    }
+    .search-box.compact {
+      padding: 12px 52px 12px 44px;
+      min-height: 44px;
+      font-size: 15px;
+    }
+    .search-box.compact + .go-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .video-card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .video-card:hover {
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), var(--focus-ring);
+    }
+    
+    .thumbnail-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      overflow: hidden;
+    }
+    .thumbnail-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .video-card:hover .thumbnail-wrapper img {
+      transform: scale(1.03);
+    }
+    
+    .duration-tag {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .video-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .video-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-metadata {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= BROWSER VIEW (INTEGRATED IFRAME) ================= */
+    .browser-view {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    }
+    .browser-view.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .browser-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      padding-top: calc(12px + var(--safe-top));
+      background: rgba(15, 15, 15, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 16px;
+    }
+
+    .browser-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .browser-btn:hover {
+      background: var(--surface-hover);
+    }
+    .browser-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    .browser-address-bar {
+      flex: 1;
+      max-width: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+    .browser-address-bar .lock-icon {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2.5;
+    }
+    .browser-address-bar span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .browser-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .browser-action-btn {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .browser-action-btn:hover {
+      background: var(--surface-hover);
+    }
+    .browser-action-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .iframe-wrapper {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #000;
+    }
+    .iframe-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+    }
+    
+    /* Overlay de Recomendados ao Fim do Vídeo (Netflix/Youtube Style) */
+    .recommendations-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      color: #fff;
+      animation: overlayFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes overlayFadeIn { from{opacity:0;transform:scale(0.98)} to{opacity:1;transform:scale(1)} }
+    
+    .overlay-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 12px;
+    }
+    .overlay-header h3 {
+      font-size: clamp(18px, 4vw, 22px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .replay-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 8px 16px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .replay-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: scale(1.02);
+    }
+    .replay-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2.5;
+      stroke: currentColor;
+      fill: none;
+    }
+    .overlay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+      overflow-y: auto;
+      flex: 1;
+      padding-bottom: 12px;
+    }
+    .overlay-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .overlay-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .overlay-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+    .overlay-details {
+      padding: 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .overlay-title {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #fff;
+    }
+    .overlay-author {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= PLAYER CONTENT LAYOUT & SIDEBAR ================= */
+    .player-content-layout {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .player-sidebar {
+      width: 320px;
+      height: 100%;
+      background: rgba(15, 15, 15, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      overflow-y: auto;
+      transition: var(--transition);
+    }
+
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+
+    .sidebar-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Mini card design for sidebar */
+    .mini-card {
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mini-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .mini-thumb {
+      width: 90px;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mini-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .mini-title {
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .mini-author {
+      font-size: 9px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= HISTÓRICO E FAVORITOS ================= */
+    .user-sections {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tabs-header {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .tab-btn.active {
+      color: var(--text-primary);
+      background: var(--surface);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .horizontal-scroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .horizontal-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .horizontal-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .horizontal-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Carousel Item Mini Card */
+    .carousel-item {
+      flex: 0 0 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .carousel-item:hover {
+      transform: translateY(-4px);
+    }
+
+    .carousel-thumb-wrapper {
+      position: relative;
+      aspect-ratio: 16/9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .carousel-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-duration {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      font-size: 9px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .carousel-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .carousel-author {
+      font-size: 9px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* Heart Toggle Button */
+    .heart-btn {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .heart-btn:hover {
+      background: var(--surface-hover);
+      color: #ff3b30;
+      transform: scale(1.08);
+    }
+
+    .heart-btn.favorited {
+      color: #ff3b30;
+      background: rgba(255, 59, 48, 0.15);
+      border-color: rgba(255, 59, 48, 0.3);
+    }
+
+    .heart-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      transition: var(--transition);
+    }
+
+    .heart-btn.favorited svg {
+      fill: currentColor;
+    }
+
+    /* Responsive adjustments for new elements */
+    @media (max-width: 900px) {
+      .player-content-layout {
+        flex-direction: column;
+      }
+      .player-sidebar {
+        width: 100%;
+        height: 200px;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .iframe-wrapper {
+        height: auto; /* Permite flexbox alinhar com a barra lateral abaixo sem transbordamento */
+      }
+    }
+
+    /* ================= RESPONSIVIDADE ================= */
+    /* Mobile (< 768px) */
+    @media (max-width: 767px) {
+
+      .features { grid-template-columns: 1fr; }
+      .feature { flex-direction: row; gap: 12px; text-align: left; padding: 14px; }
+      .feature-icon { margin-bottom: 0; }
+      body { padding: 16px; padding-top: calc(16px + var(--safe-top)); padding-bottom: calc(16px + var(--safe-bottom)); }
+      .container { max-width: 100%; }
+      .browser-btn span { display: none; }
+      .browser-btn { padding: 8px; border-radius: 12px; }
+      .browser-address-bar { max-width: 180px; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Telas Médias e Pequenas (Stack Vibe) */
+    @media (max-width: 580px) {
+      .results-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .search-container.compact {
+        width: 100%;
+      }
+    }
+
+    /* Telas Minúsculas (Otimização do Header e Botões) */
+    @media (max-width: 480px) {
+      .browser-header {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .browser-address-bar {
+        display: none; /* Oculta a barra para dar espaço total aos botões e evitar encavalamento */
+      }
+    }
+
+    /* Desktop (768px - 1400px) */
+    @media (min-width: 768px) and (max-width: 1399px) {
+      .features { grid-template-columns: repeat(3, 1fr); }
+      .feature { flex-direction: column; text-align: center; padding: 20px 12px; }
+      .feature-icon { margin-bottom: 6px; }
+    }
+
+    /* TV / Telas Grandes (> 1400px ou detecção UA) */
+    .tv-mode .container { max-width: 720px; }
+    .tv-mode h1 { font-size: 52px; }
+    .tv-mode .subtitle { font-size: 20px; margin-bottom: 40px; }
+    .tv-mode .search-box { padding: 20px 56px 20px 52px; font-size: 20px; min-height: 64px; border-radius: 24px; }
+    .tv-mode .go-btn { width: 48px; height: 48px; border-radius: 16px; }
+    .tv-mode .go-btn svg { width: 22px; height: 22px; }
+
+    /* Removed old features and tv notice tv-mode styles to keep it ultra-minimalist */
+
+    /* Foco explícito para TV/Teclado */
+    .focusable:focus-visible { outline: none; box-shadow: var(--focus-ring); transform: scale(1.02); }
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading"><div class="spinner"></div></div>
+
+  <!-- TELA INICIAL (DASHBOARD) -->
+  <div class="container" id="homeView">
+    <div class="logo-wrapper">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+          <defs>
+            <linearGradient id="livreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#37a3ff" />
+              <stop offset="100%" stop-color="#4b36e3" />
+            </linearGradient>
+            <linearGradient id="borderHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+            </linearGradient>
+            <filter id="symbolShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.25" />
+            </filter>
+          </defs>
+          <rect x="2" y="2" width="96" height="96" rx="26" fill="url(#livreGradient)" />
+          <rect x="2.5" y="2.5" width="95" height="95" rx="25.5" fill="none" stroke="url(#borderHighlight)" stroke-width="1.2" />
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M34 32.5 C34 27.5, 38.5 25.5, 43 25.5 L43.5 25.5 C46.5 25.5, 49.5 26.5, 52 28.5 L67.5 44 C70.5 47, 70.5 53, 67.5 56 L52 71.5 C49.5 73.5, 46.5 74.5, 43.5 74.5 L43 74.5 C38.5 74.5, 34 72.5, 34 67.5 L34 32.5 Z M45 39 C45 37.5, 46 37, 47 37.5 L57.5 48 C58.5 49, 58.5 51, 57.5 52 L47 62.5 C46 63, 45 62.5, 45 61 L45 39 Z" fill="#ffffff" filter="url(#symbolShadow)" />
+        </svg>
+      </div>
+    </div>
+
+    <h1>LivrePlay</h1>
+    <p class="subtitle">Simples. Rápido. Sem Anúncios.</p>
+
+    <div class="search-container">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="search-box focusable" id="urlInput" placeholder="Cole o Link do Youtube ou Pesquise..." autocomplete="off" onkeypress="handleKeyPress(event)">
+      <button class="go-btn focusable" onclick="navigate()" aria-label="Abrir">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+
+
+    <!-- SEÇÃO DE HISTÓRICO E FAVORITOS -->
+    <div class="user-sections" id="userSections" style="display: none;">
+      <div class="tabs-header">
+        <button class="tab-btn active focusable" onclick="switchTab('recentes')">Recentes</button>
+        <button class="tab-btn focusable" onclick="switchTab('favoritos')">Favoritos</button>
+      </div>
+      
+      <div class="tab-content active" id="tabRecentes">
+        <div class="horizontal-scroll" id="recentesScroll"></div>
+        <p class="empty-text" id="recentesEmpty">Nenhum vídeo assistido recentemente</p>
+      </div>
+      
+      <div class="tab-content" id="tabFavoritos">
+        <div class="horizontal-scroll" id="favoritosScroll"></div>
+        <p class="empty-text" id="favoritosEmpty">Nenhum vídeo favoritado ainda</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA NATIVA DE RESULTADOS DE BUSCA -->
+  <div class="search-results-view" id="searchResultsView">
+    <div class="results-header">
+      <button class="browser-btn focusable" onclick="showHome()">
+        <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Voltar</span>
+      </button>
+      <div class="search-container compact">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-box compact focusable" id="resultsUrlInput" placeholder="Pesquise no YouTube..." autocomplete="off" onkeypress="handleResultsKeyPress(event)">
+        <button class="go-btn focusable" onclick="navigateFromResults()" aria-label="Pesquisar">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+
+  <!-- PLAYER INTEGRADO (IFRAME) -->
+  <div class="browser-view" id="browserView">
+    <div class="browser-header">
+      <button class="browser-btn focusable" onclick="exitBrowser()" aria-label="Voltar para os resultados">
+        <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Voltar</span>
+      </button>
+      <div class="browser-address-bar">
+        <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span id="activeUrl">youtube.com</span>
+      </div>
+      <div class="browser-actions">
+        <button class="heart-btn focusable" id="favoriteToggleBtn" onclick="toggleFavoriteCurrent()" aria-label="Favoritar">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+        <button class="browser-action-btn focusable" onclick="reloadBrowser()" aria-label="Recarregar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="player-content-layout">
+      <div class="iframe-wrapper">
+        <iframe id="browserIframe" name="browserIframe" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+        
+        <!-- Overlay de Recomendados ao Fim do Vídeo (Netflix/Youtube Style) -->
+        <div class="recommendations-overlay" id="recommendationsOverlay" style="display: none;">
+          <div class="overlay-header">
+            <h3>Recomendados para Você</h3>
+            <button class="replay-btn focusable" onclick="replayCurrentVideo()" aria-label="Repetir Vídeo">
+              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1.04 14.7a10 10 0 1 1 1.76 5.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Repetir</span>
+            </button>
+          </div>
+          <div class="overlay-grid" id="overlayGrid"></div>
+        </div>
+      </div>
+      <div class="player-sidebar" id="playerSidebar">
+        <h3 class="sidebar-title">Recomendados</h3>
+        <div class="sidebar-grid" id="sidebarGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lista de fallback de instâncias Invidious que costumam suportar CORS e buscas direta
+    const FALLBACK_INSTANCES = [
+      'https://inv.thepixora.com',
+      'https://invidious.projectsegfau.lt',
+      'https://yewtu.be',
+      'https://invidious.lunar.icu',
+      'https://invidious.privacydev.net'
+    ];
+
+    // Detecção Smart TV
+    const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1400;
+    if (isTV) document.body.classList.add('tv-mode');
+
+    // Executa busca sequencial automática com auto-recuperação dinâmica e CORS direto (sem proxy)
+    async function fetchSearch(query) {
+      let instancesToTry = [...FALLBACK_INSTANCES];
+      
+      // Tenta obter instâncias dinâmicas e saudáveis do registro oficial Invidious
+      try {
+        const res = await fetch('https://api.invidious.io/instances.json');
+        if (res.ok) {
+          const instancesJson = await res.json();
+          const dynamicInstances = [];
+          for (const [name, info] of instancesJson) {
+            if (info.type === 'https' && info.api && (info.cors || info.uri)) {
+              const uri = info.uri || `https://${name}`;
+              if (!dynamicInstances.includes(uri)) {
+                dynamicInstances.push(uri);
+              }
+            }
+          }
+          // Prioriza as dinâmicas mas mantém as de fallback
+          instancesToTry = [...new Set([...dynamicInstances, ...FALLBACK_INSTANCES])];
+        }
+      } catch (e) {
+        console.warn('Não foi possível carregar instâncias dinâmicas, usando lista estática:', e);
+      }
+      
+      console.log('Tentando buscar em instâncias:', instancesToTry);
+      
+      let lastError = null;
+      for (const instance of instancesToTry) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos
+          
+          const searchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
+          
+          // Realiza busca direta (sem passar pelo proxy restringido de workers.dev)
+          const res = await fetch(searchUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data) && data.length > 0) {
+              console.log(`Busca bem-sucedida usando a instância: ${instance}`);
+              currentInvidiousInstance = instance;
+              return { instance, data };
+            }
+          } else {
+            console.warn(`Instância ${instance} retornou erro HTTP: ${res.status}`);
+          }
+        } catch (e) {
+          console.warn(`Instância Invidious falhou (${instance}):`, e);
+          lastError = e;
+        }
+      }
+      
+      throw new Error(lastError ? lastError.message : 'Todas as instâncias de busca falharam.');
+    }
+
+    // Iniciar a busca a partir da página inicial
+    async function navigate() {
+      const val = document.getElementById('urlInput').value.trim();
+      if (!val) return;
+      
+      // Se for um link de vídeo direto do YouTube, extrai o ID e abre no player de forma direta
+      const isYoutubeWatchUrl = val.includes('youtube.com/watch') || val.includes('youtu.be/');
+      if (isYoutubeWatchUrl) {
+        let videoId = '';
+        if (val.includes('youtu.be/')) {
+          videoId = val.split('youtu.be/')[1].split(/[?#]/)[0];
+        } else if (val.includes('v=')) {
+          videoId = val.split('v=')[1].split('&')[0];
+        }
+        if (videoId) {
+          playVideo(videoId, 'Vídeo Direto');
+          return;
+        }
+      }
+
+      await searchAndRender(val);
+    }
+
+    // Iniciar busca a partir da tela de resultados compacta
+    async function navigateFromResults() {
+      const val = document.getElementById('resultsUrlInput').value.trim();
+      if (!val) return;
+      await searchAndRender(val);
+    }
+
+    let currentSearchResults = [];
+    let currentlyPlayingVideo = null;
+    let currentInvidiousInstance = 'https://yewtu.be';
+
+    // Áudio silencioso em loop para impedir que o navegador/OS pause a reprodução em segundo plano (tela bloqueada ou app minimizado)
+    const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
+    silentAudio.loop = true;
+    
+    // Variáveis globais para monitoramento de progresso e duração (usados no MediaSession e barra de progresso da tela de bloqueio)
+    let playerCurrentTime = 0;
+    let playerDuration = 0;
+
+    let currentAudioStreamUrl = null;
+    let isBackgroundMode = false;
+
+    const PIPED_API_INSTANCES = [
+      'https://api.piped.yt',
+      'https://pipedapi.kavin.rocks',
+      'https://piped-api.lunar.icu',
+      'https://pipedapi.tokhmi.xyz'
+    ];
+
+    // Carrega e reproduz a stream de áudio direta (CORS liberado e estável)
+    async function prefetchAudioStream(videoId) {
+      currentAudioStreamUrl = null;
+      let lastError = null;
+      
+      // Lista de instâncias a tentar (prioriza a instância de busca atual se estiver funcionando)
+      let instancesToTry = [];
+      if (currentInvidiousInstance) {
+        instancesToTry.push(currentInvidiousInstance);
+      }
+      
+      // Adiciona as instâncias de fallback e busca dinâmicas
+      try {
+        const res = await fetch('https://api.invidious.io/instances.json');
+        if (res.ok) {
+          const instancesJson = await res.json();
+          for (const [name, info] of instancesJson) {
+            if (info.type === 'https' && info.api && info.cors) {
+              const uri = info.uri || `https://${name}`;
+              if (!instancesToTry.includes(uri)) {
+                instancesToTry.push(uri);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar instâncias dinâmicas de áudio:', e);
+      }
+      
+      // Garante que temos as instâncias padrão de fallback se a lista estiver vazia
+      FALLBACK_INSTANCES.forEach(inst => {
+        if (!instancesToTry.includes(inst)) {
+          instancesToTry.push(inst);
+        }
+      });
+
+      console.log('Tentando extrair áudio de instâncias:', instancesToTry);
+
+      // Tenta primeiro as instâncias Invidious usando o endpoint de vídeo ou latest_version (que resolve perfeitamente)
+      for (const instance of instancesToTry) {
+        try {
+          // Primeiro tentamos o endpoint /latest_version?id=...&itag=140 que é 100% nativo M4A e evita IP-locking!
+          const streamUrl = `${instance}/latest_version?id=${videoId}&itag=140`;
+          
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s para testar conectividade da instância
+          
+          // Faz um HEAD request rápido para verificar se a instância está viva e suporta o redirecionamento
+          const headRes = await fetch(streamUrl, { method: 'HEAD', signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (headRes.ok || headRes.status === 302 || headRes.status === 307) {
+            currentAudioStreamUrl = streamUrl;
+            
+            // Aponta o áudio local para a URL de redirecionamento dinâmica de áudio
+            silentAudio.src = currentAudioStreamUrl;
+            silentAudio.loop = false;
+            silentAudio.currentTime = playerCurrentTime || 0;
+            
+            silentAudio.load(); // Exigido pelo iOS Safari
+            await silentAudio.play();
+            console.log(`Stream de áudio direta iniciada nativamente via Invidious latest_version (${instance}) em:`, playerCurrentTime);
+            return; // Sucesso absoluto!
+          }
+        } catch (e) {
+          console.warn(`Instância Invidious latest_version falhou ou rejeitou (${instance}):`, e);
+          lastError = e;
+        }
+        
+        // Se o latest_version falhou, tentamos obter os adaptiveFormats do JSON para extrair o link direto
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          
+          const res = await fetch(`${instance}/api/v1/videos/${videoId}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            const adaptiveFormats = data.adaptiveFormats || [];
+            
+            // Prioriza M4A para iOS/Android
+            const audioStream = adaptiveFormats.find(f => f.type?.includes('audio/mp4') || f.container === 'm4a')
+              || adaptiveFormats.find(f => f.type?.includes('audio'));
+              
+            if (audioStream && audioStream.url) {
+              let finalUrl = audioStream.url;
+              if (finalUrl.includes('googlevideo.com')) {
+                // Tenta usar o proxy da própria instância para evitar CORS e IP-locking
+                finalUrl = `${instance}/videoplayback${finalUrl.substring(finalUrl.indexOf('?'))}&local=true`;
+              }
+              
+              currentAudioStreamUrl = finalUrl;
+              silentAudio.src = currentAudioStreamUrl;
+              silentAudio.loop = false;
+              silentAudio.currentTime = playerCurrentTime || 0;
+              
+              silentAudio.load();
+              await silentAudio.play();
+              console.log(`Stream de áudio direta iniciada via adaptiveFormats (${instance}) em:`, playerCurrentTime);
+              return; // Sucesso absoluto!
+            }
+          }
+        } catch (e) {
+          console.warn(`Instância Invidious API de vídeo falhou (${instance}):`, e);
+          lastError = e;
+        }
+      }
+
+      // Se todas as instâncias Invidious falharem, tentamos as de Piped API como último recurso!
+      for (const instance of PIPED_API_INSTANCES) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          
+          const res = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            const data = await res.json();
+            const audioStreams = data.audioStreams || [];
+            const bestStream = audioStreams.find(s => s.format === 'M4A' || s.mimeType?.includes('audio/mp4')) || audioStreams[0];
+            if (bestStream && bestStream.url) {
+              currentAudioStreamUrl = bestStream.url;
+              silentAudio.src = currentAudioStreamUrl;
+              silentAudio.loop = false;
+              silentAudio.currentTime = playerCurrentTime || 0;
+              
+              silentAudio.load();
+              await silentAudio.play();
+              console.log(`Stream de áudio direta iniciada via Piped backup (${instance}) em:`, playerCurrentTime);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn(`Instância Piped backup falhou (${instance}):`, e);
+          lastError = e;
+        }
+      }
+      
+      console.warn('Erro ao carregar áudio nativo em todas as opções. Desmutando iframe de fallback.', lastError);
+      
+      // Fallback: Desmuta o iframe para que o usuário ouça pelo iframe no primeiro plano
+      sendPlayerCommand('unmute');
+      
+      // Mantém o loop de silêncio ativo para que o Safari mantenha a aba ativa no background
+      silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+      silentAudio.loop = true;
+      silentAudio.play().catch(() => {});
+    }
+
+    // Transição Híbrida de Background (Vídeo em Primeiro Plano -> Áudio Nativo em Segundo Plano)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // Bloqueou ou minimizou: muda para o modo de background nativo
+        if (currentlyPlayingVideo && !silentAudio.paused) {
+          isBackgroundMode = true;
+          // Pausa o iframe do YouTube para poupar largura de banda de vídeo e bateria
+          sendPlayerCommand('pauseVideo');
+          console.log('Entrou em segundo plano. Vídeo do Iframe pausado, áudio nativo continua tocando.');
+        }
+      } else {
+        // Voltou para o app: restaura o vídeo em primeiro plano e sincroniza
+        if (isBackgroundMode) {
+          isBackgroundMode = false;
+          const currentTime = silentAudio.currentTime;
+          
+          // Sincroniza o player de vídeo do YouTube com o áudio que estava tocando no fundo
+          sendPlayerCommand('seekTo', [currentTime, true]);
+          
+          // Se o áudio nativo está tocando, garante que o vídeo do YouTube também comece a tocar
+          if (!silentAudio.paused) {
+            sendPlayerCommand('playVideo');
+          }
+          console.log('Retornou do background. Sincronizado vídeo em:', currentTime);
+        }
+      }
+    });
+
+    // Escuta eventos de fim do áudio nativo em background para parar tudo de forma limpa
+    silentAudio.addEventListener('ended', () => {
+      if (isBackgroundMode) {
+        isBackgroundMode = false;
+        silentAudio.pause();
+        silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+        silentAudio.loop = true;
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'none';
+        }
+        console.log('Áudio de background finalizado.');
+      }
+    });
+
+    // Sincroniza posição de reprodução do áudio ativo em background com a MediaSession
+    silentAudio.addEventListener('timeupdate', () => {
+      if (isBackgroundMode) {
+        playerCurrentTime = silentAudio.currentTime;
+        updateMediaSessionPosition();
+      }
+    });
+
+    // Busca os dados e renderiza os cards
+    async function searchAndRender(query) {
+      document.getElementById('loading').classList.add('active');
+      document.getElementById('resultsUrlInput').value = query;
+      document.getElementById('urlInput').value = query;
+      
+      try {
+        const { instance, data } = await fetchSearch(query);
+        const grid = document.getElementById('resultsGrid');
+        grid.innerHTML = '';
+        
+        currentSearchResults = data.filter(item => item.type === 'video');
+        
+        currentSearchResults.forEach(item => {
+          const videoId = item.videoId;
+          const title = item.title;
+          const author = item.author;
+          const duration = formatDuration(item.lengthSeconds);
+          const thumbnail = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+            || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+          const views = item.viewCountText || `${item.viewCount || 0} visualizações`;
+          const published = item.publishedText || '';
+          
+          const card = document.createElement('div');
+          card.className = 'video-card focusable';
+          card.tabIndex = 0;
+          card.onclick = () => playVideo(videoId, title);
+          card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(videoId, title); };
+          
+          card.innerHTML = `
+            <div class="thumbnail-wrapper">
+              <img src="${thumbnail}" alt="${title}" loading="lazy">
+              <span class="duration-tag">${duration}</span>
+            </div>
+            <div class="video-info">
+              <h3 class="video-title">${title}</h3>
+              <p class="video-metadata">${author}</p>
+              <p class="video-metadata">${views} • ${published}</p>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        
+        // Transição de visualização
+        document.getElementById('homeView').style.display = 'none';
+        document.getElementById('searchResultsView').classList.add('active');
+      } catch (err) {
+        alert(err.message || 'Erro ao buscar vídeos. Por favor, tente novamente.');
+      } finally {
+        document.getElementById('loading').classList.remove('active');
+      }
+    }
+
+    // Formata segundos em HH:MM:SS
+    function formatDuration(sec) {
+      if (!sec) return '00:00';
+      const hrs = Math.floor(sec / 3600);
+      const mins = Math.floor((sec % 3600) / 60);
+      const secs = sec % 60;
+      let res = '';
+      if (hrs > 0) res += hrs + ':';
+      res += (mins < 10 && hrs > 0 ? '0' : '') + mins + ':';
+      res += (secs < 10 ? '0' : '') + secs;
+      return res;
+    }
+
+    // Toca o vídeo usando o player de Embed do YouTube, que ignora anúncios e funciona 100%
+    function playVideo(videoId, title) {
+      document.getElementById('recommendationsOverlay').style.display = 'none';
+      document.getElementById('loading').classList.add('active');
+      
+      // Encontra os detalhes do vídeo nos resultados atuais ou no histórico/favoritos
+      let videoItem = currentSearchResults.find(v => v.videoId === videoId);
+      if (!videoItem) {
+        const history = JSON.parse(localStorage.getItem('livreplay_history') || '[]');
+        const favorites = JSON.parse(localStorage.getItem('livreplay_favorites') || '[]');
+        videoItem = history.find(v => v.videoId === videoId) || favorites.find(v => v.videoId === videoId);
+      }
+      
+      // Se não encontrou, cria um item básico
+      if (!videoItem) {
+        videoItem = {
+          videoId: videoId,
+          title: title || 'Vídeo LivrePlay',
+          author: 'LivrePlay',
+          lengthSeconds: 0,
+          viewCountText: ''
+        };
+      }
+      
+      currentlyPlayingVideo = videoItem;
+      
+      // Salva no histórico local
+      saveToHistory(videoItem);
+      
+      // Atualiza o estado do botão de favoritos
+      updateFavoriteButtonState(videoId);
+
+      // Reseta tempos locais para a MediaSession
+      playerCurrentTime = 0;
+      playerDuration = videoItem.lengthSeconds || 0;
+
+      // Dispara a busca em background da stream de áudio real para caso o usuário bloqueie a tela
+      prefetchAudioStream(videoId);
+
+      // Inicia a âncora de áudio silencioso (necessário para impedir a suspensão da aba em segundo plano / tela bloqueada)
+      silentAudio.play().then(() => {
+        console.log('Sessão de áudio em segundo plano ativa');
+      }).catch(err => {
+        console.log('Autoplay silencioso aguardando interação física:', err);
+      });
+
+      // Habilita a API Javascript do YouTube (enablejsapi=1) e carrega mutado (mute=1) para rodar o áudio via tag nativa da página
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1&mute=1`;
+      
+      document.getElementById('activeUrl').innerText = videoItem.title;
+      
+      const iframe = document.getElementById('browserIframe');
+      iframe.src = embedUrl;
+      
+      document.getElementById('browserView').classList.add('active');
+      
+      // Registra dados na MediaSession do dispositivo (Controles do Sistema Operacional / Tela de Bloqueio / Fones de Ouvido)
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: videoItem.title || 'Vídeo LivrePlay',
+            artist: videoItem.author !== 'Desconhecido' && videoItem.author !== 'LivrePlay' ? videoItem.author : 'LivrePlay',
+            album: 'LivrePlay',
+            artwork: [
+              { src: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`, sizes: '320x180', type: 'image/jpeg' },
+              { src: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`, sizes: '480x360', type: 'image/jpeg' }
+            ]
+          });
+          
+          // Ações físicas de controle (Reproduzir, Pausar, Retroceder 10s, Avançar 10s e Controle Deslizante de Busca)
+          navigator.mediaSession.setActionHandler('play', () => {
+            sendPlayerCommand('playVideo');
+          });
+          navigator.mediaSession.setActionHandler('pause', () => {
+            sendPlayerCommand('pauseVideo');
+          });
+          navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+            const offset = details.seekOffset || 10;
+            sendPlayerCommand('seekTo', [Math.max(0, playerCurrentTime - offset), true]);
+          });
+          navigator.mediaSession.setActionHandler('seekforward', (details) => {
+            const offset = details.seekOffset || 10;
+            sendPlayerCommand('seekTo', [Math.min(playerDuration || 9999, playerCurrentTime + offset), true]);
+          });
+          
+          if ('setActionHandler' in navigator.mediaSession) {
+            try {
+              navigator.mediaSession.setActionHandler('seekto', (details) => {
+                if (details.seekTime !== undefined) {
+                  sendPlayerCommand('seekTo', [details.seekTime, true]);
+                }
+              });
+            } catch (e) {
+              console.warn('Busca de tempo na tela de bloqueio não suportada por este navegador');
+            }
+          }
+        } catch (sessionErr) {
+          console.warn('Erro ao configurar MediaSession:', sessionErr);
+        }
+      }
+      
+      // Renderiza a barra lateral (Feature 2)
+      renderSidebar();
+    }
+
+    // Utilitário para enviar comandos remotos para o Iframe do YouTube
+    function sendPlayerCommand(func, args = []) {
+      const iframe = document.getElementById('browserIframe');
+      if (iframe && iframe.contentWindow) {
+        try {
+          iframe.contentWindow.postMessage(JSON.stringify({
+            event: 'command',
+            func: func,
+            args: args
+          }), '*');
+        } catch (e) {
+          console.warn('Falha ao enviar comando de reprodução remota:', e);
+        }
+      }
+    }
+
+    // Escuta e processa o feedback de reprodução do Iframe do YouTube via PostMessage API
+    window.addEventListener('message', (event) => {
+      if (!event.origin.includes('youtube')) return;
+      
+      try {
+        let data = event.data;
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        
+        if (!data) return;
+        
+        // Sincronização do Estado do Player
+        if (data.event === 'onStateChange') {
+          handlePlayerStateChange(data.info);
+        } 
+        // Monitoramento ativo de tempo, buffers e progresso
+        else if (data.event === 'infoDelivery' && data.info) {
+          if (data.info.playerState !== undefined) {
+            handlePlayerStateChange(data.info.playerState);
+          }
+          if (data.info.currentTime !== undefined) {
+            playerCurrentTime = data.info.currentTime;
+            
+            // Sincroniza o áudio nativo com o vídeo se houver um desvio perceptível (> 1.5s) e NÃO estivermos em background
+            if (!isBackgroundMode && !silentAudio.paused) {
+              const diff = Math.abs(silentAudio.currentTime - playerCurrentTime);
+              if (diff > 1.5) {
+                silentAudio.currentTime = playerCurrentTime;
+                console.log('Seek detectado no vídeo. Sincronizando áudio nativo em:', playerCurrentTime);
+              }
+            }
+            updateMediaSessionPosition();
+          }
+          if (data.info.duration !== undefined) {
+            playerDuration = data.info.duration;
+          }
+        }
+      } catch (err) {
+        // Silencia erros normais de parse causados por outras mensagens
+      }
+    });
+
+    // Controla o ciclo de vida do áudio silencioso e sincroniza com a MediaSession
+    function handlePlayerStateChange(state) {
+      if (isBackgroundMode) return; // Ignora atualizações do Iframe quando o áudio nativo de background está comandando
+      // 1 = Playing (Tocando), 2 = Paused (Pausado), 0 = Ended (Terminado), 3 = Buffering
+      if (state === 1) {
+        // Se o player iniciou, forçamos o áudio silencioso a tocar junto para travar o áudio no SO
+        if (silentAudio.paused) {
+          silentAudio.play().catch(() => {});
+        }
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+        }
+      } else if (state === 2) {
+        // Se pausou, pausamos o áudio silencioso para conservar energia do SO
+        silentAudio.pause();
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'paused';
+        }
+      } else if (state === 0) {
+        // Se acabou, pausamos o áudio silencioso e mostramos o overlay de recomendados
+        silentAudio.pause();
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'paused';
+        }
+        showRecommendationsOverlay();
+      }
+    }
+
+    // Sincroniza a barra de progresso física/lock screen nativa do sistema em tempo real
+    function updateMediaSessionPosition() {
+      if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+        try {
+          if (playerDuration > 0 && playerCurrentTime >= 0 && playerCurrentTime <= playerDuration) {
+            navigator.mediaSession.setPositionState({
+              duration: playerDuration,
+              playbackRate: 1.0,
+              position: playerCurrentTime
+            });
+          }
+        } catch (e) {
+          console.warn('Erro ao sincronizar barra de progresso nativa:', e);
+        }
+      }
+    }
+    
+    // === LÓGICA DE HISTÓRICO E FAVORITOS ===
+    function saveToHistory(video) {
+      let history = JSON.parse(localStorage.getItem('livreplay_history') || '[]');
+      history = history.filter(v => v.videoId !== video.videoId);
+      history.unshift(video);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('livreplay_history', JSON.stringify(history));
+      renderUserSections();
+    }
+
+    function toggleFavoriteCurrent() {
+      if (!currentlyPlayingVideo) return;
+      const video = currentlyPlayingVideo;
+      let favorites = JSON.parse(localStorage.getItem('livreplay_favorites') || '[]');
+      const isFav = favorites.some(v => v.videoId === video.videoId);
+      
+      const btn = document.getElementById('favoriteToggleBtn');
+      if (isFav) {
+        favorites = favorites.filter(v => v.videoId !== video.videoId);
+        btn.classList.remove('favorited');
+      } else {
+        favorites.unshift(video);
+        btn.classList.add('favorited');
+      }
+      
+      localStorage.setItem('livreplay_favorites', JSON.stringify(favorites));
+      renderUserSections();
+    }
+
+    function updateFavoriteButtonState(videoId) {
+      const favorites = JSON.parse(localStorage.getItem('livreplay_favorites') || '[]');
+      const isFav = favorites.some(v => v.videoId === videoId);
+      const btn = document.getElementById('favoriteToggleBtn');
+      if (btn) {
+        if (isFav) btn.classList.add('favorited');
+        else btn.classList.remove('favorited');
+      }
+    }
+
+    // Alternar abas do painel do usuário
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (tab === 'recentes') {
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('tabRecentes').classList.add('active');
+      } else {
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('tabFavoritos').classList.add('active');
+      }
+    }
+
+    function renderUserSections() {
+      const history = JSON.parse(localStorage.getItem('livreplay_history') || '[]');
+      const favorites = JSON.parse(localStorage.getItem('livreplay_favorites') || '[]');
+      
+      const hasContent = history.length > 0 || favorites.length > 0;
+      const container = document.getElementById('userSections');
+      
+      if (!hasContent) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      container.style.display = 'flex';
+      
+      // Renderiza Recentes
+      const recentesScroll = document.getElementById('recentesScroll');
+      const recentesEmpty = document.getElementById('recentesEmpty');
+      recentesScroll.innerHTML = '';
+      if (history.length === 0) {
+        recentesScroll.style.display = 'none';
+        recentesEmpty.style.display = 'block';
+      } else {
+        recentesScroll.style.display = 'flex';
+        recentesEmpty.style.display = 'none';
+        
+        history.forEach(item => {
+          const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+            || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+          const duration = formatDuration(item.lengthSeconds);
+          
+          const div = document.createElement('div');
+          div.className = 'carousel-item focusable';
+          div.tabIndex = 0;
+          div.onclick = () => playVideo(item.videoId, item.title);
+          div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+          
+          div.innerHTML = `
+            <div class="carousel-thumb-wrapper">
+              <img class="carousel-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+              <span class="carousel-duration">${duration}</span>
+            </div>
+            <h4 class="carousel-title">${item.title}</h4>
+            <p class="carousel-author">${item.author}</p>
+          `;
+          recentesScroll.appendChild(div);
+        });
+      }
+      
+      // Renderiza Favoritos
+      const favoritosScroll = document.getElementById('favoritosScroll');
+      const favoritosEmpty = document.getElementById('favoritosEmpty');
+      favoritosScroll.innerHTML = '';
+      if (favorites.length === 0) {
+        favoritosScroll.style.display = 'none';
+        favoritosEmpty.style.display = 'block';
+      } else {
+        favoritosScroll.style.display = 'flex';
+        favoritosEmpty.style.display = 'none';
+        
+        favorites.forEach(item => {
+          const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+            || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+          const duration = formatDuration(item.lengthSeconds);
+          
+          const div = document.createElement('div');
+          div.className = 'carousel-item focusable';
+          div.tabIndex = 0;
+          div.onclick = () => playVideo(item.videoId, item.title);
+          div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+          
+          div.innerHTML = `
+            <div class="carousel-thumb-wrapper">
+              <img class="carousel-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+              <span class="carousel-duration">${duration}</span>
+            </div>
+            <h4 class="carousel-title">${item.title}</h4>
+            <p class="carousel-author">${item.author}</p>
+          `;
+          favoritosScroll.appendChild(div);
+        });
+      }
+    }
+
+    // === LÓGICA DA BARRA LATERAL (VÍDEOS RELACIONADOS DA BUSCA ATUAL) ===
+    function renderSidebar() {
+      const sidebarGrid = document.getElementById('sidebarGrid');
+      const sidebar = document.getElementById('playerSidebar');
+      sidebarGrid.innerHTML = '';
+      
+      const relatedVideos = currentSearchResults.filter(item => item.videoId !== currentlyPlayingVideo.videoId);
+      
+      if (relatedVideos.length === 0) {
+        sidebar.style.display = 'none';
+        return;
+      }
+      
+      sidebar.style.display = 'flex';
+      
+      relatedVideos.forEach(item => {
+        const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+          || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+        
+        const card = document.createElement('div');
+        card.className = 'mini-card focusable';
+        card.tabIndex = 0;
+        card.onclick = () => playVideo(item.videoId, item.title);
+        card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+        
+        card.innerHTML = `
+          <img class="mini-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+          <div class="mini-details">
+            <h4 class="mini-title">${item.title}</h4>
+            <p class="mini-author">${item.author}</p>
+          </div>
+        `;
+        sidebarGrid.appendChild(card);
+      });
+    }
+
+    // === LÓGICA DE RECOMENDADOS AO FIM DO VÍDEO (NETFLIX/YOUTUBE STYLE OVERLAY) ===
+    function showRecommendationsOverlay() {
+      const overlayGrid = document.getElementById('overlayGrid');
+      const overlay = document.getElementById('recommendationsOverlay');
+      overlayGrid.innerHTML = '';
+      
+      const relatedVideos = currentSearchResults.filter(item => item.videoId !== currentlyPlayingVideo.videoId);
+      
+      if (relatedVideos.length === 0) {
+        const history = JSON.parse(localStorage.getItem('livreplay_history') || '[]');
+        const filteredHistory = history.filter(item => item.videoId !== currentlyPlayingVideo.videoId);
+        if (filteredHistory.length > 0) {
+          relatedVideos.push(...filteredHistory);
+        }
+      }
+      
+      if (relatedVideos.length === 0) {
+        overlay.style.display = 'none';
+        return;
+      }
+      
+      overlay.style.display = 'flex';
+      
+      // Mostra no máximo 6 recomendados
+      const limit = Math.min(relatedVideos.length, 6);
+      for (let i = 0; i < limit; i++) {
+        const item = relatedVideos[i];
+        const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
+          || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+          
+        const card = document.createElement('div');
+        card.className = 'overlay-card focusable';
+        card.tabIndex = 0;
+        card.onclick = () => {
+          overlay.style.display = 'none';
+          playVideo(item.videoId, item.title);
+        };
+        card.onkeypress = (e) => {
+          if (e.key === 'Enter') {
+            overlay.style.display = 'none';
+            playVideo(item.videoId, item.title);
+          }
+        };
+        
+        card.innerHTML = `
+          <img class="overlay-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+          <div class="overlay-details">
+            <h4 class="overlay-title">${item.title}</h4>
+            <p class="overlay-author">${item.author || 'LivrePlay'}</p>
+          </div>
+        `;
+        overlayGrid.appendChild(card);
+      }
+    }
+    
+    function replayCurrentVideo() {
+      document.getElementById('recommendationsOverlay').style.display = 'none';
+      sendPlayerCommand('seekTo', [0, true]);
+      sendPlayerCommand('playVideo');
+      
+      silentAudio.currentTime = 0;
+      silentAudio.play().catch(e => console.log('Erro ao reiniciar áudio:', e));
+      
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+    }
+    
+    function handleKeyPress(e) { if (e.key === 'Enter') navigate(); }
+    function handleResultsKeyPress(e) { if (e.key === 'Enter') navigateFromResults(); }
+
+    function exitBrowser() {
+      document.getElementById('recommendationsOverlay').style.display = 'none';
+      // Para e reseta a âncora de áudio silenciosa / real de background
+      silentAudio.pause();
+      silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+      silentAudio.loop = true;
+      isBackgroundMode = false;
+      currentAudioStreamUrl = null;
+      currentlyPlayingVideo = null;
+      
+      // Limpa os dados do controle de mídia do sistema
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = null;
+        navigator.mediaSession.playbackState = 'none';
+      }
+
+      document.getElementById('browserView').classList.remove('active');
+      document.getElementById('browserIframe').src = 'about:blank';
+    }
+
+    function showHome() {
+      document.getElementById('searchResultsView').classList.remove('active');
+      document.getElementById('homeView').style.display = 'block';
+      document.getElementById('urlInput').value = '';
+      document.getElementById('urlInput').focus();
+    }
+
+    function reloadBrowser() {
+      document.getElementById('loading').classList.add('active');
+      const iframe = document.getElementById('browserIframe');
+      iframe.src = iframe.src;
+    }
+
+    // Monitora o carregamento do iframe para desativar o spinner automaticamente
+    window.addEventListener('DOMContentLoaded', async () => {
+      const iframe = document.getElementById('browserIframe');
+      iframe.addEventListener('load', () => {
+        document.getElementById('loading').classList.remove('active');
+      });
+      document.getElementById('urlInput').focus();
+      renderUserSections();
+
+      // Suporte a Deep Links para SEO e indexação extrema do Google
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q') || params.get('search');
+        const videoId = params.get('v') || params.get('video');
+        
+        if (videoId) {
+          playVideo(videoId);
+        } else if (query) {
+          document.getElementById('urlInput').value = query;
+          await searchAndRender(query);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar parâmetros de SEO:', err);
+      }
+    });
+
+    // PWA Lógica de Instalação
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
+    function installPWA() {
+      if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
+      else { alert('Use o menu do navegador para instalar'); }
+    }
+
+    // Transmitir TV
+    function castToTV() {
+      if (navigator.presentation?.defaultRequest) { navigator.presentation.defaultRequest.start().catch(() => alert('Nenhuma TV encontrada')); }
+      else { alert('Use a função "Transmitir" do seu dispositivo'); }
+    }
+
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(console.error);
+  </script>
+</body>
+</html>
