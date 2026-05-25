@@ -711,14 +711,47 @@
       fill: currentColor;
     }
 
+    .mobile-nav { display: none; }
+
     /* Ajustes Responsivos */
     @media (max-width: 768px) {
       .sidebar { display: none; }
-      .app-layout { height: calc(100dvh - 84px); }
-      .player-bar {
-        height: 84px;
-        padding: 0 16px;
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid #282828;
+        z-index: 1000;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom);
       }
+      .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: var(--text-muted);
+        font-size: 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+      }
+      .mobile-nav-item.active { color: #fff; }
+      .mobile-nav-item svg { width: 24px; height: 24px; }
+      
+      .player-bar {
+        bottom: calc(60px + env(safe-area-inset-bottom));
+        height: 70px;
+        padding: 0 12px;
+      }
+      .app-layout { height: calc(100dvh - 70px - 60px - env(safe-area-inset-bottom)); }
       .current-track-info { width: 50%; }
       .player-controls-container { width: 50%; }
       .volume-controls { display: none; }
@@ -971,6 +1004,26 @@
       </div>
     </div>
   </footer>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-item active" onclick="switchView('home')" id="mobileMenuHome">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Início</span>
+    </button>
+    <button class="mobile-nav-item" onclick="switchView('busca')" id="mobileMenuBusca">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>Busca</span>
+    </button>
+    <button class="mobile-nav-item" onclick="switchView('favoritos')" id="mobileMenuFavoritos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <span>Salvos</span>
+    </button>
+    <button class="mobile-nav-item" onclick="openSupportModal()" id="mobileMenuApoio" style="color: var(--primary);">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <span>Apoiar</span>
+    </button>
+  </nav>
 
   <!-- Player Iframe Oculto de Fallback de Altíssima Resiliência - posicionado de forma fixa e visível para o iOS processar o áudio do iframe -->
   <div style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: 1;">
@@ -1462,7 +1515,7 @@
         el.title = a.name;
         el.onclick = () => performSearch(a.search + ' music');
         el.innerHTML = `
-          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#1db954,#191414)'">
+          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(a.name)}';">
           <span class="artist-name">${a.name}</span>
           <span class="artist-tag">${a.tag}</span>
         `;
@@ -1521,7 +1574,7 @@
         el.title = a.name;
         el.onclick = () => performSearch(a.search + ' music');
         el.innerHTML = `
-          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#1e3a5f,#1d4ed8)'">
+          <img class="artist-avatar" src="${a.avatar}" alt="${a.name}" loading="lazy" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(a.name)}';">
           <span class="artist-name">${a.name}</span>
           <span class="artist-tag">${a.tag}</span>
         `;
@@ -1555,7 +1608,7 @@
         
         card.innerHTML = `
           <div class="art-wrapper">
-            <img class="art-img" src="${thumbnail}" alt="${cleanTitle}" loading="lazy">
+            <img class="art-img" src="${thumbnail}" alt="${cleanTitle}" loading="lazy" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(cleanTitle)}';">
             <div class="play-float-btn">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
@@ -2001,17 +2054,24 @@
       activePlaylistId = null;
       document.querySelectorAll('.view-container').forEach(c => c.style.display = 'none');
       document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.mobile-nav-item').forEach(btn => btn.classList.remove('active'));
       
       if (viewName === 'home') {
         document.getElementById('viewHome').style.display = 'flex';
         const menuHome = document.getElementById('menuHome');
         if (menuHome) menuHome.classList.add('active');
+        const mobileHome = document.getElementById('mobileMenuHome');
+        if (mobileHome) mobileHome.classList.add('active');
       } else if (viewName === 'busca') {
         document.getElementById('viewBusca').style.display = 'flex';
         document.getElementById('menuBusca').classList.add('active');
+        const mobileBusca = document.getElementById('mobileMenuBusca');
+        if (mobileBusca) mobileBusca.classList.add('active');
       } else if (viewName === 'favoritos') {
         document.getElementById('viewFavoritos').style.display = 'flex';
         document.getElementById('menuFavoritos').classList.add('active');
+        const mobileFav = document.getElementById('mobileMenuFavoritos');
+        if (mobileFav) mobileFav.classList.add('active');
         renderFavoritesView();
       } else if (viewName === 'recentes') {
         document.getElementById('viewRecentes').style.display = 'flex';
