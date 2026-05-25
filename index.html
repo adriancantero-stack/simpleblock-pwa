@@ -999,7 +999,7 @@
       return FALLBACK_INSTANCES[0];
     }
 
-    // Pré-carrega a stream de áudio direta da instância Invidious em segundo plano
+    // Carrega e reproduz a stream de áudio direta da instância Invidious nativamente
     async function prefetchAudioStream(videoId) {
       currentAudioStreamUrl = null;
       try {
@@ -1016,63 +1016,59 @@
               streamUrl = instance + streamUrl;
             }
             currentAudioStreamUrl = streamUrl;
-            console.log('Stream de áudio de background pré-carregada:', currentAudioStreamUrl);
+            
+            // Aponta o áudio local para a stream real do vídeo do YouTube
+            silentAudio.src = currentAudioStreamUrl;
+            silentAudio.loop = false; // Áudio real, não precisa mais do loop de silêncio
+            
+            // Toca o áudio de alta fidelidade nativo. Como isso está encadeado no clique
+            // físico inicial do usuário, os navegadores móveis (Safari iOS e Android Chrome)
+            // dão permissão total de reprodução em segundo plano e bloqueio de tela!
+            await silentAudio.play();
+            console.log('Stream de áudio de background ativa e tocando nativamente!');
           }
         }
       } catch (e) {
-        console.warn('Erro ao pré-carregar áudio de background:', e);
+        console.warn('Erro ao carregar áudio nativo, desmutando iframe de fallback:', e);
+        // Desmuta o player do YouTube no iframe para que o usuário possa ouvir normalmente pelo iframe
+        sendPlayerCommand('unmute');
+        
+        // Fallback silencioso para manter o processo ativo se possível
+        silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+        silentAudio.loop = true;
+        silentAudio.play().catch(() => {});
       }
     }
 
     // Transição Híbrida de Background (Vídeo em Primeiro Plano -> Áudio Nativo em Segundo Plano)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        // Bloqueou ou minimizou: muda para o player de áudio nativo se houver stream pré-carregada
-        if (currentlyPlayingVideo && !isBackgroundMode && currentAudioStreamUrl) {
+        // Bloqueou ou minimizou: muda para o modo de background nativo
+        if (currentlyPlayingVideo && !silentAudio.paused) {
           isBackgroundMode = true;
-          const currentTime = playerCurrentTime;
-          
-          // 1. Pausa o player do YouTube no iframe
+          // Pausa o iframe do YouTube para poupar largura de banda de vídeo e bateria
           sendPlayerCommand('pauseVideo');
-          
-          // 2. Aponta o áudio local para a stream real do vídeo
-          silentAudio.src = currentAudioStreamUrl;
-          silentAudio.currentTime = currentTime;
-          silentAudio.loop = false; // Áudio real, não precisa mais do loop de silêncio
-          
-          // 3. Toca o áudio real de background
-          silentAudio.play().then(() => {
-            console.log('Áudio de background iniciado nativamente a partir de:', currentTime);
-            if ('mediaSession' in navigator) {
-              navigator.mediaSession.playbackState = 'playing';
-            }
-          }).catch(err => {
-            console.warn('Falha ao iniciar reprodução nativa em background:', err);
-            isBackgroundMode = false;
-          });
+          console.log('Entrou em segundo plano. Vídeo do Iframe pausado, áudio nativo continua tocando.');
         }
       } else {
-        // Voltou para o app: restaura o vídeo em primeiro plano
+        // Voltou para o app: restaura o vídeo em primeiro plano e sincroniza
         if (isBackgroundMode) {
           isBackgroundMode = false;
           const currentTime = silentAudio.currentTime;
           
-          // 1. Pausa o áudio de background
-          silentAudio.pause();
-          
-          // 2. Restaura o arquivo de silêncio na âncora
-          silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
-          silentAudio.loop = true;
-          
-          // 3. Sincroniza e inicia o player do YouTube no iframe
+          // Sincroniza o player de vídeo do YouTube com o áudio que estava tocando no fundo
           sendPlayerCommand('seekTo', [currentTime, true]);
-          sendPlayerCommand('playVideo');
+          
+          // Se o áudio nativo está tocando, garante que o vídeo do YouTube também comece a tocar
+          if (!silentAudio.paused) {
+            sendPlayerCommand('playVideo');
+          }
           console.log('Retornou do background. Sincronizado vídeo em:', currentTime);
         }
       }
     });
 
-    // Escuta eventos de fim do áudio nativo em background
+    // Escuta eventos de fim do áudio nativo em background para parar tudo de forma limpa
     silentAudio.addEventListener('ended', () => {
       if (isBackgroundMode) {
         isBackgroundMode = false;
@@ -1206,8 +1202,8 @@
         console.log('Autoplay silencioso aguardando interação física:', err);
       });
 
-      // Habilita a API Javascript do YouTube (enablejsapi=1) para permitir controle remoto bidirecional
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1`;
+      // Habilita a API Javascript do YouTube (enablejsapi=1) e carrega mutado (mute=1) para rodar o áudio via tag nativa da página
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1&mute=1`;
       
       document.getElementById('activeUrl').innerText = videoItem.title;
       
@@ -1304,6 +1300,15 @@
           }
           if (data.info.currentTime !== undefined) {
             playerCurrentTime = data.info.currentTime;
+            
+            // Sincroniza o áudio nativo com o vídeo se houver um desvio perceptível (> 1.5s) e NÃO estivermos em background
+            if (!isBackgroundMode && !silentAudio.paused) {
+              const diff = Math.abs(silentAudio.currentTime - playerCurrentTime);
+              if (diff > 1.5) {
+                silentAudio.currentTime = playerCurrentTime;
+                console.log('Seek detectado no vídeo. Sincronizando áudio nativo em:', playerCurrentTime);
+              }
+            }
             updateMediaSessionPosition();
           }
           if (data.info.duration !== undefined) {
@@ -1317,6 +1322,7 @@
 
     // Controla o ciclo de vida do áudio silencioso e sincroniza com a MediaSession
     function handlePlayerStateChange(state) {
+      if (isBackgroundMode) return; // Ignora atualizações do Iframe quando o áudio nativo de background está comandando
       // 1 = Playing (Tocando), 2 = Paused (Pausado), 0 = Ended (Terminado), 3 = Buffering
       if (state === 1) {
         // Se o player iniciou, forçamos o áudio silencioso a tocar junto para travar o áudio no SO
