@@ -1067,6 +1067,17 @@
     let dynamicInvidiousInstances = [];
     let activeAudioCleanup = null;
 
+    // 💾 Cache de stream URLs (estilo Spotify) — evita buscar a mesma música duas vezes
+    const streamUrlCache = new Map();
+    // TTL: URLs ficam válidas por 55 minutos (YouTube expira em ~6h mas queremos margem)
+    const STREAM_CACHE_TTL = 55 * 60 * 1000;
+
+    // Guarda qual videoId está sendo pré-aquecido para não duplicar requests
+    const prefetchingSet = new Set();
+
+    let playerCurrentTime = 0;
+    let playerDuration = 0;
+
     // Elemento de áudio nativo de background pré-aquecido
     const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
     silentAudio.loop = true;
@@ -1166,225 +1177,183 @@
       } catch (err) {}
     });
 
-    let playerCurrentTime = 0;
-    let playerDuration = 0;    // Buscar e carregar a stream de áudio direta via Invidious latest_version M4A (itag 140)
+    // ============================================================
+    // ⚡ ENGINE DE PRÉ-CARREGAMENTO INSTANTÂNEO (estilo Spotify)
+    // ============================================================
+
+    // Monta a lista completa de instâncias para tentar
+    function getAllInstances() {
+      const seen = new Set();
+      const list = [];
+      const addIfNew = (url) => { if (url && !seen.has(url)) { seen.add(url); list.push(url); } };
+      // Instância que funcionou antes vai na frente
+      addIfNew(currentInvidiousInstance);
+      dynamicInvidiousInstances.forEach(addIfNew);
+      FALLBACK_INSTANCES.forEach(addIfNew);
+      return list;
+    }
+
+    // Testa uma única instância via latest_version (CORS-free, sem fetch)
+    // Retorna a URL se funcionar, rejeita se falhar dentro do timeout
+    function tryInstanceUrl(instance, videoId) {
+      return new Promise((resolve, reject) => {
+        const url = `${instance}/latest_version?id=${videoId}&itag=140`;
+        const testAudio = new Audio();
+        let done = false;
+
+        const finish = (ok, result) => {
+          if (done) return;
+          done = true;
+          testAudio.src = '';
+          if (ok) resolve({ url, instance });
+          else reject(new Error('fail'));
+        };
+
+        const timeout = setTimeout(() => finish(false), 2500);
+
+        testAudio.addEventListener('loadedmetadata', () => { clearTimeout(timeout); finish(true); });
+        testAudio.addEventListener('canplay',        () => { clearTimeout(timeout); finish(true); });
+        testAudio.addEventListener('error',          () => { clearTimeout(timeout); finish(false); });
+
+        testAudio.preload = 'metadata';
+        testAudio.src = url;
+      });
+    }
+
+    // 🏎️ CORRIDA PARALELA — dispara todas as instâncias ao mesmo tempo, pega a primeira vencedora
+    async function raceFetchStreamUrl(videoId) {
+      // 1. Cache hit — resposta instantânea se já conhecemos a URL
+      const cached = streamUrlCache.get(videoId);
+      if (cached && (Date.now() - cached.ts) < STREAM_CACHE_TTL) {
+        console.log(`⚡ Cache hit para ${videoId}`);
+        return cached.url;
+      }
+
+      const instances = getAllInstances();
+      console.log(`🏎️ Corrida paralela com ${instances.length} instâncias para ${videoId}`);
+
+      // Dispara todas as corridas em paralelo
+      const races = instances.map(inst => tryInstanceUrl(inst, videoId));
+
+      // Pega o primeiro que resolver (Promise.any — ignora os que rejeitarem)
+      try {
+        const winner = await Promise.any(races);
+        // Guarda instância vencedora para uso futuro
+        currentInvidiousInstance = winner.instance;
+        // Salva no cache
+        streamUrlCache.set(videoId, { url: winner.url, ts: Date.now() });
+        console.log(`✅ Vencedor: ${winner.instance} (${videoId})`);
+        return winner.url;
+      } catch (e) {
+        // Todas falharam — sem URL nativa
+        return null;
+      }
+    }
+
+    // Carrega a URL vencedora no silentAudio e inicia reprodução nativa
+    async function activateNativeAudio(url, videoId) {
+      return new Promise((resolve, reject) => {
+        if (activeAudioCleanup) { try { activeAudioCleanup(); } catch (e) {} }
+
+        let done = false;
+        const finish = (ok) => {
+          if (done) return;
+          done = true;
+          clearTimeout(timeout);
+          silentAudio.removeEventListener('loadedmetadata', onOk);
+          silentAudio.removeEventListener('playing', onOk);
+          silentAudio.removeEventListener('error', onErr);
+          activeAudioCleanup = null;
+          if (ok) resolve();
+          else reject(new Error('audio error'));
+        };
+
+        const onOk  = () => finish(true);
+        const onErr = () => finish(false);
+        const timeout = setTimeout(() => finish(false), 3000);
+        activeAudioCleanup = () => finish(false);
+
+        silentAudio.addEventListener('loadedmetadata', onOk);
+        silentAudio.addEventListener('playing', onOk);
+        silentAudio.addEventListener('error', onErr);
+
+        silentAudio.src = url;
+        silentAudio.loop = false;
+        silentAudio.play().catch(err => {
+          if (err.name === 'NotAllowedError') {
+            // Autoplay bloqueado mas URL é válida — considerá sucesso
+            finish(true);
+          } else {
+            finish(false);
+          }
+        });
+      });
+    }
+
+    // 🔮 PRÉ-AQUECIMENTO da próxima música (roda em background)
+    async function prefetchNextTrack() {
+      if (!currentlyPlayingVideo || currentQueue.length === 0) return;
+      const idx = currentQueue.findIndex(t => t.videoId === currentlyPlayingVideo.videoId);
+      if (idx === -1 || idx >= currentQueue.length - 1) return;
+
+      const nextId = currentQueue[idx + 1].videoId;
+      if (prefetchingSet.has(nextId) || streamUrlCache.has(nextId)) return;
+
+      // Espera 3s antes de buscar para não competir com a música atual
+      await new Promise(r => setTimeout(r, 3000));
+      if (!currentlyPlayingVideo || currentlyPlayingVideo.videoId === nextId) return;
+
+      prefetchingSet.add(nextId);
+      console.log(`🔮 Pré-aquecendo próxima: ${nextId}`);
+
+      try {
+        const instances = getAllInstances();
+        const races = instances.map(inst => {
+          return new Promise((resolve, reject) => {
+            const url = `${inst}/latest_version?id=${nextId}&itag=140`;
+            const img = new Image(); // Usa Image para evitar conflito com o silentAudio
+            fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(3000) })
+              .then(r => { if (r.ok || r.status === 206) resolve({ url, instance: inst }); else reject(); })
+              .catch(reject);
+          });
+        });
+
+        const winner = await Promise.any(races);
+        streamUrlCache.set(nextId, { url: winner.url, ts: Date.now() });
+        console.log(`✨ Próxima música pré-aquecida: ${nextId}`);
+      } catch (e) {
+        console.log(`Não foi possível pré-aquecer ${nextId}`);
+      } finally {
+        prefetchingSet.delete(nextId);
+      }
+    }
+
+    // Função principal de busca e reprodução — orquestra tudo
     async function prefetchAudioStream(videoId) {
       if (videoId !== activeTrackId) return;
       currentAudioStreamUrl = null;
-      let lastError = null;
-      
-      let instancesToTry = [];
-      if (currentInvidiousInstance) {
-        instancesToTry.push(currentInvidiousInstance);
-      }
-      
-      dynamicInvidiousInstances.forEach(inst => {
-        if (!instancesToTry.includes(inst)) {
-          instancesToTry.push(inst);
-        }
-      });
-      
-      FALLBACK_INSTANCES.forEach(inst => {
-        if (!instancesToTry.includes(inst)) {
-          instancesToTry.push(inst);
-        }
-      });
 
-      // Limitamos a tentar as 2 melhores instâncias de busca para evitar lag sequencial
-      const topInstances = instancesToTry.slice(0, 2);
-      console.log('Extraindo áudio das principais instâncias de música:', topInstances);
+      // Busca paralela ultrarrápida
+      const streamUrl = await raceFetchStreamUrl(videoId);
+      if (videoId !== activeTrackId) return; // Guard: usuário já trocou de música
 
-      // Função auxiliar para testar a reprodução direta de um URL no elemento de áudio (CORS-free)
-      function tryPlayUrl(url) {
-        if (activeAudioCleanup) {
-          try { activeAudioCleanup(); } catch (e) {}
-        }
-        return new Promise((resolve, reject) => {
-          let hasResolved = false;
-          
-          const onSuccess = () => {
-            if (activeTrackId !== videoId) {
-              cleanup();
-              reject(new Error("Música trocada"));
-              return;
-            }
-            if (!hasResolved) {
-              hasResolved = true;
-              cleanup();
-              resolve(true);
-            }
-          };
-          
-          const onError = (e) => {
-            if (activeTrackId !== videoId) {
-              cleanup();
-              reject(new Error("Música trocada"));
-              return;
-            }
-            if (!hasResolved) {
-              hasResolved = true;
-              cleanup();
-              reject(new Error("Erro de decodificação ou rede de mídia"));
-            }
-          };
-          
-          // Timeout de 1.5 segundos para não travar o usuário
-          const timeoutId = setTimeout(() => {
-            if (activeTrackId !== videoId) {
-              cleanup();
-              reject(new Error("Música trocada"));
-              return;
-            }
-            if (!hasResolved) {
-              hasResolved = true;
-              cleanup();
-              reject(new Error("Timeout ao carregar áudio"));
-            }
-          }, 1500);
-          
-          function cleanup() {
-            clearTimeout(timeoutId);
-            silentAudio.removeEventListener('loadedmetadata', onSuccess);
-            silentAudio.removeEventListener('playing', onSuccess);
-            silentAudio.removeEventListener('error', onError);
-            if (activeAudioCleanup === cleanup) {
-              activeAudioCleanup = null;
-            }
-          }
-          
-          activeAudioCleanup = cleanup;
-          
-          // Ouvintes de sucesso ultra-rápidos: loadedmetadata fires assim que os cabeçalhos respondem, sem esperar bufferizar toda a música!
-          silentAudio.addEventListener('loadedmetadata', onSuccess);
-          silentAudio.addEventListener('playing', onSuccess);
-          silentAudio.addEventListener('error', onError);
-          
-          try {
-            silentAudio.src = url;
-            silentAudio.loop = false;
-            // Evita chamar load() para não revogar o desbloqueio de autoplay no iOS Safari
-            silentAudio.play().catch(err => {
-              if (err.name === 'NotAllowedError') {
-                console.log("Autoplay bloqueado pelo navegador, mas URL é válida.");
-                if (!hasResolved) {
-                  hasResolved = true;
-                  cleanup();
-                  resolve(true);
-                }
-              } else {
-                if (!hasResolved) {
-                  hasResolved = true;
-                  cleanup();
-                  reject(err);
-                }
-              }
-            });
-          } catch (err) {
-            if (!hasResolved) {
-              hasResolved = true;
-              cleanup();
-              reject(err);
-            }
-          }
-        });
-      }
-
-      // 1. Tentar direct latest_version (CORS-free direto no elemento HTML5 Audio)
-      for (const instance of topInstances) {
-        if (activeTrackId !== videoId) return; // Guard de mudança de música!
-        
-        const streamUrl = `${instance}/latest_version?id=${videoId}&itag=140`;
-        console.log(`Tentando reprodução direta em: ${instance}`);
+      if (streamUrl) {
         try {
-          await tryPlayUrl(streamUrl);
-          if (activeTrackId !== videoId) return; // Guard!
-          
+          await activateNativeAudio(streamUrl, videoId);
+          if (videoId !== activeTrackId) return;
           currentAudioStreamUrl = streamUrl;
-          currentInvidiousInstance = instance;
-          console.log(`Sucesso! Áudio carregado via latest_version: ${instance}`);
           setPlayState(true);
+          // Inicia pré-aquecimento da próxima música em background
+          prefetchNextTrack();
           return;
         } catch (e) {
-          console.warn(`Falha na reprodução direta em ${instance}:`, e.message);
-          lastError = e;
+          console.warn(`Falha ao ativar áudio nativo para ${videoId}:`, e.message);
         }
       }
 
-      // 2. Backup usando local adaptiveFormats (apenas na instância ativa mais rápida)
-      if (topInstances.length > 0 && activeTrackId === videoId) {
-        const primaryInst = topInstances[0];
-        console.log(`Tentando API Invidious adaptativo em: ${primaryInst}`);
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 2000);
-          const res = await fetch(`${primaryInst}/api/v1/videos/${videoId}`, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          
-          if (activeTrackId === videoId && res.ok) {
-            const data = await res.json();
-            const adaptiveFormats = data.adaptiveFormats || [];
-            const audioStream = adaptiveFormats.find(f => f.type?.includes('audio/mp4') || f.container === 'm4a')
-              || adaptiveFormats.find(f => f.type?.includes('audio'));
-              
-            if (audioStream && audioStream.url) {
-              let finalUrl = audioStream.url;
-              if (finalUrl.includes('googlevideo.com')) {
-                finalUrl = `${primaryInst}/videoplayback${finalUrl.substring(finalUrl.indexOf('?'))}&local=true`;
-              }
-              if (activeTrackId !== videoId) return; // Guard!
-              await tryPlayUrl(finalUrl);
-              if (activeTrackId !== videoId) return; // Guard!
-              
-              currentAudioStreamUrl = finalUrl;
-              currentInvidiousInstance = primaryInst;
-              console.log(`Sucesso via API Invidious adaptativo em: ${primaryInst}`);
-              setPlayState(true);
-              return;
-            }
-          }
-        } catch (e) {
-          console.warn(`Falha adaptativo em ${primaryInst}:`, e.message);
-        }
-      }
-
-      // 3. Backup final no Piped (tenta múltiplas instâncias para evitar falhas silenciosas)
-      const pipedInstances = shufflePick(PIPED_API_INSTANCES, 5);
-      for (const instance of pipedInstances) {
-        if (activeTrackId !== videoId) return; // Guard!
-        
-        console.log(`Tentando backup no Piped em: ${instance}`);
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 2000);
-          const res = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          
-          if (activeTrackId !== videoId) return; // Guard!
-          
-          if (res.ok) {
-            const data = await res.json();
-            const audioStreams = data.audioStreams || [];
-            const bestStream = audioStreams.find(s => s.format === 'M4A' || s.mimeType?.includes('audio/mp4')) || audioStreams[0];
-            if (bestStream && bestStream.url) {
-              if (activeTrackId !== videoId) return; // Guard!
-              await tryPlayUrl(bestStream.url);
-              if (activeTrackId !== videoId) return; // Guard!
-              
-              currentAudioStreamUrl = bestStream.url;
-              console.log(`Sucesso via Piped em: ${instance}`);
-              setPlayState(true);
-              return;
-            }
-          }
-        } catch (e) {
-          console.warn(`Falha Piped em ${instance}:`, e.message);
-          lastError = e;
-        }
-      }
-
-      // Se tudo der errado, ativamos o Iframe de fallback oculto instantaneamente!
-      if (activeTrackId !== videoId) return; // Guard!
-      console.warn('Todas as instâncias de áudio nativo falharam. Ativando fallback de reprodução por Iframe.');
+      // Último recurso: iframe YouTube
+      if (videoId !== activeTrackId) return;
+      console.warn('Sem stream nativa disponível. Ativando fallback iframe.');
       playIframeFallback(videoId);
       document.getElementById('spinner').style.display = 'none';
     }
@@ -1626,8 +1595,13 @@
       const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
         || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
       
-      document.getElementById('spinner').style.display = 'block';
-      
+      // Spinner só aparece se demorar mais de 200ms (cache hit = sem spinner!)
+      const spinnerTimer = setTimeout(() => {
+        if (activeTrackId === videoId) {
+          document.getElementById('spinner').style.display = 'block';
+        }
+      }, 200);
+
       const trackItem = {
         videoId: videoId,
         title: title,
@@ -1642,32 +1616,35 @@
       iframePlayStartWallClock = 0;
       saveToHistory(trackItem);
       updateFavoriteButtonState(videoId);
-      document.getElementById('addToPlaylistBtn').style.display = 'block';
 
       // Reclamar o gesto do usuário imediatamente e silenciar a faixa anterior
       silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
       silentAudio.play().catch(() => {});
 
-      // Reseta o player híbrido para áudio nativo padrão (iOS agora também roda nativo perfeitamente sem o método load())
+      // Reseta o player híbrido para áudio nativo padrão
       activeEngine = 'audio';
       document.getElementById('youtubeIframe').src = 'about:blank';
 
-      // Buscar a stream nativa — com watchdog de 5s para forçar iframe caso tudo falhe silenciosamente
+      // Busca instantânea — watchdog de 3.5s (a corrida paralela já é muito mais rápida)
       const watchdogTimer = setTimeout(() => {
         if (activeTrackId === videoId && activeEngine === 'audio') {
-          console.warn('Watchdog: nenhuma stream nativa funcionou em 5s, ativando iframe agora.');
+          console.warn('Watchdog: ativando iframe agora.');
           playIframeFallback(videoId);
+          clearTimeout(spinnerTimer);
           document.getElementById('spinner').style.display = 'none';
         }
-      }, 5000);
+      }, 3500);
 
       prefetchAudioStream(videoId).then(() => {
         clearTimeout(watchdogTimer);
+        clearTimeout(spinnerTimer);
         if (activeTrackId === videoId) {
           document.getElementById('spinner').style.display = 'none';
         }
       }).catch(() => {
         clearTimeout(watchdogTimer);
+        clearTimeout(spinnerTimer);
+        document.getElementById('spinner').style.display = 'none';
       });
 
       // Atualizar o player inferior
