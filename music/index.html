@@ -796,12 +796,14 @@
       .now-playing-details {
         flex-direction: row;
         width: max-content;
+        flex-shrink: 0;
         align-items: center;
         gap: 6px;
         animation: mobileMarquee 15s linear infinite;
+        overflow: visible;
       }
-      .now-playing-title { font-size: 13px; font-weight: 500; overflow: visible; }
-      .now-playing-artist { font-size: 12px; overflow: visible; }
+      .now-playing-title { font-size: 13px; font-weight: 500; overflow: visible; text-overflow: clip; white-space: nowrap; }
+      .now-playing-artist { font-size: 12px; overflow: visible; text-overflow: clip; white-space: nowrap; }
       .now-playing-artist::before { content: "•"; color: var(--text-muted); margin-right: 6px; }
       @keyframes mobileMarquee {
         0% { transform: translateX(100vw); }
