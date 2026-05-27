@@ -779,14 +779,35 @@
       
       .player-bar {
         bottom: calc(60px + env(safe-area-inset-bottom));
-        height: 100px;
-        padding: 8px 12px;
+        height: auto;
+        min-height: 80px;
+        padding: 10px 12px;
         flex-direction: column;
         justify-content: center;
         gap: 6px;
       }
-      .app-layout { height: calc(100dvh - 100px - 60px - env(safe-area-inset-bottom)); }
-      .current-track-info { width: 100%; justify-content: center; margin-bottom: 4px; }
+      .app-layout { height: calc(100dvh - 80px - 60px - env(safe-area-inset-bottom)); }
+      .current-track-info { 
+        width: 100%; 
+        overflow: hidden; 
+        margin-bottom: 2px;
+        justify-content: flex-start;
+      }
+      .now-playing-details {
+        flex-direction: row;
+        width: max-content;
+        align-items: center;
+        gap: 6px;
+        animation: mobileMarquee 15s linear infinite;
+      }
+      .now-playing-title { font-size: 13px; font-weight: 500; overflow: visible; }
+      .now-playing-artist { font-size: 12px; overflow: visible; }
+      .now-playing-artist::before { content: "•"; color: var(--text-muted); margin-right: 6px; }
+      @keyframes mobileMarquee {
+        0% { transform: translateX(100vw); }
+        100% { transform: translateX(-100%); }
+      }
+      .now-playing-thumb { display: none !important; }
       .player-controls-container { width: 100%; }
       .control-buttons { gap: 16px; }
       .volume-controls { display: none; }
@@ -799,13 +820,6 @@
       .art-wrapper { margin-bottom: 8px; }
       .top-bar { padding: 12px 16px; }
       #shareTrackBtn { display: none !important; }
-      .now-playing-thumb {
-        width: 48px !important;
-        height: 48px !important;
-        min-width: 48px !important;
-        min-height: 48px !important;
-        flex-shrink: 0 !important;
-      }
     }
     /* Toast de notificação */
     .toast {
