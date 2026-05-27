@@ -941,15 +941,21 @@
     <!-- Controles Centrais -->
     <div class="player-controls-container">
       <div class="control-buttons">
-        <button class="ctrl-btn" onclick="seekOffset(-10)" aria-label="Retroceder 10s">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
+        <button class="ctrl-btn" onclick="playPreviousTrack()" id="prevTrackBtn" aria-label="Música anterior" title="Anterior">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="seekOffset(-10)" aria-label="Retroceder 10s" title="-10s">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
         </button>
         <button class="ctrl-btn ctrl-btn-play" id="playBtn" onclick="togglePlayback()" aria-label="Reproduzir">
           <svg viewBox="0 0 24 24" id="playIcon" style="fill: currentColor; width: 18px; height: 18px;"><path d="M8 5v14l11-7z"/></svg>
           <svg viewBox="0 0 24 24" id="pauseIcon" style="fill: currentColor; width: 18px; height: 18px; display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
-        <button class="ctrl-btn" onclick="seekOffset(10)" aria-label="Avançar 10s">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
+        <button class="ctrl-btn" onclick="seekOffset(10)" aria-label="Avançar 10s" title="+10s">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="playNextRecommended()" id="nextTrackBtn" aria-label="Próxima música" title="Próxima">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2.5-6 5.5 4V8z"/><rect x="16" y="6" width="2" height="12" rx="1"/></svg>
         </button>
       </div>
       
@@ -961,6 +967,9 @@
           </div>
         </div>
         <span class="time-stamp" id="durationLabel">0:00</span>
+      </div>
+      <div id="queuePositionBar" style="display:none; font-size:10px; color:var(--text-muted); text-align:center; margin-top:2px; letter-spacing:0.04em;">
+        <span id="queuePositionLabel"></span>
       </div>
     </div>
 
@@ -1652,9 +1661,27 @@
       document.getElementById('playingTitle').innerText = title;
       document.getElementById('playingArtist').innerText = author;
       document.getElementById('favPlayToggleBtn').style.display = 'block';
+
+      // Indicador de posição na fila
+      const queueIdx = currentQueue.findIndex(t => t.videoId === videoId);
+      const queueBar = document.getElementById('queuePositionBar');
+      const queueLabel = document.getElementById('queuePositionLabel');
+      if (currentQueue.length > 1 && queueIdx !== -1) {
+        queueLabel.textContent = `${queueIdx + 1} / ${currentQueue.length}`;
+        queueBar.style.display = 'block';
+      } else {
+        queueBar.style.display = 'none';
+      }
+
+      // Habilita/desabilita visualmente os botões de prev/next
+      const prevBtn = document.getElementById('prevTrackBtn');
+      const nextBtn = document.getElementById('nextTrackBtn');
+      if (prevBtn) prevBtn.style.opacity = currentQueue.length > 1 ? '1' : '0.3';
+      if (nextBtn) nextBtn.style.opacity = currentQueue.length > 1 ? '1' : '0.3';
       
       playerDuration = item.lengthSeconds || 240; // 4 minutos padrão se não houver
       document.getElementById('durationLabel').innerText = formatTime(playerDuration);
+
 
       // Atualizar os controles de mídia no sistema operacional
       if ('mediaSession' in navigator) {
@@ -1673,6 +1700,8 @@
           navigator.mediaSession.setActionHandler('pause', () => togglePlayback());
           navigator.mediaSession.setActionHandler('seekbackward', () => seekOffset(-10));
           navigator.mediaSession.setActionHandler('seekforward', () => seekOffset(10));
+          navigator.mediaSession.setActionHandler('previoustrack', () => playPreviousTrack());
+          navigator.mediaSession.setActionHandler('nexttrack', () => playNextRecommended());
         } catch (e) {
           console.warn(e);
         }
@@ -1737,17 +1766,48 @@
 
     function playNextRecommended() {
       if (!currentlyPlayingVideo || currentQueue.length === 0) return;
-      
+
       const currentIndex = currentQueue.findIndex(item => item.videoId === currentlyPlayingVideo.videoId);
-      
-      if (currentIndex !== -1 && currentIndex < currentQueue.length - 1) {
-        // Toca a próxima da fila
-        const nextTrack = currentQueue[currentIndex + 1];
-        playMusic(nextTrack, null, currentQueue);
+
+      let nextIndex;
+      if (currentIndex === -1 || currentIndex >= currentQueue.length - 1) {
+        // Fim da fila: volta para o início (loop)
+        nextIndex = 0;
       } else {
-        // Chegou ao fim da fila ou não achou. Se quiser pode reiniciar:
-        // playMusic(currentQueue[0], null, currentQueue);
+        nextIndex = currentIndex + 1;
       }
+
+      const nextTrack = currentQueue[nextIndex];
+      if (nextTrack) playMusic(nextTrack, null, currentQueue);
+    }
+
+    function playPreviousTrack() {
+      if (!currentlyPlayingVideo || currentQueue.length === 0) return;
+
+      // Se já passou mais de 3s, volta ao início da música atual
+      if (playerCurrentTime > 3) {
+        if (activeEngine === 'audio') {
+          silentAudio.currentTime = 0;
+        } else {
+          sendIframeCommand('seekTo', [0, true]);
+        }
+        playerCurrentTime = 0;
+        iframePlayStartTime = 0;
+        iframePlayStartWallClock = Date.now();
+        return;
+      }
+
+      const currentIndex = currentQueue.findIndex(item => item.videoId === currentlyPlayingVideo.videoId);
+      let prevIndex;
+      if (currentIndex <= 0) {
+        // Já é a primeira: vai para a última (loop)
+        prevIndex = currentQueue.length - 1;
+      } else {
+        prevIndex = currentIndex - 1;
+      }
+
+      const prevTrack = currentQueue[prevIndex];
+      if (prevTrack) playMusic(prevTrack, null, currentQueue);
     }
 
     // Play e Pause Controles
