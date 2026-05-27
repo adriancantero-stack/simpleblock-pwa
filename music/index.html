@@ -843,18 +843,8 @@
         </button>
       </div>
 
-      <div class="library-section">
-        <div style="display: flex; align-items: center; justify-content: space-between; padding-right: 8px; margin-bottom: 8px;">
-          <span class="library-header" style="margin-bottom: 0;">Minha Biblioteca</span>
-          <button onclick="createNewPlaylistPrompt()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: var(--transition); display: flex; align-items: center;" title="Criar Playlist" aria-label="Criar Playlist">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-        </div>
-        <div class="library-list" id="libraryList">
-          <!-- Populado dinamicamente via JS -->
-        </div>
-      </div>
     </aside>
+
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
@@ -916,13 +906,6 @@
         </div>
       </div>
 
-      <!-- View: Biblioteca (Playlists no Mobile) -->
-      <div class="view-container" id="viewBiblioteca" style="display: none;">
-        <h2 class="view-title">Sua Biblioteca</h2>
-        <div class="music-grid" id="bibliotecaGrid"></div>
-        <p class="empty-text" id="bibliotecaEmpty" style="color: var(--text-muted); display: none;">Sua biblioteca está vazia.</p>
-      </div>
-
       <!-- View: Favoritos -->
       <div class="view-container" id="viewFavoritos" style="display: none;">
         <h2 class="view-title">Favoritos</h2>
@@ -937,31 +920,6 @@
         <p class="empty-text" id="recentesEmpty" style="color: var(--text-muted); display: none;">Nenhuma música ouvida recentemente.</p>
       </div>
 
-      <!-- View: Playlist Customizada -->
-      <div class="view-container" id="viewPlaylist" style="display: none;">
-        <div style="display: flex; align-items: flex-end; gap: 24px; margin-bottom: 12px; flex-wrap: wrap;">
-          <div id="playlistViewCover" style="width: 140px; height: 140px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, #1db954, #191414); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
-            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">PLAYLIST</span>
-            <h2 class="view-title" id="playlistViewTitle" style="font-size: 36px; margin: 0; line-height: 1.1;">Nome da Playlist</h2>
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; flex-wrap: wrap;">
-              <span style="font-weight: 600; color: #fff;">Sua Biblioteca</span>
-              <span style="color: var(--text-muted);">•</span>
-              <span id="playlistViewTrackCount" style="color: var(--text-muted);">0 músicas</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
-              <button id="playlistPlayBtn" style="background: var(--accent); color: #000; border: none; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s;">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-              <button onclick="deleteCurrentPlaylist()" style="background: transparent; border: 1px solid var(--border); color: #fff; cursor: pointer; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 20px; transition: var(--transition);">Excluir</button>
-            </div>
-          </div>
-        </div>
-        <div id="playlistList" style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;"></div>
-        <p class="empty-text" id="playlistEmpty" style="color: var(--text-muted); display: none;">Nenhuma música nesta playlist. Comece a ouvir e clique no botão "+" no player para adicionar!</p>
-      </div>
     </main>
   </div>
 
@@ -977,11 +935,8 @@
       <button class="heart-toggle-btn" id="favPlayToggleBtn" onclick="toggleFavoriteCurrent()" style="margin-left: 12px; display: none;">
         <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       </button>
-      <button class="heart-toggle-btn" id="addToPlaylistBtn" onclick="addCurrentToPlaylistPrompt()" style="margin-left: 8px; display: none;" title="Adicionar à Playlist">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
-      <!-- Botão shareMobile removido por redundância com o botão da direita -->
     </div>
+
 
     <!-- Controles Centrais -->
     <div class="player-controls-container">
@@ -1034,9 +989,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <span>Busca</span>
     </button>
-    <button class="mobile-nav-item" onclick="switchView('biblioteca')" id="mobileMenuBiblioteca">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
-      <span>Biblioteca</span>
+    <button class="mobile-nav-item" onclick="switchView('recentes')" id="mobileMenuBiblioteca">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span>Recentes</span>
     </button>
     <button class="mobile-nav-item" onclick="switchView('favoritos')" id="mobileMenuFavoritos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -1682,6 +1637,9 @@
       };
 
       currentlyPlayingVideo = trackItem;
+      playerCurrentTime = 0; // Reseta o contador ao iniciar nova música
+      iframePlayStartTime = 0;
+      iframePlayStartWallClock = 0;
       saveToHistory(trackItem);
       updateFavoriteButtonState(videoId);
       document.getElementById('addToPlaylistBtn').style.display = 'block';
@@ -1769,16 +1727,22 @@
       }
     }
 
+    let iframePlayStartTime = 0;
+    let iframePlayStartWallClock = 0;
+
     setInterval(() => {
       if (!currentlyPlayingVideo) return;
-      if (activeEngine === 'audio' && !silentAudio.paused) {
-        // Áudio nativo — lê currentTime diretamente
-        updateProgressDisplay(silentAudio.currentTime);
+      if (activeEngine === 'audio') {
+        // Áudio nativo — lê currentTime diretamente independente de estar pausado
+        if (silentAudio.currentTime > 0) {
+          updateProgressDisplay(silentAudio.currentTime);
+        }
       }
-      // Para iframe: incrementa o tempo automaticamente (postMessage nem sempre é confiável)
+      // Para iframe: usa tempo de parede para estimar currentTime com precisão
       if (activeEngine === 'iframe' && playStateIsPlaying) {
-        playerCurrentTime += 0.5;
-        updateProgressDisplay(playerCurrentTime);
+        const elapsed = (Date.now() - iframePlayStartWallClock) / 1000;
+        const estimated = iframePlayStartTime + elapsed;
+        updateProgressDisplay(Math.min(estimated, playerDuration || estimated));
       }
     }, 500);
 
@@ -1836,6 +1800,11 @@
 
     function setPlayState(isPlaying) {
       playStateIsPlaying = isPlaying;
+      // Quando começa a tocar, marca o instante para o contador do iframe funcionar
+      if (isPlaying && activeEngine === 'iframe') {
+        iframePlayStartTime = playerCurrentTime;
+        iframePlayStartWallClock = Date.now();
+      }
       const playIcon = document.getElementById('playIcon');
       const pauseIcon = document.getElementById('pauseIcon');
       const playBtn = document.getElementById('playBtn');
@@ -1846,6 +1815,10 @@
           if (playBtn) playBtn.classList.add('playing');
           if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
         } else {
+          // Ao pausar, salva o tempo atual para retomar do mesmo ponto
+          if (activeEngine === 'iframe') {
+            iframePlayStartTime = playerCurrentTime;
+          }
           playIcon.style.display = 'block';
           pauseIcon.style.display = 'none';
           if (playBtn) playBtn.classList.remove('playing');
@@ -2314,107 +2287,6 @@
 
     // Carregamento Inicial do App
     window.addEventListener('DOMContentLoaded', async () => {
-      // Inicializar playlists padrão se for o primeiro acesso ou atualizar as capas antigas
-      if (!localStorage.getItem('livreplay_playlists_initialized_v3')) {
-        const defaultPlaylists = [
-          {
-            "id": "pl_sertanejo24",
-            "name": "Top Sertanejo",
-            "description": "As mais tocadas do sertanejo e sofrência.",
-            "thumbnail": "../assets/playlists/pl_sertanejo.png",
-            "tracks": [
-              {"videoId": "3yq5A8P3yOE", "title": "Henrique e Juliano - Liberdade Provisória", "uploader": "Henrique e Juliano", "durationText": "3:07", "thumbnail": "https://i.ytimg.com/vi/3yq5A8P3yOE/mqdefault.jpg"},
-              {"videoId": "B08sDrtw41s", "title": "Marília Mendonça - Bebi Liguei", "uploader": "Marília Mendonça", "durationText": "2:34", "thumbnail": "https://i.ytimg.com/vi/B08sDrtw41s/mqdefault.jpg"},
-              {"videoId": "fQ3DbdS4Ehw", "title": "Zé Neto e Cristiano - Largado as Traças", "uploader": "Zé Neto e Cristiano", "durationText": "3:13", "thumbnail": "https://i.ytimg.com/vi/fQ3DbdS4Ehw/mqdefault.jpg"},
-              {"videoId": "R9K1n4y2K8U", "title": "Ana Castela - Nosso Quadro (Áudio)", "uploader": "Ana Castela", "durationText": "2:54", "thumbnail": "https://i.ytimg.com/vi/R9K1n4y2K8U/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_funk24",
-            "name": "Funk Hits",
-            "description": "Os maiores hits do funk brasileiro.",
-            "thumbnail": "../assets/playlists/pl_funk.png",
-            "tracks": [
-              {"videoId": "Pj_sQ1lBvE8", "title": "MC Kevin o Chris - Evoluiu", "uploader": "MC Kevin o Chris", "durationText": "2:50", "thumbnail": "https://i.ytimg.com/vi/Pj_sQ1lBvE8/mqdefault.jpg"},
-              {"videoId": "z7_hH2R1qUo", "title": "Pedro Sampaio - GALOPA", "uploader": "Pedro Sampaio", "durationText": "2:20", "thumbnail": "https://i.ytimg.com/vi/z7_hH2R1qUo/mqdefault.jpg"},
-              {"videoId": "V-Wn5y-X8B0", "title": "LUDMILLA - Socadona", "uploader": "LUDMILLA", "durationText": "2:23", "thumbnail": "https://i.ytimg.com/vi/V-Wn5y-X8B0/mqdefault.jpg"},
-              {"videoId": "_HLBgB_4kU0", "title": "MC Fioti - Bum Bum Tam Tam", "uploader": "KondZilla", "durationText": "2:49", "thumbnail": "https://i.ytimg.com/vi/_HLBgB_4kU0/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_forro24",
-            "name": "Paredão Forró",
-            "description": "Só as melhores do forró e piseiro.",
-            "thumbnail": "../assets/playlists/pl_forro.png",
-            "tracks": [
-              {"videoId": "0y7zO-A-VmA", "title": "Zé Vaqueiro - Volta Comigo BB", "uploader": "Zé Vaqueiro", "durationText": "2:48", "thumbnail": "https://i.ytimg.com/vi/0y7zO-A-VmA/mqdefault.jpg"},
-              {"videoId": "uE6sE4wWkO8", "title": "NATTAN - Tem Cabaré Essa Noite", "uploader": "NATTAN", "durationText": "2:30", "thumbnail": "https://i.ytimg.com/vi/uE6sE4wWkO8/mqdefault.jpg"},
-              {"videoId": "8W1aK4-kR1A", "title": "Tarcísio do Acordeon - Meia Noite", "uploader": "Tarcísio do Acordeon", "durationText": "3:01", "thumbnail": "https://i.ytimg.com/vi/8W1aK4-kR1A/mqdefault.jpg"},
-              {"videoId": "l3X2wR_7H0o", "title": "João Gomes - Meu Pedaço de Pecado", "uploader": "João Gomes", "durationText": "2:45", "thumbnail": "https://i.ytimg.com/vi/l3X2wR_7H0o/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_pop24",
-            "name": "Pop Internacional",
-            "description": "Hits do pop mundial.",
-            "thumbnail": "../assets/playlists/pl_pop.png",
-            "tracks": [
-              {"videoId": "fHI8X4OXluQ", "title": "The Weeknd - Blinding Lights", "uploader": "The Weeknd", "durationText": "3:22", "thumbnail": "https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg"},
-              {"videoId": "TUVcZfQe-Kw", "title": "Dua Lipa - Levitating", "uploader": "Dua Lipa", "durationText": "3:23", "thumbnail": "https://i.ytimg.com/vi/TUVcZfQe-Kw/mqdefault.jpg"},
-              {"videoId": "JGwWNGJdvx8", "title": "Ed Sheeran - Shape of You", "uploader": "Ed Sheeran", "durationText": "3:53", "thumbnail": "https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg"},
-              {"videoId": "H5v3kku4y6Q", "title": "Harry Styles - As It Was", "uploader": "Harry Styles", "durationText": "2:47", "thumbnail": "https://i.ytimg.com/vi/H5v3kku4y6Q/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_lofi24",
-            "name": "Lo-Fi Chill",
-            "description": "Para relaxar e focar.",
-            "thumbnail": "../assets/playlists/pl_lofi.png",
-            "tracks": [
-              {"videoId": "jfKfPfyJRdk", "title": "lofi hip hop radio - beats to relax/study to", "uploader": "Lofi Girl", "durationText": "LIVE", "thumbnail": "https://i.ytimg.com/vi/jfKfPfyJRdk/mqdefault.jpg"},
-              {"videoId": "5yx6BWlEVcY", "title": "Chillhop Radio - jazzy & lofi hip hop beats", "uploader": "Chillhop Music", "durationText": "LIVE", "thumbnail": "https://i.ytimg.com/vi/5yx6BWlEVcY/mqdefault.jpg"},
-              {"videoId": "lTRiuFIWV54", "title": "1 A.M Study Session 📚 [lofi hip hop/chill beats]", "uploader": "Lofi Girl", "durationText": "1:00:00", "thumbnail": "https://i.ytimg.com/vi/lTRiuFIWV54/mqdefault.jpg"},
-              {"videoId": "qH3fOWtdjA4", "title": "lofi space station 🌌", "uploader": "Lofi Girl", "durationText": "1:00:00", "thumbnail": "https://i.ytimg.com/vi/qH3fOWtdjA4/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_reggaeton24",
-            "name": "Reggaeton Caliente",
-            "description": "As melhores do reggaeton.",
-            "thumbnail": "../assets/playlists/pl_reggaeton.png",
-            "tracks": [
-              {"videoId": "m-XhQx2r7d0", "title": "J Balvin, Willy William - Mi Gente", "uploader": "J Balvin", "durationText": "3:05", "thumbnail": "https://i.ytimg.com/vi/m-XhQx2r7d0/mqdefault.jpg"},
-              {"videoId": "PqA8HqfCbqk", "title": "Daddy Yankee & Snow - Con Calma", "uploader": "Daddy Yankee", "durationText": "3:13", "thumbnail": "https://i.ytimg.com/vi/PqA8HqfCbqk/mqdefault.jpg"},
-              {"videoId": "5T9k-Bpx-18", "title": "Bad Bunny - Tití Me Preguntó", "uploader": "Bad Bunny", "durationText": "4:03", "thumbnail": "https://i.ytimg.com/vi/5T9k-Bpx-18/mqdefault.jpg"},
-              {"videoId": "yB1D8l0-dEM", "title": "Luis Fonsi - Despacito ft. Daddy Yankee", "uploader": "Luis Fonsi", "durationText": "3:48", "thumbnail": "https://i.ytimg.com/vi/yB1D8l0-dEM/mqdefault.jpg"}
-            ]
-          },
-          {
-            "id": "pl_hiphop24",
-            "name": "Hip-Hop / Rap",
-            "description": "Batidas pesadas e rimas afiadas.",
-            "thumbnail": "../assets/playlists/pl_hiphop.png",
-            "tracks": [
-              {"videoId": "mZf1YgM3V3E", "title": "Drake - God's Plan", "uploader": "Drake", "durationText": "3:18", "thumbnail": "https://i.ytimg.com/vi/mZf1YgM3V3E/mqdefault.jpg"},
-              {"videoId": "5c-9K2t5m9Y", "title": "Post Malone - rockstar ft. 21 Savage", "uploader": "Post Malone", "durationText": "3:38", "thumbnail": "https://i.ytimg.com/vi/5c-9K2t5m9Y/mqdefault.jpg"},
-              {"videoId": "d-JBBNg8Ycg", "title": "Travis Scott - SICKO MODE", "uploader": "Travis Scott", "durationText": "5:12", "thumbnail": "https://i.ytimg.com/vi/d-JBBNg8Ycg/mqdefault.jpg"},
-              {"videoId": "Z_a15-yH1Y8", "title": "Eminem - Without Me", "uploader": "Eminem", "durationText": "4:50", "thumbnail": "https://i.ytimg.com/vi/Z_a15-yH1Y8/mqdefault.jpg"}
-            ]
-          }
-        ];
-        
-        let existingPlaylists = JSON.parse(localStorage.getItem('livreplay_playlists') || '[]');
-        
-        // Remove as default antigas para evitar duplicatas, e mescla as novas no final
-        existingPlaylists = existingPlaylists.filter(p => !p.id.startsWith('pl_') || p.id.startsWith('custom_'));
-        
-        const merged = [...existingPlaylists, ...defaultPlaylists];
-        localStorage.setItem('livreplay_playlists', JSON.stringify(merged));
-        localStorage.setItem('livreplay_playlists_initialized_v3', 'true');
-      }
-
-      renderLibrary();
-      
       // Carrega instâncias dinâmicas do Invidious em segundo plano imediatamente
       loadDynamicInstances();
       
