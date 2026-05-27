@@ -1661,6 +1661,7 @@
 
       // Reclamar o gesto do usuário imediatamente e silenciar a faixa anterior
       silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+      silentAudio.loop = true; // Mantém a sessão de áudio ativa para o Safari não dropar a permissão
       silentAudio.play().catch(() => {});
 
       // Reseta o player híbrido para áudio nativo padrão
