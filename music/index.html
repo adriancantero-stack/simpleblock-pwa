@@ -1741,12 +1741,8 @@
     }
 
     // Sincroniza o estado visual do botão play/pause com o áudio nativo
-    silentAudio.addEventListener('playing', () => {
-      if (activeEngine === 'audio') setPlayState(true);
-    });
-    silentAudio.addEventListener('pause', () => {
-      if (activeEngine === 'audio') setPlayState(false);
-    });
+    // (removed duplicate playing listener)
+    // (removed duplicate pause listener)
 
     // Polling garantido a cada 500ms — funciona tanto para engine 'audio' quanto 'iframe'
     function updateProgressDisplay(currentTime) {
@@ -1812,19 +1808,27 @@
       }
     }, 500);
 
+    silentAudio.addEventListener('playing', () => {
+      if (silentAudio.src.includes('data:audio')) return;
+      if (activeEngine === 'audio') setPlayState(true);
+    });
+    
     // timeupdate como backup de alta frequência para o engine de áudio
     silentAudio.addEventListener('timeupdate', () => {
+      if (silentAudio.src.includes('data:audio')) return;
       if (activeEngine === 'audio') {
         updateProgressDisplay(silentAudio.currentTime);
       }
     });
 
     silentAudio.addEventListener('ended', () => {
+      if (silentAudio.src.includes('data:audio')) return;
       setPlayState(false);
       playNextRecommended();
     });
 
     silentAudio.addEventListener('pause', () => {
+      if (silentAudio.src.includes('data:audio')) return;
       if (activeEngine === 'audio') {
         setPlayState(false);
         // Fallback: se o áudio pausar e estivermos muito perto do final, provavelmente ele atingiu o fim e parou sem disparar 'ended'
