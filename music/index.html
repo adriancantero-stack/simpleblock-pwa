@@ -1428,18 +1428,26 @@
       for (const instance of instancesToTry) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000);
-          const searchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(optimizedQuery)}&type=video`;
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
           
-          const res = await fetch(searchUrl, { signal: controller.signal });
+          const searchUrlP1 = `${instance}/api/v1/search?q=${encodeURIComponent(optimizedQuery)}&type=video&page=1`;
+          const searchUrlP2 = `${instance}/api/v1/search?q=${encodeURIComponent(optimizedQuery)}&type=video&page=2`;
+          
+          // Busca as páginas 1 e 2 em paralelo para trazer um catálogo completo (~50-60 faixas)
+          const [resP1, resP2] = await Promise.allSettled([
+            fetch(searchUrlP1, { signal: controller.signal }).then(r => r.ok ? r.json() : []),
+            fetch(searchUrlP2, { signal: controller.signal }).then(r => r.ok ? r.json() : [])
+          ]);
           clearTimeout(timeoutId);
           
-          if (res.ok) {
-            const data = await res.json();
-            if (data && Array.isArray(data) && data.length > 0) {
-              currentInvidiousInstance = instance;
-              return data.filter(item => item.type === 'video');
-            }
+          const dataP1 = resP1.status === 'fulfilled' ? resP1.value : [];
+          const dataP2 = resP2.status === 'fulfilled' ? resP2.value : [];
+          
+          const merged = [...(Array.isArray(dataP1) ? dataP1 : []), ...(Array.isArray(dataP2) ? dataP2 : [])];
+          
+          if (merged.length > 0) {
+            currentInvidiousInstance = instance;
+            return merged.filter(item => item.type === 'video');
           }
         } catch (e) {
           console.warn(`Falha na busca em ${instance}:`, e);
@@ -1575,7 +1583,7 @@
       });
     }
 
-    // Renderizar o Grid de Cards (Lista Estilo Spotify)
+    // Renderizar o Grid de Cards (Lista Estilo Spotify com Deduplicação)
     function renderGrid(items, gridElement) {
       gridElement.innerHTML = '';
       if (!items || items.length === 0) {
@@ -1585,14 +1593,46 @@
 
       const favorites = JSON.parse(localStorage.getItem('livreplay_music_favorites') || '[]');
 
+      // 🔍 Filtragem de Duplicatas por ID e por Título Limpo
+      const seenTitles = new Set();
+      const seenIds = new Set();
+      const deduplicatedItems = [];
+
       items.forEach(item => {
         const videoId = item.videoId;
+        if (!videoId || seenIds.has(videoId)) return;
+
         // Limpa títulos longos estilo YouTube para parecer música pura do Spotify
         const cleanTitle = item.title.replace(/[\(\[][Ff]ull.*[\)\]]/, '')
                                      .replace(/[\(\[][Oo]fficial.*[\)\]]/, '')
                                      .replace(/[\(\[][Vv]ídeo.*[\)\]]/, '')
                                      .replace(/[\(\[][L]yrics.*[\)\]]/i, '')
                                      .trim();
+
+        // Normaliza título para correspondência case-insensitive sem caracteres especiais
+        const normalizedTitle = cleanTitle.toLowerCase()
+                                          .replace(/[^a-z0-9áéíóúâêîôûãõç]/g, '')
+                                          .trim();
+
+        if (!seenTitles.has(normalizedTitle)) {
+          seenTitles.add(normalizedTitle);
+          seenIds.add(videoId);
+          deduplicatedItems.push({ item, cleanTitle });
+        }
+      });
+
+      if (deduplicatedItems.length === 0) {
+        gridElement.innerHTML = '<p class="empty-text" style="color: var(--text-muted); padding: 20px;">Nenhuma música encontrada.</p>';
+        return;
+      }
+
+      // Mapeia de volta para passar a fila limpa para playMusic
+      const cleanQueue = deduplicatedItems.map(d => d.item);
+
+      deduplicatedItems.forEach(d => {
+        const item = d.item;
+        const videoId = item.videoId;
+        const cleanTitle = d.cleanTitle;
         const author = item.author || 'Artista Desconhecido';
         const thumbnail = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url 
           || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
@@ -1602,7 +1642,7 @@
         const card = document.createElement('div');
         card.className = 'music-card';
         card.dataset.videoId = videoId;
-        card.onclick = () => playMusic(item, cleanTitle, items);
+        card.onclick = () => playMusic(item, cleanTitle, cleanQueue);
         
         card.innerHTML = `
           <div class="art-wrapper">
