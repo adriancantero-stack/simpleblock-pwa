@@ -1703,7 +1703,10 @@
       activeEngine = 'audio';
       document.getElementById('youtubeIframe').src = 'about:blank';
 
-      // Busca instantânea — watchdog de 3.5s (a corrida paralela já é muito mais rápida)
+      // Busca instantânea — watchdog de 3.5s no desktop / 15s no celular para dar tempo ao áudio nativo de background!
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const watchdogTimeout = isMobile ? 15000 : 3500;
+
       const watchdogTimer = setTimeout(() => {
         if (activeTrackId === videoId && activeEngine === 'audio') {
           console.warn('Watchdog: ativando iframe agora.');
@@ -1711,7 +1714,7 @@
           clearTimeout(spinnerTimer);
           document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
         }
-      }, 3500);
+      }, watchdogTimeout);
 
       prefetchAudioStream(videoId).then(() => {
         clearTimeout(watchdogTimer);
