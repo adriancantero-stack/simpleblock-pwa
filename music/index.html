@@ -1260,61 +1260,15 @@
       return list;
     }
 
-    // Helper para buscar a URL direta via API + CORS Proxy, ou usar fallback de redirect 302
-    function getDirectOrRedirectUrl(instance, videoId) {
-      return new Promise((resolve, reject) => {
-        // Tenta buscar o formato de áudio direto via API com um proxy CORS para contornar bloqueios do Safari
-        const apiUrl = `${instance}/api/v1/videos/${videoId}`;
-        const proxiedUrl = `https://corsproxy.io/?url=${encodeURIComponent(apiUrl)}`;
-        
-        fetch(proxiedUrl, { signal: AbortSignal.timeout(3000) })
-          .then(res => {
-            if (!res.ok) throw new Error('Proxy fail');
-            return res.json();
-          })
-          .then(data => {
-            if (data.error) throw new Error(data.error);
-            let format = null;
-            if (data.adaptiveFormats) {
-              format = data.adaptiveFormats.find(f => f.itag === '140' || f.itag === 140);
-            }
-            if (!format && data.formatStreams) {
-              format = data.formatStreams.find(f => f.itag === '140' || f.itag === 140);
-            }
-            
-            if (format && format.url) {
-              resolve({ url: format.url, instance });
-            } else {
-              const anyAudio = data.adaptiveFormats && data.adaptiveFormats.find(f => f.mimeType && f.mimeType.startsWith('audio/'));
-              if (anyAudio && anyAudio.url) {
-                resolve({ url: anyAudio.url, instance });
-              } else {
-                if (isIOS) {
-                  reject(new Error('no audio format found on ios'));
-                  return;
-                }
-                resolve({ url: `${instance}/latest_version?id=${videoId}&itag=140`, instance });
-              }
-            }
-          })
-          .catch(() => {
-            if (isIOS) {
-              // No iOS, rejeitamos imediatamente para que a corrida tente outras instâncias
-              // em vez de resolver com um redirect 302 que falharia na tag <audio>.
-              reject(new Error('direct api failed on ios'));
-              return;
-            }
-            // Queda segura para o redirect original em caso de erro da API ou do Proxy CORS (desktop/android)
-            const fallbackUrl = `${instance}/latest_version?id=${videoId}&itag=140`;
-            fetch(fallbackUrl, { mode: 'no-cors', signal: AbortSignal.timeout(2000) })
-              .then(() => resolve({ url: fallbackUrl, instance }))
-              .catch(() => reject(new Error('fail')));
-          });
-      });
-    }
-
+    // Testa uma instância usando fetch no-cors no latest_version
+    // Resolve se a rede conectar, evitando bloqueios de CORS e bloqueios de Audio do Safari
     function tryInstanceUrl(instance, videoId) {
-      return getDirectOrRedirectUrl(instance, videoId);
+      return new Promise((resolve, reject) => {
+        const url = `${instance}/latest_version?id=${videoId}&itag=140`;
+        fetch(url, { mode: 'no-cors', signal: AbortSignal.timeout(2500) })
+          .then(() => resolve({ url, instance }))
+          .catch(() => reject(new Error('fail')));
+      });
     }
 
     // 🏎️ CORRIDA PARALELA — dispara todas as instâncias ao mesmo tempo, pega a primeira vencedora
@@ -1406,7 +1360,12 @@
       try {
         const instances = getAllInstances();
         const races = instances.map(inst => {
-          return getDirectOrRedirectUrl(inst, nextId);
+          return new Promise((resolve, reject) => {
+            const url = `${inst}/latest_version?id=${nextId}&itag=140`;
+            fetch(url, { mode: 'no-cors', signal: AbortSignal.timeout(3000) })
+              .then(() => resolve({ url, instance: inst }))
+              .catch(reject);
+          });
         });
 
         const winner = await Promise.any(races);
@@ -1444,12 +1403,6 @@
 
       // Último recurso: iframe YouTube
       if (videoId !== activeTrackId) return;
-      if (isIOS) {
-        console.warn('Sem stream nativa no iOS. Pulando para a próxima faixa para evitar travamento.');
-        playNextRecommended();
-        document.getElementById('spinner').style.display = 'none';
-        return;
-      }
       console.warn('Sem stream nativa disponível. Ativando fallback iframe.');
       playIframeFallback(videoId);
       document.getElementById('spinner').style.display = 'none';
@@ -1753,17 +1706,12 @@
       // Busca instantânea — watchdog de 3.5s (a corrida paralela já é muito mais rápida)
       const watchdogTimer = setTimeout(() => {
         if (activeTrackId === videoId && activeEngine === 'audio') {
-          if (isIOS) {
-            console.warn('Watchdog iOS: Evitando queda para Iframe no iOS para proteger a reprodução de background.');
-            // No iOS, nunca caímos para o iframe pois ele bloqueia em background. Mantemos a busca nativa ativa por mais tempo.
-            return;
-          }
           console.warn('Watchdog: ativando iframe agora.');
           playIframeFallback(videoId);
           clearTimeout(spinnerTimer);
           document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
         }
-      }, 4500); // Watchdog levemente estendido para conexões móveis (4.5s)
+      }, 3500);
 
       prefetchAudioStream(videoId).then(() => {
         clearTimeout(watchdogTimer);
