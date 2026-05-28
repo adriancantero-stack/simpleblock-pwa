@@ -60,11 +60,16 @@
     .app-layout {
       flex: none;
       display: flex;
-      height: calc(100dvh - 96px); /* Espaço para o player de controle inferior */
+      height: 100dvh; /* Ocupa tudo quando o player não está ativo */
       overflow: hidden;
       overflow-x: hidden;
       padding-top: var(--safe-top);
       width: 100%;
+      transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    body.has-player .app-layout {
+      height: calc(100dvh - 96px); /* Reserva espaço para o player no desktop */
     }
 
     /* Sidebar Estilo Spotify */
@@ -512,6 +517,18 @@
       padding: 0 24px;
       padding-bottom: var(--safe-bottom);
       z-index: 100;
+
+      /* Oculto por padrão, animação suave */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(100%);
+      transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    body.has-player .player-bar {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .current-track-info {
@@ -744,8 +761,18 @@
         flex-direction: column;
         justify-content: center;
         gap: 6px;
+        transform: translateY(calc(100% + 60px + env(safe-area-inset-bottom)));
       }
-      .app-layout { height: calc(100dvh - 80px - 60px - env(safe-area-inset-bottom)); }
+      body.has-player .player-bar {
+        transform: translateY(0);
+      }
+      .app-layout { 
+        height: calc(100dvh - 60px - env(safe-area-inset-bottom)); 
+        transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      body.has-player .app-layout { 
+        height: calc(100dvh - 80px - 60px - env(safe-area-inset-bottom)); 
+      }
       .current-track-info { 
         width: 100%; 
         overflow: hidden; 
@@ -1654,6 +1681,9 @@
       saveToHistory(trackItem);
       updateFavoriteButtonState(videoId);
 
+      // Ativar a barra do player inferior visualmente (com animação fade/slide)
+      document.body.classList.add('has-player');
+
       // Reseta o player híbrido para áudio nativo padrão
       activeEngine = 'audio';
       document.getElementById('youtubeIframe').src = 'about:blank';
@@ -1665,24 +1695,7 @@
         } catch (e) {}
       }
 
-      // 1. Obter a URL de stream de forma síncrona
-      let streamUrl = null;
-      const cached = streamUrlCache.get(videoId);
-      if (cached && (Date.now() - cached.ts) < STREAM_CACHE_TTL) {
-        streamUrl = cached.url;
-        console.log(`⚡ Cache hit síncrono para ${videoId}`);
-      } else {
-        streamUrl = `${currentInvidiousInstance}/latest_version?id=${videoId}&itag=140`;
-        console.log(`🔗 Usando URL direta síncrona da instância ativa: ${streamUrl}`);
-      }
-      currentAudioStreamUrl = streamUrl;
-
-      // 2. Carregar e reproduzir de forma 100% síncrona dentro do evento de clique!
-      silentAudio.src = streamUrl;
-      silentAudio.loop = false;
-      silentAudio.load();
-
-      // Busca instantânea — watchdog de 3.5s no desktop / 15s no celular para dar tempo ao áudio nativo de background!
+      // Configurar watchdog de backup para o iframe do YouTube
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const watchdogTimeout = isMobile ? 15000 : 3500;
 
@@ -1695,19 +1708,71 @@
         }
       }, watchdogTimeout);
 
+      // 🔓 PATTERN DE DESBLOQUEIO DE ÁUDIO DO SAFARI (iOS Autoplay Bypass)
+      // Carrega um áudio base64 de silêncio de forma síncrona dentro da ação do usuário para desbloquear o elemento
+      silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+      silentAudio.loop = false;
+
       silentAudio.play().then(() => {
-        clearTimeout(watchdogTimer);
-        clearTimeout(spinnerTimer);
-        document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
-        setPlayState(true);
-        // Inicia pré-aquecimento da próxima música em background
-        prefetchNextTrack();
+        // Áudio desbloqueado com sucesso! Pausa temporariamente para aguardar a busca da URL real
+        silentAudio.pause();
+
+        // Faz a busca da URL real (de forma assíncrona, usando cache se houver)
+        raceFetchStreamUrl(videoId).then(streamUrl => {
+          if (activeTrackId !== videoId) {
+            clearTimeout(watchdogTimer);
+            return; // Usuário já escolheu outra música
+          }
+
+          if (streamUrl) {
+            currentAudioStreamUrl = streamUrl;
+            silentAudio.src = streamUrl;
+            silentAudio.loop = false;
+            silentAudio.load();
+
+            silentAudio.play().then(() => {
+              if (activeTrackId === videoId) {
+                clearTimeout(watchdogTimer);
+                clearTimeout(spinnerTimer);
+                document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
+                setPlayState(true);
+                prefetchNextTrack();
+              }
+            }).catch(err => {
+              console.warn('Erro ao tocar stream real desbloqueada:', err);
+              if (activeTrackId === videoId) {
+                clearTimeout(watchdogTimer);
+                clearTimeout(spinnerTimer);
+                document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
+                playIframeFallback(videoId);
+              }
+            });
+          } else {
+            console.warn('Sem streamUrl válida encontrada na corrida paralela');
+            if (activeTrackId === videoId) {
+              clearTimeout(watchdogTimer);
+              clearTimeout(spinnerTimer);
+              document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
+              playIframeFallback(videoId);
+            }
+          }
+        }).catch(err => {
+          console.warn('Corrida paralela falhou:', err);
+          if (activeTrackId === videoId) {
+            clearTimeout(watchdogTimer);
+            clearTimeout(spinnerTimer);
+            document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
+            playIframeFallback(videoId);
+          }
+        });
       }).catch(err => {
-        console.warn('Erro na reprodução síncrona nativa:', err);
-        clearTimeout(watchdogTimer);
-        clearTimeout(spinnerTimer);
-        document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
-        playIframeFallback(videoId);
+        console.warn('Falha ao tocar áudio de silêncio para desbloqueio:', err);
+        if (activeTrackId === videoId) {
+          clearTimeout(watchdogTimer);
+          clearTimeout(spinnerTimer);
+          document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
+          playIframeFallback(videoId);
+        }
       });
 
       // Atualizar o player inferior
