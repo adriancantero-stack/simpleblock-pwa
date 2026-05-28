@@ -1142,6 +1142,12 @@
     const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
     silentAudio.loop = true;
 
+    // 📱 Hack do Canal Duplo de Áudio (Dual-Audio Keep-Alive) exclusivo para iOS Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const iosKeepAliveAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
+    iosKeepAliveAudio.loop = true;
+    iosKeepAliveAudio.volume = 0.01;
+
     // === CONTROLES DO PLAYER IFRAME HÍBRIDO HIDE/FALLBACK ===
     function playIframeFallback(videoId) {
       document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
@@ -1397,6 +1403,12 @@
 
       // Último recurso: iframe YouTube
       if (videoId !== activeTrackId) return;
+      if (isIOS) {
+        console.warn('Sem stream nativa no iOS. Pulando para a próxima faixa para evitar travamento.');
+        playNextRecommended();
+        document.getElementById('spinner').style.display = 'none';
+        return;
+      }
       console.warn('Sem stream nativa disponível. Ativando fallback iframe.');
       playIframeFallback(videoId);
       document.getElementById('spinner').style.display = 'none';
@@ -1688,6 +1700,11 @@
       silentAudio.loop = true; // Mantém a sessão de áudio ativa para o Safari não dropar a permissão
       silentAudio.play().catch(() => {});
 
+      // 📱 iOS Keep-Alive Hack: Ativa o canal de áudio duplo silencioso e ininterrupto
+      if (isIOS) {
+        iosKeepAliveAudio.play().catch(() => {});
+      }
+
       // Reseta o player híbrido para áudio nativo padrão
       activeEngine = 'audio';
       document.getElementById('youtubeIframe').src = 'about:blank';
@@ -1695,12 +1712,17 @@
       // Busca instantânea — watchdog de 3.5s (a corrida paralela já é muito mais rápida)
       const watchdogTimer = setTimeout(() => {
         if (activeTrackId === videoId && activeEngine === 'audio') {
+          if (isIOS) {
+            console.warn('Watchdog iOS: Evitando queda para Iframe no iOS para proteger a reprodução de background.');
+            // No iOS, nunca caímos para o iframe pois ele bloqueia em background. Mantemos a busca nativa ativa por mais tempo.
+            return;
+          }
           console.warn('Watchdog: ativando iframe agora.');
           playIframeFallback(videoId);
           clearTimeout(spinnerTimer);
           document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
         }
-      }, 3500);
+      }, 4500); // Watchdog levemente estendido para conexões móveis (4.5s)
 
       prefetchAudioStream(videoId).then(() => {
         clearTimeout(watchdogTimer);
