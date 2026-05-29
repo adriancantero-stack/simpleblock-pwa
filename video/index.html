@@ -451,6 +451,7 @@
       height: 100%;
       position: relative;
       background: #000;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .iframe-wrapper iframe {
       width: 100%;
@@ -590,7 +591,21 @@
       flex-direction: column;
       padding: 16px;
       overflow-y: auto;
-      transition: var(--transition);
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.cinema-mode .player-sidebar {
+      width: 0 !important;
+      padding: 0 !important;
+      opacity: 0 !important;
+      border-left-color: transparent !important;
+      pointer-events: none;
+    }
+
+    #cinemaToggleBtn.active {
+      color: var(--accent);
+      background: rgba(255, 59, 48, 0.15);
+      border-color: rgba(255, 59, 48, 0.3);
     }
 
     .sidebar-title {
@@ -844,6 +859,14 @@
         border-left: none;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
       }
+      body.cinema-mode .player-sidebar {
+        height: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        border-top-color: transparent !important;
+        pointer-events: none;
+      }
       .iframe-wrapper {
         height: auto; /* Permite flexbox alinhar com a barra lateral abaixo sem transbordamento */
       }
@@ -1026,6 +1049,12 @@
         <button class="heart-btn focusable" id="favoriteToggleBtn" onclick="toggleFavoriteCurrent()" aria-label="Favoritar">
           <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         </button>
+        <button class="browser-action-btn focusable" id="cinemaToggleBtn" onclick="toggleCinemaMode()" aria-label="Modo Cinema" title="Modo Cinema">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </button>
         <button class="browser-action-btn focusable" onclick="reloadBrowser()" aria-label="Recarregar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         </button>
@@ -1039,10 +1068,16 @@
         <div class="recommendations-overlay" id="recommendationsOverlay" style="display: none;">
           <div class="overlay-header">
             <h3>Recomendados para Você</h3>
-            <button class="replay-btn focusable" onclick="replayCurrentVideo()" aria-label="Repetir Vídeo">
-              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1.04 14.7a10 10 0 1 1 1.76 5.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span>Repetir</span>
-            </button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button class="replay-btn focusable" onclick="replayCurrentVideo()" aria-label="Repetir Vídeo">
+                <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1.04 14.7a10 10 0 1 1 1.76 5.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Repetir</span>
+              </button>
+              <button class="replay-btn focusable" onclick="exitBrowser()" aria-label="Voltar para Busca" style="background: rgba(255,59,48,0.2); border-color: rgba(255,59,48,0.4);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <span>Voltar</span>
+              </button>
+            </div>
           </div>
           <div class="overlay-grid" id="overlayGrid"></div>
         </div>
@@ -1087,15 +1122,19 @@
       'https://invidious.privacydev.net'
     ];
 
+    // Cache e gateway de alto desempenho
+    const streamUrlCache = new Map();
+    const STREAM_CACHE_TTL = 30 * 60 * 1000; // 30 minutos
+    const CLOUDFLARE_GATEWAY = 'https://livreplay-gateway.adrian-cantero1.workers.dev/';
+    let dynamicInvidiousInstances = [];
+
     // Detecção Smart TV
     const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1400;
     if (isTV) document.body.classList.add('tv-mode');
 
-    // Executa busca sequencial automática com auto-recuperação dinâmica e CORS direto (sem proxy)
-    async function fetchSearch(query) {
-      let instancesToTry = [...FALLBACK_INSTANCES];
-      
-      // Tenta obter instâncias dinâmicas e saudáveis do registro oficial Invidious
+    // Carrega instâncias dinâmicas uma única vez na inicialização
+    async function loadDynamicInstances() {
+      dynamicInvidiousInstances = [...FALLBACK_INSTANCES];
       try {
         const res = await fetch('https://api.invidious.io/instances.json');
         if (res.ok) {
@@ -1109,12 +1148,47 @@
               }
             }
           }
-          // Prioriza as dinâmicas mas mantém as de fallback
-          instancesToTry = [...new Set([...dynamicInstances, ...FALLBACK_INSTANCES])];
+          if (dynamicInstances.length > 0) {
+            dynamicInvidiousInstances = [...new Set([...dynamicInstances, ...FALLBACK_INSTANCES])];
+          }
         }
       } catch (e) {
         console.warn('Não foi possível carregar instâncias dinâmicas, usando lista estática:', e);
       }
+      console.log('Instâncias Invidious pré-carregadas:', dynamicInvidiousInstances);
+    }
+
+    // Resolutor via Gateway Cloudflare
+    async function fetchStreamUrlFromGateway(videoId) {
+      const cached = streamUrlCache.get(videoId);
+      if (cached && (Date.now() - cached.ts) < STREAM_CACHE_TTL) {
+        console.log(`⚡ Gateway Cache hit para ${videoId}`);
+        return cached.url;
+      }
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5s timeout
+        const res = await fetch(`${CLOUDFLARE_GATEWAY}?id=${videoId}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.url) {
+            streamUrlCache.set(videoId, { url: data.url, ts: Date.now() });
+            console.log(`⚡ URL obtida via Cloudflare Gateway para ${videoId}`);
+            return data.url;
+          }
+        }
+      } catch (e) {
+        console.warn(`[Gateway] Falha ao obter URL via Cloudflare Worker para ${videoId}:`, e);
+      }
+      return null;
+    }
+
+    // Executa busca sequencial automática com auto-recuperação dinâmica e CORS direto (sem proxy)
+    async function fetchSearch(query) {
+      let instancesToTry = dynamicInvidiousInstances.length > 0 ? dynamicInvidiousInstances : [...FALLBACK_INSTANCES];
       
       console.log('Tentando buscar em instâncias:', instancesToTry);
       
@@ -1126,7 +1200,7 @@
           
           const searchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
           
-          // Realiza busca direta (sem passar pelo proxy restringido de workers.dev)
+          // Realiza busca direta
           const res = await fetch(searchUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
           
@@ -1205,6 +1279,31 @@
     async function prefetchAudioStream(videoId) {
       currentAudioStreamUrl = null;
       let lastError = null;
+
+      // 1. Tenta obter a URL via Cloudflare Worker Gateway dedicado (Alta performance, < 100ms)
+      let streamUrl = await fetchStreamUrlFromGateway(videoId);
+      
+      if (streamUrl) {
+        try {
+          currentAudioStreamUrl = streamUrl;
+          silentAudio.src = currentAudioStreamUrl;
+          silentAudio.loop = false;
+          silentAudio.currentTime = playerCurrentTime || 0;
+          
+          silentAudio.load(); // Exigido pelo iOS Safari
+          await silentAudio.play();
+          console.log('Stream de áudio direta iniciada nativamente via Cloudflare Gateway em:', playerCurrentTime);
+          
+          // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
+          sendPlayerCommand('mute');
+          return;
+        } catch (e) {
+          console.warn('Erro ao reproduzir áudio do Cloudflare Gateway:', e);
+        }
+      }
+
+      // 2. Fallback Secundário: Corrida/Busca sequencial em instâncias públicas do Invidious
+      console.warn('[Gateway] Falhou ou retornou vazio. Ativando fallback Invidious...');
       
       // Lista de instâncias a tentar (prioriza a instância de busca atual se estiver funcionando)
       let instancesToTry = [];
@@ -1213,25 +1312,8 @@
       }
       
       // Adiciona as instâncias de fallback e busca dinâmicas
-      try {
-        const res = await fetch('https://api.invidious.io/instances.json');
-        if (res.ok) {
-          const instancesJson = await res.json();
-          for (const [name, info] of instancesJson) {
-            if (info.type === 'https' && info.api && info.cors) {
-              const uri = info.uri || `https://${name}`;
-              if (!instancesToTry.includes(uri)) {
-                instancesToTry.push(uri);
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Erro ao carregar instâncias dinâmicas de áudio:', e);
-      }
-      
-      // Garante que temos as instâncias padrão de fallback se a lista estiver vazia
-      FALLBACK_INSTANCES.forEach(inst => {
+      const sourceList = dynamicInvidiousInstances.length > 0 ? dynamicInvidiousInstances : FALLBACK_INSTANCES;
+      sourceList.forEach(inst => {
         if (!instancesToTry.includes(inst)) {
           instancesToTry.push(inst);
         }
@@ -1263,6 +1345,9 @@
             silentAudio.load(); // Exigido pelo iOS Safari
             await silentAudio.play();
             console.log(`Stream de áudio direta iniciada nativamente via Invidious latest_version (${instance}) em:`, playerCurrentTime);
+            
+            // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
+            sendPlayerCommand('mute');
             return; // Sucesso absoluto!
           }
         } catch (e) {
@@ -1301,6 +1386,9 @@
               silentAudio.load();
               await silentAudio.play();
               console.log(`Stream de áudio direta iniciada via adaptiveFormats (${instance}) em:`, playerCurrentTime);
+              
+              // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
+              sendPlayerCommand('mute');
               return; // Sucesso absoluto!
             }
           }
@@ -1332,6 +1420,9 @@
               silentAudio.load();
               await silentAudio.play();
               console.log(`Stream de áudio direta iniciada via Piped backup (${instance}) em:`, playerCurrentTime);
+              
+              // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
+              sendPlayerCommand('mute');
               return;
             }
           }
@@ -1341,9 +1432,9 @@
         }
       }
       
-      console.warn('Erro ao carregar áudio nativo em todas as opções. Desmutando iframe de fallback.', lastError);
+      console.warn('Erro ao carregar áudio nativo em todas as opções. Mantendo iframe com áudio ligado.', lastError);
       
-      // Fallback: Desmuta o iframe para que o usuário ouça pelo iframe no primeiro plano
+      // Fallback: Mantém o iframe desmutado
       sendPlayerCommand('unmute');
       
       // Mantém o loop de silêncio ativo para que o Safari mantenha a aba ativa no background
@@ -1430,6 +1521,16 @@
           card.tabIndex = 0;
           card.onclick = () => playVideo(videoId, title);
           card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(videoId, title); };
+
+          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+          const prefetchStream = () => {
+            if (!streamUrlCache.has(videoId)) {
+              console.log(`🔮 Pré-buscando URL via toque/hover para ${videoId}`);
+              fetchStreamUrlFromGateway(videoId).catch(() => {});
+            }
+          };
+          card.addEventListener('mouseenter', prefetchStream, { once: true });
+          card.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
           
           card.innerHTML = `
             <div class="thumbnail-wrapper">
@@ -1504,6 +1605,19 @@
       playerCurrentTime = 0;
       playerDuration = videoItem.lengthSeconds || 0;
 
+      // Recupera o progresso salvo
+      const progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
+      const savedTime = progress[videoId];
+      let startParam = '';
+      if (savedTime && savedTime > 5) {
+        startParam = `&start=${savedTime}`;
+        playerCurrentTime = savedTime;
+        // Mostra uma notificação toast
+        setTimeout(() => {
+          showToast(`Continuando de onde parou (${formatDuration(savedTime)})`);
+        }, 1000);
+      }
+
       // Dispara a busca em background da stream de áudio real para caso o usuário bloqueie a tela
       prefetchAudioStream(videoId);
 
@@ -1514,8 +1628,8 @@
         console.log('Autoplay silencioso aguardando interação física:', err);
       });
 
-      // Habilita a API Javascript do YouTube (enablejsapi=1) e carrega mutado (mute=1) para rodar o áudio via tag nativa da página
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1&mute=1`;
+      // Habilita a API Javascript do YouTube (enablejsapi=1) e carrega DESMUTADO por padrão para início instantâneo de áudio
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1${startParam}`;
       
       document.getElementById('activeUrl').innerText = videoItem.title;
       
@@ -1589,6 +1703,43 @@
       }
     }
 
+    // === LÓGICA DE PROGRESSO DE HISTÓRICO DE REPRODUÇÃO ===
+    let lastSavedTime = 0;
+    
+    function savePlaybackProgress(videoId, time) {
+      if (!videoId) return;
+      
+      // Limpa progresso se o vídeo terminou ou está nos últimos 8 segundos
+      if (playerDuration > 0 && (playerDuration - time) < 8) {
+        let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
+        delete progress[videoId];
+        localStorage.setItem('livreplay_playback_progress', JSON.stringify(progress));
+        return;
+      }
+      
+      const now = Date.now();
+      if (now - lastSavedTime < 3000) return; // Limita a gravação a cada 3 segundos
+      lastSavedTime = now;
+      
+      let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
+      progress[videoId] = Math.floor(time);
+      localStorage.setItem('livreplay_playback_progress', JSON.stringify(progress));
+    }
+
+    function toggleCinemaMode() {
+      const body = document.body;
+      const btn = document.getElementById('cinemaToggleBtn');
+      const isCinema = body.classList.toggle('cinema-mode');
+      
+      if (isCinema) {
+        btn.classList.add('active');
+        showToast('Modo Cinema Ativado');
+      } else {
+        btn.classList.remove('active');
+        showToast('Modo Cinema Desativado');
+      }
+    }
+
     // Escuta e processa o feedback de reprodução do Iframe do YouTube via PostMessage API
     window.addEventListener('message', (event) => {
       if (!event.origin.includes('youtube')) return;
@@ -1622,6 +1773,11 @@
               }
             }
             updateMediaSessionPosition();
+
+            // Salva o progresso
+            if (currentlyPlayingVideo) {
+              savePlaybackProgress(currentlyPlayingVideo.videoId, playerCurrentTime);
+            }
           }
           if (data.info.duration !== undefined) {
             playerDuration = data.info.duration;
@@ -1634,10 +1790,9 @@
 
     // Controla o ciclo de vida do áudio silencioso e sincroniza com a MediaSession
     function handlePlayerStateChange(state) {
-      if (isBackgroundMode) return; // Ignora atualizações do Iframe quando o áudio nativo de background está comandando
-      // 1 = Playing (Tocando), 2 = Paused (Pausado), 0 = Ended (Terminado), 3 = Buffering
+      if (isBackgroundMode) return; // Ignora updates no background
+      // 1 = Playing, 2 = Paused, 0 = Ended, 3 = Buffering
       if (state === 1) {
-        // Se o player iniciou, forçamos o áudio silencioso a tocar junto para travar o áudio no SO
         if (silentAudio.paused) {
           silentAudio.play().catch(() => {});
         }
@@ -1645,17 +1800,23 @@
           navigator.mediaSession.playbackState = 'playing';
         }
       } else if (state === 2) {
-        // Se pausou, pausamos o áudio silencioso para conservar energia do SO
         silentAudio.pause();
         if ('mediaSession' in navigator) {
           navigator.mediaSession.playbackState = 'paused';
         }
       } else if (state === 0) {
-        // Se acabou, pausamos o áudio silencioso e mostramos o overlay de recomendados
         silentAudio.pause();
         if ('mediaSession' in navigator) {
           navigator.mediaSession.playbackState = 'paused';
         }
+
+        // Limpa o progresso salvo
+        if (currentlyPlayingVideo) {
+          let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
+          delete progress[currentlyPlayingVideo.videoId];
+          localStorage.setItem('livreplay_playback_progress', JSON.stringify(progress));
+        }
+
         showRecommendationsOverlay();
       }
     }
@@ -1823,6 +1984,16 @@
           div.tabIndex = 0;
           div.onclick = () => playVideo(item.videoId, item.title);
           div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+
+          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+          const prefetchStream = () => {
+            if (!streamUrlCache.has(item.videoId)) {
+              console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
+              fetchStreamUrlFromGateway(item.videoId).catch(() => {});
+            }
+          };
+          div.addEventListener('mouseenter', prefetchStream, { once: true });
+          div.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
           
           div.innerHTML = `
             <div class="carousel-thumb-wrapper">
@@ -1857,6 +2028,16 @@
           div.tabIndex = 0;
           div.onclick = () => playVideo(item.videoId, item.title);
           div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+
+          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+          const prefetchStream = () => {
+            if (!streamUrlCache.has(item.videoId)) {
+              console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
+              fetchStreamUrlFromGateway(item.videoId).catch(() => {});
+            }
+          };
+          div.addEventListener('mouseenter', prefetchStream, { once: true });
+          div.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
           
           div.innerHTML = `
             <div class="carousel-thumb-wrapper">
@@ -1895,6 +2076,16 @@
         card.tabIndex = 0;
         card.onclick = () => playVideo(item.videoId, item.title);
         card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
+
+        // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+        const prefetchStream = () => {
+          if (!streamUrlCache.has(item.videoId)) {
+            console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
+            fetchStreamUrlFromGateway(item.videoId).catch(() => {});
+          }
+        };
+        card.addEventListener('mouseenter', prefetchStream, { once: true });
+        card.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
         
         card.innerHTML = `
           <img class="mini-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
@@ -1950,6 +2141,16 @@
             playVideo(item.videoId, item.title);
           }
         };
+
+        // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+        const prefetchStream = () => {
+          if (!streamUrlCache.has(item.videoId)) {
+            console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
+            fetchStreamUrlFromGateway(item.videoId).catch(() => {});
+          }
+        };
+        card.addEventListener('mouseenter', prefetchStream, { once: true });
+        card.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
         
         card.innerHTML = `
           <img class="overlay-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
@@ -1964,6 +2165,14 @@
     
     function replayCurrentVideo() {
       document.getElementById('recommendationsOverlay').style.display = 'none';
+      
+      // Limpa progresso ao repetir
+      if (currentlyPlayingVideo) {
+        let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
+        delete progress[currentlyPlayingVideo.videoId];
+        localStorage.setItem('livreplay_playback_progress', JSON.stringify(progress));
+      }
+
       sendPlayerCommand('seekTo', [0, true]);
       sendPlayerCommand('playVideo');
       
@@ -2013,6 +2222,9 @@
 
     // Monitora o carregamento do iframe para desativar o spinner automaticamente
     window.addEventListener('DOMContentLoaded', async () => {
+      // Pré-carrega as instâncias Invidious dinamicamente para maior velocidade
+      await loadDynamicInstances();
+
       const iframe = document.getElementById('browserIframe');
       iframe.addEventListener('load', () => {
         document.getElementById('loading').classList.remove('active');
