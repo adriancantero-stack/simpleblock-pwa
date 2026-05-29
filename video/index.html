@@ -198,10 +198,135 @@
     .go-btn:active { transform:translateY(-50%) scale(0.94); }
     .go-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.5; }
 
-
     .action-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
 
-    /* Removed old features and tv notice styles to keep it ultra-minimalist and elegant */
+    /* ================= THEME PILLS (FILTROS RÁPIDOS) ================= */
+    .theme-pills-wrapper {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .theme-pills-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .theme-pills-scroll::-webkit-scrollbar { display: none; }
+    .theme-pill {
+      flex: 0 0 auto;
+      padding: 7px 16px;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .theme-pill:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    .theme-pill.active {
+      background: rgba(255, 59, 48, 0.15);
+      border-color: rgba(255, 59, 48, 0.4);
+      color: var(--accent);
+    }
+    .theme-pill-add {
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px dashed rgba(255,255,255,0.2);
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: var(--transition);
+      font-family: inherit;
+      line-height: 1;
+    }
+    .theme-pill-add:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .theme-pill-remove {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 0 0 0 2px;
+      line-height: 1;
+      transition: var(--transition);
+      display: inline-flex;
+    }
+    .theme-pill-remove:hover { color: var(--accent); }
+
+    /* ================= CANAIS FAVORITOS ================= */
+    .fav-channels-section {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .fav-channels-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .fav-channels-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .fav-channels-scroll::-webkit-scrollbar { display: none; }
+    .fav-channel-avatar {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .fav-channel-avatar:hover { transform: translateY(-3px); }
+    .fav-channel-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+    .fav-channel-name {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 56px;
+      text-align: center;
+    }
 
     /* Loading */
     .loading { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:100; place-items:center; }
@@ -303,6 +428,36 @@
       color: #fff;
     }
 
+    /* Botão de fila (+) nos cards de busca */
+    .queue-add-btn {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 28px;
+      height: 28px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      line-height: 1;
+      font-family: inherit;
+      transition: var(--transition);
+      opacity: 0;
+    }
+    .video-card:hover .queue-add-btn,
+    .video-card:focus-within .queue-add-btn {
+      opacity: 1;
+    }
+    .queue-add-btn:hover {
+      background: rgba(255,59,48,0.7);
+      border-color: var(--accent);
+    }
+
     .video-info {
       padding: 16px;
       display: flex;
@@ -330,6 +485,31 @@
       text-overflow: ellipsis;
     }
 
+    /* Botão de sino (canal favorito) nos cards */
+    .channel-follow-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 2px;
+      display: inline-flex;
+      align-items: center;
+      transition: var(--transition);
+      vertical-align: middle;
+    }
+    .channel-follow-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .channel-follow-btn.following svg {
+      fill: #ffd60a;
+      stroke: #ffd60a;
+    }
+    .channel-follow-btn:hover { color: #ffd60a; }
+
     /* ================= BROWSER VIEW (INTEGRATED IFRAME) ================= */
     .browser-view {
       position: fixed;
@@ -348,6 +528,49 @@
       opacity: 1;
       pointer-events: all;
     }
+
+    /* ================= MINIMIZED PLAYER (FLOATING PIP) ================= */
+    .browser-view.minimized-mode {
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+      pointer-events: all !important;
+      width: 280px;
+      height: 200px;
+      bottom: calc(20px + var(--safe-bottom));
+      right: 16px;
+      top: auto;
+      left: auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
+      z-index: 9999;
+    }
+    .browser-view.minimized-mode .browser-header {
+      padding: 8px 10px;
+      padding-top: 8px;
+      gap: 6px;
+    }
+    .browser-view.minimized-mode .browser-address-bar { display: none; }
+    .browser-view.minimized-mode .browser-btn span { display: none; }
+    .browser-view.minimized-mode .browser-btn { padding: 6px; }
+    .browser-view.minimized-mode .browser-action-btn { width: 28px; height: 28px; }
+    .browser-view.minimized-mode .player-sidebar { display: none !important; }
+    .browser-view.minimized-mode #audioOnlyPanel { display: none !important; }
+    /* Overlay de clique para maximizar o mini player */
+    .pip-maximize-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      cursor: pointer;
+      background: transparent;
+    }
+    .browser-view.minimized-mode .pip-maximize-overlay {
+      display: block;
+    }
+    .browser-view.minimized-mode .pip-maximize-overlay:hover {
+      background: rgba(255,255,255,0.05);
+    }
     
     .browser-header {
       display: flex;
@@ -360,6 +583,8 @@
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       gap: 16px;
+      position: relative;
+      z-index: 10;
     }
 
     .browser-btn {
@@ -444,6 +669,11 @@
       fill: none;
       stroke-width: 2;
     }
+    .browser-action-btn.active {
+      color: var(--accent);
+      background: rgba(255, 59, 48, 0.15);
+      border-color: rgba(255, 59, 48, 0.3);
+    }
 
     .iframe-wrapper {
       flex: 1;
@@ -459,6 +689,96 @@
       border: none;
       background: #000;
     }
+
+    /* ================= PAINEL AUDIO ONLY ================= */
+    #audioOnlyPanel {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      background: #000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    #audioOnlyPanel.active { display: flex; }
+    .audio-only-thumb {
+      width: 140px;
+      height: 140px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+    .audio-only-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.3;
+    }
+    .audio-only-author {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    /* Ondas decorativas */
+    .audio-waves {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 28px;
+    }
+    .audio-wave-bar {
+      width: 4px;
+      border-radius: 2px;
+      background: var(--accent);
+      animation: waveAnim 1.2s ease-in-out infinite;
+    }
+    .audio-wave-bar:nth-child(1) { height: 10px; animation-delay: 0s; }
+    .audio-wave-bar:nth-child(2) { height: 20px; animation-delay: 0.15s; }
+    .audio-wave-bar:nth-child(3) { height: 28px; animation-delay: 0.3s; }
+    .audio-wave-bar:nth-child(4) { height: 16px; animation-delay: 0.45s; }
+    .audio-wave-bar:nth-child(5) { height: 22px; animation-delay: 0.6s; }
+    .audio-wave-bar:nth-child(6) { height: 12px; animation-delay: 0.75s; }
+    @keyframes waveAnim {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.7; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* Gesture zones */
+    .gesture-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 20%;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: all;
+    }
+    #gestureZoneLeft { left: 0; }
+    #gestureZoneRight { right: 0; }
+    .gesture-feedback {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .gesture-feedback.show { opacity: 1; }
+    #gestureZoneLeft .gesture-feedback { left: 12px; }
+    #gestureZoneRight .gesture-feedback { right: 12px; }
     
     /* Overlay de Recomendados ao Fim do Vídeo (Netflix/Youtube Style) */
     .recommendations-overlay {
@@ -606,6 +926,63 @@
       color: var(--accent);
       background: rgba(255, 59, 48, 0.15);
       border-color: rgba(255, 59, 48, 0.3);
+    }
+
+    /* ================= FILA DE REPRODUÇÃO ================= */
+    .queue-section {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .queue-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .queue-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .queue-clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .queue-clear-btn:hover { color: var(--accent); }
+    .queue-item {
+      display: flex;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      align-items: center;
+    }
+    .queue-item:hover { background: rgba(255,255,255,0.06); }
+    .queue-item-thumb {
+      width: 60px;
+      aspect-ratio: 16/9;
+      border-radius: 6px;
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .queue-item-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
     }
 
     .sidebar-title {
@@ -868,14 +1245,13 @@
         pointer-events: none;
       }
       .iframe-wrapper {
-        height: auto; /* Permite flexbox alinhar com a barra lateral abaixo sem transbordamento */
+        height: auto;
       }
     }
 
     /* ================= RESPONSIVIDADE ================= */
     /* Mobile (< 768px) */
     @media (max-width: 767px) {
-
       .features { grid-template-columns: 1fr; }
       .feature { flex-direction: row; gap: 12px; text-align: left; padding: 14px; }
       .feature-icon { margin-bottom: 0; }
@@ -885,6 +1261,10 @@
       .browser-btn { padding: 8px; border-radius: 12px; }
       .browser-address-bar { max-width: 180px; }
       .results-grid { grid-template-columns: 1fr; }
+      .browser-view.minimized-mode {
+        width: 220px;
+        height: 160px;
+      }
     }
 
     /* Telas Médias e Pequenas (Stack Vibe) */
@@ -904,10 +1284,11 @@
     @media (max-width: 480px) {
       .browser-header {
         padding: 8px 12px;
+        padding-top: calc(8px + var(--safe-top));
         gap: 8px;
       }
       .browser-address-bar {
-        display: none; /* Oculta a barra para dar espaço total aos botões e evitar encavalamento */
+        display: none;
       }
     }
 
@@ -950,10 +1331,60 @@
       opacity: 1;
     }
 
-    /* Removed old features and tv notice tv-mode styles to keep it ultra-minimalist */
-
     /* Foco explícito para TV/Teclado */
     .focusable:focus-visible { outline: none; box-shadow: var(--focus-ring); transform: scale(1.02); }
+
+    /* Modal de adicionar pill */
+    .pill-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 20000;
+      align-items: center;
+      justify-content: center;
+    }
+    .pill-modal-overlay.active { display: flex; }
+    .pill-modal {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px;
+      width: 90%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pill-modal h3 { font-size: 18px; font-weight: 600; }
+    .pill-modal input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+    }
+    .pill-modal input:focus { border-color: var(--accent); }
+    .pill-modal-btns { display: flex; gap: 10px; }
+    .pill-modal-btns button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+    }
+    .pill-modal-btns .btn-cancel { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+    .pill-modal-btns .btn-add { background: var(--accent); color: #fff; }
+    .pill-modal-btns .btn-add:hover { background: var(--accent-hover); }
   </style>
 </head>
 <body>
@@ -975,20 +1406,32 @@
     <p class="subtitle">Simples. Rápido. Sem Anúncios.</p>
     
     <div class="search-container">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="text" class="search-box focusable" id="urlInput" placeholder="Cole o Link do Youtube ou Pesquise..." autocomplete="off" onkeypress="handleKeyPress(event)">
       <button class="go-btn focusable" onclick="navigate()" aria-label="Abrir">
         <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
+
+    <!-- THEME PILLS (FILTROS RÁPIDOS) -->
+    <div class="theme-pills-wrapper" id="themePillsWrapper">
+      <div class="theme-pills-scroll" id="themePillsScroll">
+        <!-- Renderizado via JS -->
+      </div>
+    </div>
+
+    <!-- CANAIS FAVORITOS -->
+    <div class="fav-channels-section" id="favChannelsSection" style="display:none;">
+      <p class="fav-channels-label">Canais Seguidos</p>
+      <div class="fav-channels-scroll" id="favChannelsScroll"></div>
+    </div>
     
-    <div style="text-align: center; margin-top: 16px; margin-bottom: 32px;">
+    <div style="text-align: center; margin-top: 8px; margin-bottom: 24px;">
       <button onclick="openSupportModal()" style="background: rgba(29, 185, 84, 0.1); color: #1DB954; border: 1px solid rgba(29, 185, 84, 0.3); padding: 6px 14px; border-radius: 16px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; transition: all 0.2s;" onmouseover="this.style.background='rgba(29, 185, 84, 0.2)'" onmouseout="this.style.background='rgba(29, 185, 84, 0.1)'">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         <span>Apoiar Projeto</span>
       </button>
     </div>
-
-
 
     <!-- SEÇÃO DE HISTÓRICO E FAVORITOS -->
     <div class="user-sections" id="userSections" style="display: none;">
@@ -1039,6 +1482,19 @@
         <span id="activeUrl">youtube.com</span>
       </div>
       <div class="browser-actions">
+        <!-- Botão Minimizar (PiP) -->
+        <button class="browser-action-btn focusable" id="minimizeBtn" onclick="toggleMinimize()" aria-label="Minimizar" title="Minimizar Player">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+            <line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>
+          </svg>
+        </button>
+        <!-- Botão Áudio Only -->
+        <button class="browser-action-btn focusable" id="audioOnlyBtn" onclick="toggleAudioOnly()" aria-label="Modo Somente Áudio" title="Somente Áudio (economiza dados)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
+        </button>
         <button class="browser-action-btn focusable" onclick="shareCurrentVideo()" aria-label="Compartilhar" title="Compartilhar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -1062,7 +1518,33 @@
     </div>
     <div class="player-content-layout">
       <div class="iframe-wrapper">
+        <!-- Overlay para maximizar ao clicar no mini player -->
+        <div class="pip-maximize-overlay" id="pipMaximizeOverlay" onclick="toggleMinimize()"></div>
+
+        <!-- Gesture Zones para double-tap -->
+        <div class="gesture-zone" id="gestureZoneLeft">
+          <div class="gesture-feedback" id="gestureLeftFeedback">⏪ 10s</div>
+        </div>
+        <div class="gesture-zone" id="gestureZoneRight">
+          <div class="gesture-feedback" id="gestureRightFeedback">10s ⏩</div>
+        </div>
+
         <iframe id="browserIframe" name="browserIframe" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+        
+        <!-- Painel Áudio Only -->
+        <div id="audioOnlyPanel">
+          <img class="audio-only-thumb" id="audioOnlyThumb" src="" alt="Capa do Vídeo">
+          <div class="audio-only-title" id="audioOnlyTitle">Carregando...</div>
+          <div class="audio-only-author" id="audioOnlyAuthor"></div>
+          <div class="audio-waves">
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+          </div>
+        </div>
         
         <!-- Overlay de Recomendados ao Fim do Vídeo (Netflix/Youtube Style) -->
         <div class="recommendations-overlay" id="recommendationsOverlay" style="display: none;">
@@ -1083,6 +1565,14 @@
         </div>
       </div>
       <div class="player-sidebar" id="playerSidebar">
+        <!-- Fila de Reprodução -->
+        <div class="queue-section" id="queueSection" style="display:none;">
+          <div class="queue-header">
+            <span class="queue-label">▶ Fila</span>
+            <button class="queue-clear-btn" onclick="clearQueue()">Limpar</button>
+          </div>
+          <div id="queueList"></div>
+        </div>
         <h3 class="sidebar-title">Recomendados</h3>
         <div class="sidebar-grid" id="sidebarGrid"></div>
       </div>
@@ -1112,6 +1602,18 @@
     </div>
   </div>
 
+  <!-- Modal Adicionar Pill -->
+  <div class="pill-modal-overlay" id="pillModalOverlay" onclick="closePillModal(event)">
+    <div class="pill-modal" id="pillModal">
+      <h3>Adicionar Filtro</h3>
+      <input type="text" id="pillInput" placeholder="Ex: Lofi, Tech, Culinária..." maxlength="30" onkeypress="handlePillInputKey(event)">
+      <div class="pill-modal-btns">
+        <button class="btn-cancel" onclick="closePillModalForce()">Cancelar</button>
+        <button class="btn-add" onclick="addCustomPill()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Lista de fallback de instâncias Invidious que costumam suportar CORS e buscas direta
     const FALLBACK_INSTANCES = [
@@ -1131,6 +1633,282 @@
     // Detecção Smart TV
     const isTV = /smart-tv|smarttv|googletv|hdmi|netcast|appletv|web0s|webos/i.test(navigator.userAgent) || window.innerWidth > 1400;
     if (isTV) document.body.classList.add('tv-mode');
+
+    // ================= THEME PILLS =================
+    const DEFAULT_PILLS = ['🎵 Lofi', '💻 Tecnologia', '🎶 Música', '🎮 Games', '📰 Notícias'];
+    let customPills = JSON.parse(localStorage.getItem('livreplay_pills') || '[]');
+    let activePill = null;
+
+    function getAllPills() {
+      return [...DEFAULT_PILLS, ...customPills];
+    }
+
+    function renderThemePills() {
+      const scroll = document.getElementById('themePillsScroll');
+      scroll.innerHTML = '';
+      getAllPills().forEach(pill => {
+        const btn = document.createElement('button');
+        btn.className = 'theme-pill focusable' + (activePill === pill ? ' active' : '');
+        btn.onclick = () => onPillClick(pill, btn);
+
+        const isCustom = customPills.includes(pill);
+        btn.innerHTML = pill + (isCustom ? ` <button class="theme-pill-remove" onclick="removePill(event,'${pill.replace(/'/g,"\\'")}')">✕</button>` : '');
+        scroll.appendChild(btn);
+      });
+
+      // Botão + para adicionar
+      const addBtn = document.createElement('button');
+      addBtn.className = 'theme-pill-add';
+      addBtn.title = 'Adicionar filtro';
+      addBtn.innerHTML = '+';
+      addBtn.onclick = openPillModal;
+      scroll.appendChild(addBtn);
+    }
+
+    function onPillClick(pill, btn) {
+      if (activePill === pill) {
+        activePill = null;
+        renderThemePills();
+        return;
+      }
+      activePill = pill;
+      renderThemePills();
+      // Remove emoji e pesquisa apenas o texto
+      const query = pill.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\s*/gu, '').trim();
+      searchAndRender(query);
+    }
+
+    function removePill(e, pill) {
+      e.stopPropagation();
+      customPills = customPills.filter(p => p !== pill);
+      localStorage.setItem('livreplay_pills', JSON.stringify(customPills));
+      if (activePill === pill) activePill = null;
+      renderThemePills();
+    }
+
+    function openPillModal() {
+      document.getElementById('pillModalOverlay').classList.add('active');
+      setTimeout(() => document.getElementById('pillInput').focus(), 100);
+    }
+    function closePillModalForce() {
+      document.getElementById('pillModalOverlay').classList.remove('active');
+      document.getElementById('pillInput').value = '';
+    }
+    function closePillModal(e) {
+      if (e.target.id === 'pillModalOverlay') closePillModalForce();
+    }
+    function handlePillInputKey(e) { if (e.key === 'Enter') addCustomPill(); }
+    function addCustomPill() {
+      const val = document.getElementById('pillInput').value.trim();
+      if (!val) return;
+      if (!customPills.includes(val)) {
+        customPills.push(val);
+        localStorage.setItem('livreplay_pills', JSON.stringify(customPills));
+      }
+      closePillModalForce();
+      renderThemePills();
+    }
+
+    // ================= CANAIS FAVORITOS =================
+    // Gradientes para avatares
+    const CHANNEL_GRADIENTS = [
+      'linear-gradient(135deg,#ff3b30,#ff6b35)',
+      'linear-gradient(135deg,#5856d6,#bf5af2)',
+      'linear-gradient(135deg,#007aff,#34aadc)',
+      'linear-gradient(135deg,#ff2d55,#ff6b81)',
+      'linear-gradient(135deg,#34c759,#30d158)',
+      'linear-gradient(135deg,#ff9f0a,#ffd60a)',
+      'linear-gradient(135deg,#32ade6,#5ac8fa)',
+      'linear-gradient(135deg,#ff6b6b,#feca57)',
+    ];
+
+    function getFollowedChannels() {
+      return JSON.parse(localStorage.getItem('livreplay_followed_channels') || '[]');
+    }
+
+    function saveFollowedChannels(channels) {
+      localStorage.setItem('livreplay_followed_channels', JSON.stringify(channels));
+    }
+
+    function isChannelFollowed(channelName) {
+      return getFollowedChannels().some(c => c.name === channelName);
+    }
+
+    function toggleFollowChannel(channelName) {
+      let channels = getFollowedChannels();
+      const idx = channels.findIndex(c => c.name === channelName);
+      if (idx >= 0) {
+        channels.splice(idx, 1);
+        showToast(`🔕 Deixou de seguir ${channelName}`);
+      } else {
+        const gradIdx = channels.length % CHANNEL_GRADIENTS.length;
+        channels.unshift({ name: channelName, gradient: CHANNEL_GRADIENTS[gradIdx] });
+        showToast(`🔔 Seguindo ${channelName}`);
+      }
+      saveFollowedChannels(channels);
+      renderFavChannels();
+      return idx < 0; // retorna true se acabou de seguir
+    }
+
+    function renderFavChannels() {
+      const channels = getFollowedChannels();
+      const section = document.getElementById('favChannelsSection');
+      const scroll = document.getElementById('favChannelsScroll');
+      if (channels.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      scroll.innerHTML = '';
+      channels.forEach(ch => {
+        const initials = ch.name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('');
+        const div = document.createElement('div');
+        div.className = 'fav-channel-avatar';
+        div.title = ch.name;
+        div.onclick = () => {
+          searchAndRender(ch.name);
+        };
+        div.innerHTML = `
+          <div class="fav-channel-circle" style="background:${ch.gradient}">${initials}</div>
+          <span class="fav-channel-name">${ch.name.split(' ')[0]}</span>
+        `;
+        scroll.appendChild(div);
+      });
+    }
+
+    // ================= FILA DE REPRODUÇÃO =================
+    let videoQueue = [];
+
+    function addToQueue(videoItem) {
+      if (videoQueue.some(v => v.videoId === videoItem.videoId)) {
+        showToast('Já está na fila');
+        return;
+      }
+      videoQueue.push(videoItem);
+      showToast(`➕ Adicionado à fila: ${videoItem.title.slice(0, 30)}...`);
+      renderQueue();
+    }
+
+    function clearQueue() {
+      videoQueue = [];
+      renderQueue();
+    }
+
+    function renderQueue() {
+      const section = document.getElementById('queueSection');
+      const list = document.getElementById('queueList');
+      if (videoQueue.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      list.innerHTML = '';
+      videoQueue.forEach((item, idx) => {
+        const thumb = item.videoThumbnails && item.videoThumbnails.find(t => t.quality === 'medium' || t.quality === 'default')?.url
+          || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+        const div = document.createElement('div');
+        div.className = 'queue-item';
+        div.innerHTML = `
+          <img class="queue-item-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
+          <div class="queue-item-title">${item.title}</div>
+        `;
+        div.onclick = () => {
+          videoQueue.splice(idx, 1);
+          playVideo(item.videoId, item.title);
+        };
+        list.appendChild(div);
+      });
+    }
+
+    function playNextInQueue() {
+      if (videoQueue.length === 0) return false;
+      const next = videoQueue.shift();
+      renderQueue();
+      playVideo(next.videoId, next.title);
+      return true;
+    }
+
+    // ================= AUDIO ONLY MODE =================
+    let isAudioOnly = false;
+
+    function toggleAudioOnly() {
+      isAudioOnly = !isAudioOnly;
+      const btn = document.getElementById('audioOnlyBtn');
+      const panel = document.getElementById('audioOnlyPanel');
+      const iframe = document.getElementById('browserIframe');
+
+      if (isAudioOnly) {
+        btn.classList.add('active');
+        panel.classList.add('active');
+        // Atualiza dados do painel
+        if (currentlyPlayingVideo) {
+          const vid = currentlyPlayingVideo;
+          document.getElementById('audioOnlyThumb').src = `https://i.ytimg.com/vi/${vid.videoId}/mqdefault.jpg`;
+          document.getElementById('audioOnlyTitle').textContent = vid.title || 'Carregando...';
+          document.getElementById('audioOnlyAuthor').textContent = vid.author || '';
+        }
+        // Muta o iframe para economizar dados (somente áudio via silentAudio)
+        sendPlayerCommand('mute');
+        showToast('🎵 Modo Somente Áudio ativado');
+      } else {
+        btn.classList.remove('active');
+        panel.classList.remove('active');
+        sendPlayerCommand('unmute');
+        showToast('🎬 Voltando ao vídeo');
+      }
+    }
+
+    // ================= MINI PLAYER (PiP) =================
+    let isMinimized = false;
+
+    function toggleMinimize() {
+      const view = document.getElementById('browserView');
+      isMinimized = !isMinimized;
+      if (isMinimized) {
+        view.classList.add('minimized-mode');
+        showToast('Player minimizado');
+        // Mostra a home/resultados embaixo
+        if (document.getElementById('searchResultsView').classList.contains('active')) {
+          // já está na tela de resultados, não faz nada
+        } else {
+          showHome();
+        }
+      } else {
+        view.classList.remove('minimized-mode');
+      }
+    }
+
+    // Gestos de toque duplo (double-tap) nas bordas
+    let tapTimerLeft = null;
+    let tapTimerRight = null;
+
+    function setupGestureZones() {
+      const leftZone = document.getElementById('gestureZoneLeft');
+      const rightZone = document.getElementById('gestureZoneRight');
+      const leftFeedback = document.getElementById('gestureLeftFeedback');
+      const rightFeedback = document.getElementById('gestureRightFeedback');
+
+      function showFeedback(el) {
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 700);
+      }
+
+      function handleDoubleTap(zone, side) {
+        zone.addEventListener('click', () => {
+          if (side === 'left') {
+            const newTime = Math.max(0, playerCurrentTime - 10);
+            sendPlayerCommand('seekTo', [newTime, true]);
+            showFeedback(leftFeedback);
+          } else {
+            const newTime = playerCurrentTime + 10;
+            sendPlayerCommand('seekTo', [newTime, true]);
+            showFeedback(rightFeedback);
+          }
+        });
+      }
+      handleDoubleTap(leftZone, 'left');
+      handleDoubleTap(rightZone, 'right');
+    }
 
     // Carrega instâncias dinâmicas uma única vez na inicialização
     async function loadDynamicInstances() {
@@ -1168,7 +1946,7 @@
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
         const res = await fetch(`${CLOUDFLARE_GATEWAY}?id=${videoId}`, { signal: controller.signal });
         clearTimeout(timeoutId);
         
@@ -1196,11 +1974,10 @@
       for (const instance of instancesToTry) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
           
           const searchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
           
-          // Realiza busca direta
           const res = await fetch(searchUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
           
@@ -1228,7 +2005,6 @@
       const val = document.getElementById('urlInput').value.trim();
       if (!val) return;
       
-      // Se for um link de vídeo direto do YouTube, extrai o ID e abre no player de forma direta
       const isYoutubeWatchUrl = val.includes('youtube.com/watch') || val.includes('youtu.be/');
       if (isYoutubeWatchUrl) {
         let videoId = '';
@@ -1257,11 +2033,10 @@
     let currentlyPlayingVideo = null;
     let currentInvidiousInstance = 'https://yewtu.be';
 
-    // Áudio silencioso em loop para impedir que o navegador/OS pause a reprodução em segundo plano (tela bloqueada ou app minimizado)
+    // Áudio silencioso em loop para impedir que o navegador/OS pause a reprodução em segundo plano
     const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA');
     silentAudio.loop = true;
     
-    // Variáveis globais para monitoramento de progresso e duração (usados no MediaSession e barra de progresso da tela de bloqueio)
     let playerCurrentTime = 0;
     let playerDuration = 0;
 
@@ -1275,12 +2050,11 @@
       'https://pipedapi.tokhmi.xyz'
     ];
 
-    // Carrega e reproduz a stream de áudio direta (CORS liberado e estável)
+    // Carrega e reproduz a stream de áudio direta
     async function prefetchAudioStream(videoId) {
       currentAudioStreamUrl = null;
       let lastError = null;
 
-      // 1. Tenta obter a URL via Cloudflare Worker Gateway dedicado (Alta performance, < 100ms)
       let streamUrl = await fetchStreamUrlFromGateway(videoId);
       
       if (streamUrl) {
@@ -1290,11 +2064,10 @@
           silentAudio.loop = false;
           silentAudio.currentTime = playerCurrentTime || 0;
           
-          silentAudio.load(); // Exigido pelo iOS Safari
+          silentAudio.load();
           await silentAudio.play();
           console.log('Stream de áudio direta iniciada nativamente via Cloudflare Gateway em:', playerCurrentTime);
           
-          // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
           sendPlayerCommand('mute');
           return;
         } catch (e) {
@@ -1302,16 +2075,13 @@
         }
       }
 
-      // 2. Fallback Secundário: Corrida/Busca sequencial em instâncias públicas do Invidious
       console.warn('[Gateway] Falhou ou retornou vazio. Ativando fallback Invidious...');
       
-      // Lista de instâncias a tentar (prioriza a instância de busca atual se estiver funcionando)
       let instancesToTry = [];
       if (currentInvidiousInstance) {
         instancesToTry.push(currentInvidiousInstance);
       }
       
-      // Adiciona as instâncias de fallback e busca dinâmicas
       const sourceList = dynamicInvidiousInstances.length > 0 ? dynamicInvidiousInstances : FALLBACK_INSTANCES;
       sourceList.forEach(inst => {
         if (!instancesToTry.includes(inst)) {
@@ -1321,41 +2091,35 @@
 
       console.log('Tentando extrair áudio de instâncias:', instancesToTry);
 
-      // Tenta primeiro as instâncias Invidious usando o endpoint de vídeo ou latest_version (que resolve perfeitamente)
       for (const instance of instancesToTry) {
         try {
-          // Primeiro tentamos o endpoint /latest_version?id=...&itag=140 que é 100% nativo M4A e evita IP-locking!
           const streamUrl = `${instance}/latest_version?id=${videoId}&itag=140`;
           
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s para testar conectividade da instância
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
           
-          // Faz um HEAD request rápido para verificar se a instância está viva e suporta o redirecionamento
           const headRes = await fetch(streamUrl, { method: 'HEAD', signal: controller.signal });
           clearTimeout(timeoutId);
           
           if (headRes.ok || headRes.status === 302 || headRes.status === 307) {
             currentAudioStreamUrl = streamUrl;
             
-            // Aponta o áudio local para a URL de redirecionamento dinâmica de áudio
             silentAudio.src = currentAudioStreamUrl;
             silentAudio.loop = false;
             silentAudio.currentTime = playerCurrentTime || 0;
             
-            silentAudio.load(); // Exigido pelo iOS Safari
+            silentAudio.load();
             await silentAudio.play();
             console.log(`Stream de áudio direta iniciada nativamente via Invidious latest_version (${instance}) em:`, playerCurrentTime);
             
-            // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
             sendPlayerCommand('mute');
-            return; // Sucesso absoluto!
+            return;
           }
         } catch (e) {
           console.warn(`Instância Invidious latest_version falhou ou rejeitou (${instance}):`, e);
           lastError = e;
         }
         
-        // Se o latest_version falhou, tentamos obter os adaptiveFormats do JSON para extrair o link direto
         try {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -1367,14 +2131,12 @@
             const data = await res.json();
             const adaptiveFormats = data.adaptiveFormats || [];
             
-            // Prioriza M4A para iOS/Android
             const audioStream = adaptiveFormats.find(f => f.type?.includes('audio/mp4') || f.container === 'm4a')
               || adaptiveFormats.find(f => f.type?.includes('audio'));
               
             if (audioStream && audioStream.url) {
               let finalUrl = audioStream.url;
               if (finalUrl.includes('googlevideo.com')) {
-                // Tenta usar o proxy da própria instância para evitar CORS e IP-locking
                 finalUrl = `${instance}/videoplayback${finalUrl.substring(finalUrl.indexOf('?'))}&local=true`;
               }
               
@@ -1387,9 +2149,8 @@
               await silentAudio.play();
               console.log(`Stream de áudio direta iniciada via adaptiveFormats (${instance}) em:`, playerCurrentTime);
               
-              // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
               sendPlayerCommand('mute');
-              return; // Sucesso absoluto!
+              return;
             }
           }
         } catch (e) {
@@ -1398,7 +2159,6 @@
         }
       }
 
-      // Se todas as instâncias Invidious falharem, tentamos as de Piped API como último recurso!
       for (const instance of PIPED_API_INSTANCES) {
         try {
           const controller = new AbortController();
@@ -1421,7 +2181,6 @@
               await silentAudio.play();
               console.log(`Stream de áudio direta iniciada via Piped backup (${instance}) em:`, playerCurrentTime);
               
-              // Sucesso! Transfere o controle de áudio silenciando o iframe do YouTube
               sendPlayerCommand('mute');
               return;
             }
@@ -1434,35 +2193,28 @@
       
       console.warn('Erro ao carregar áudio nativo em todas as opções. Mantendo iframe com áudio ligado.', lastError);
       
-      // Fallback: Mantém o iframe desmutado
       sendPlayerCommand('unmute');
       
-      // Mantém o loop de silêncio ativo para que o Safari mantenha a aba ativa no background
       silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
       silentAudio.loop = true;
       silentAudio.play().catch(() => {});
     }
 
-    // Transição Híbrida de Background (Vídeo em Primeiro Plano -> Áudio Nativo em Segundo Plano)
+    // Transição Híbrida de Background
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        // Bloqueou ou minimizou: muda para o modo de background nativo
         if (currentlyPlayingVideo && !silentAudio.paused) {
           isBackgroundMode = true;
-          // Pausa o iframe do YouTube para poupar largura de banda de vídeo e bateria
           sendPlayerCommand('pauseVideo');
           console.log('Entrou em segundo plano. Vídeo do Iframe pausado, áudio nativo continua tocando.');
         }
       } else {
-        // Voltou para o app: restaura o vídeo em primeiro plano e sincroniza
         if (isBackgroundMode) {
           isBackgroundMode = false;
           const currentTime = silentAudio.currentTime;
           
-          // Sincroniza o player de vídeo do YouTube com o áudio que estava tocando no fundo
           sendPlayerCommand('seekTo', [currentTime, true]);
           
-          // Se o áudio nativo está tocando, garante que o vídeo do YouTube também comece a tocar
           if (!silentAudio.paused) {
             sendPlayerCommand('playVideo');
           }
@@ -1471,17 +2223,20 @@
       }
     });
 
-    // Escuta eventos de fim do áudio nativo em background para parar tudo de forma limpa
+    // Escuta eventos de fim do áudio nativo em background
     silentAudio.addEventListener('ended', () => {
       if (isBackgroundMode) {
-        isBackgroundMode = false;
-        silentAudio.pause();
-        silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
-        silentAudio.loop = true;
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.playbackState = 'none';
+        // Tenta próximo na fila antes de encerrar
+        if (!playNextInQueue()) {
+          isBackgroundMode = false;
+          silentAudio.pause();
+          silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+          silentAudio.loop = true;
+          if ('mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = 'none';
+          }
+          console.log('Áudio de background finalizado.');
         }
-        console.log('Áudio de background finalizado.');
       }
     });
 
@@ -1522,7 +2277,7 @@
           card.onclick = () => playVideo(videoId, title);
           card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(videoId, title); };
 
-          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
+          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop)
           const prefetchStream = () => {
             if (!streamUrlCache.has(videoId)) {
               console.log(`🔮 Pré-buscando URL via toque/hover para ${videoId}`);
@@ -1531,15 +2286,23 @@
           };
           card.addEventListener('mouseenter', prefetchStream, { once: true });
           card.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
+
+          const isFollowed = isChannelFollowed(author);
           
           card.innerHTML = `
             <div class="thumbnail-wrapper">
               <img src="${thumbnail}" alt="${title}" loading="lazy">
               <span class="duration-tag">${duration}</span>
+              <button class="queue-add-btn focusable" title="Adicionar à fila" onclick="event.stopPropagation();addToQueue(${JSON.stringify({videoId,title,author,lengthSeconds:item.lengthSeconds,videoThumbnails:item.videoThumbnails}).replace(/"/g,'&quot;')})">+</button>
             </div>
             <div class="video-info">
               <h3 class="video-title">${title}</h3>
-              <p class="video-metadata">${author}</p>
+              <p class="video-metadata">
+                ${author}
+                <button class="channel-follow-btn ${isFollowed ? 'following' : ''}" title="${isFollowed ? 'Deixar de seguir' : 'Seguir canal'}" onclick="event.stopPropagation();handleFollowBtnClick(this,'${author.replace(/'/g,"\\'")}')" data-channel="${author}">
+                  <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+              </p>
               <p class="video-metadata">${views} • ${published}</p>
             </div>
           `;
@@ -1556,6 +2319,16 @@
       }
     }
 
+    function handleFollowBtnClick(btn, channelName) {
+      const nowFollowing = toggleFollowChannel(channelName);
+      btn.classList.toggle('following', nowFollowing);
+      btn.title = nowFollowing ? 'Deixar de seguir' : 'Seguir canal';
+      // Atualiza todos os botões deste canal na página
+      document.querySelectorAll(`.channel-follow-btn[data-channel="${channelName}"]`).forEach(b => {
+        b.classList.toggle('following', nowFollowing);
+      });
+    }
+
     // Formata segundos em HH:MM:SS
     function formatDuration(sec) {
       if (!sec) return '00:00';
@@ -1569,12 +2342,24 @@
       return res;
     }
 
-    // Toca o vídeo usando o player de Embed do YouTube, que ignora anúncios e funciona 100%
+    // Toca o vídeo usando o player de Embed do YouTube
     function playVideo(videoId, title) {
       document.getElementById('recommendationsOverlay').style.display = 'none';
       document.getElementById('loading').classList.add('active');
       
-      // Encontra os detalhes do vídeo nos resultados atuais ou no histórico/favoritos
+      // Sai do modo minimizado ao abrir vídeo
+      if (isMinimized) {
+        document.getElementById('browserView').classList.remove('minimized-mode');
+        isMinimized = false;
+      }
+
+      // Desativa áudio only ao iniciar novo vídeo
+      if (isAudioOnly) {
+        isAudioOnly = false;
+        document.getElementById('audioOnlyBtn').classList.remove('active');
+        document.getElementById('audioOnlyPanel').classList.remove('active');
+      }
+      
       let videoItem = currentSearchResults.find(v => v.videoId === videoId);
       if (!videoItem) {
         const history = JSON.parse(localStorage.getItem('livreplay_history') || '[]');
@@ -1582,7 +2367,6 @@
         videoItem = history.find(v => v.videoId === videoId) || favorites.find(v => v.videoId === videoId);
       }
       
-      // Se não encontrou, cria um item básico
       if (!videoItem) {
         videoItem = {
           videoId: videoId,
@@ -1597,7 +2381,7 @@
       
       // Salva no histórico local
       saveToHistory(videoItem);
-      
+
       // Atualiza o estado do botão de favoritos
       updateFavoriteButtonState(videoId);
 
@@ -1612,23 +2396,22 @@
       if (savedTime && savedTime > 5) {
         startParam = `&start=${savedTime}`;
         playerCurrentTime = savedTime;
-        // Mostra uma notificação toast
         setTimeout(() => {
           showToast(`Continuando de onde parou (${formatDuration(savedTime)})`);
         }, 1000);
       }
 
-      // Dispara a busca em background da stream de áudio real para caso o usuário bloqueie a tela
+      // Dispara a busca em background da stream de áudio real
       prefetchAudioStream(videoId);
 
-      // Inicia a âncora de áudio silencioso (necessário para impedir a suspensão da aba em segundo plano / tela bloqueada)
+      // Inicia a âncora de áudio silencioso
       silentAudio.play().then(() => {
         console.log('Sessão de áudio em segundo plano ativa');
       }).catch(err => {
         console.log('Autoplay silencioso aguardando interação física:', err);
       });
 
-      // Habilita a API Javascript do YouTube (enablejsapi=1) e carrega DESMUTADO por padrão para início instantâneo de áudio
+      // Habilita a API Javascript do YouTube
       const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1${startParam}`;
       
       document.getElementById('activeUrl').innerText = videoItem.title;
@@ -1638,7 +2421,7 @@
       
       document.getElementById('browserView').classList.add('active');
       
-      // Registra dados na MediaSession do dispositivo (Controles do Sistema Operacional / Tela de Bloqueio / Fones de Ouvido)
+      // Registra dados na MediaSession do dispositivo
       if ('mediaSession' in navigator) {
         try {
           navigator.mediaSession.metadata = new MediaMetadata({
@@ -1651,7 +2434,6 @@
             ]
           });
           
-          // Ações físicas de controle (Reproduzir, Pausar, Retroceder 10s, Avançar 10s e Controle Deslizante de Busca)
           navigator.mediaSession.setActionHandler('play', () => {
             sendPlayerCommand('playVideo');
           });
@@ -1683,8 +2465,8 @@
         }
       }
       
-      // Renderiza a barra lateral (Feature 2)
       renderSidebar();
+      renderQueue();
     }
 
     // Utilitário para enviar comandos remotos para o Iframe do YouTube
@@ -1709,7 +2491,6 @@
     function savePlaybackProgress(videoId, time) {
       if (!videoId) return;
       
-      // Limpa progresso se o vídeo terminou ou está nos últimos 8 segundos
       if (playerDuration > 0 && (playerDuration - time) < 8) {
         let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
         delete progress[videoId];
@@ -1718,7 +2499,7 @@
       }
       
       const now = Date.now();
-      if (now - lastSavedTime < 3000) return; // Limita a gravação a cada 3 segundos
+      if (now - lastSavedTime < 3000) return;
       lastSavedTime = now;
       
       let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
@@ -1752,11 +2533,9 @@
         
         if (!data) return;
         
-        // Sincronização do Estado do Player
         if (data.event === 'onStateChange') {
           handlePlayerStateChange(data.info);
         } 
-        // Monitoramento ativo de tempo, buffers e progresso
         else if (data.event === 'infoDelivery' && data.info) {
           if (data.info.playerState !== undefined) {
             handlePlayerStateChange(data.info.playerState);
@@ -1764,7 +2543,6 @@
           if (data.info.currentTime !== undefined) {
             playerCurrentTime = data.info.currentTime;
             
-            // Sincroniza o áudio nativo com o vídeo se houver um desvio perceptível (> 1.5s) e NÃO estivermos em background
             if (!isBackgroundMode && !silentAudio.paused) {
               const diff = Math.abs(silentAudio.currentTime - playerCurrentTime);
               if (diff > 1.5) {
@@ -1774,7 +2552,6 @@
             }
             updateMediaSessionPosition();
 
-            // Salva o progresso
             if (currentlyPlayingVideo) {
               savePlaybackProgress(currentlyPlayingVideo.videoId, playerCurrentTime);
             }
@@ -1784,13 +2561,13 @@
           }
         }
       } catch (err) {
-        // Silencia erros normais de parse causados por outras mensagens
+        // Silencia erros normais de parse
       }
     });
 
     // Controla o ciclo de vida do áudio silencioso e sincroniza com a MediaSession
     function handlePlayerStateChange(state) {
-      if (isBackgroundMode) return; // Ignora updates no background
+      if (isBackgroundMode) return;
       // 1 = Playing, 2 = Paused, 0 = Ended, 3 = Buffering
       if (state === 1) {
         if (silentAudio.paused) {
@@ -1810,14 +2587,16 @@
           navigator.mediaSession.playbackState = 'paused';
         }
 
-        // Limpa o progresso salvo
         if (currentlyPlayingVideo) {
           let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
           delete progress[currentlyPlayingVideo.videoId];
           localStorage.setItem('livreplay_playback_progress', JSON.stringify(progress));
         }
 
-        showRecommendationsOverlay();
+        // Tenta próximo na fila antes de mostrar recomendados
+        if (!playNextInQueue()) {
+          showRecommendationsOverlay();
+        }
       }
     }
 
@@ -1883,11 +2662,14 @@
       }
     }
 
+    // ================= COMPARTILHAR (Deep Link corrigido) =================
     async function shareCurrentVideo() {
       if (!currentlyPlayingVideo) return;
       const title = currentlyPlayingVideo.title;
       const author = currentlyPlayingVideo.author || 'LivrePlay';
-      const url = `https://livreplay.com/?v=${currentlyPlayingVideo.videoId}`;
+      // Deep link dinâmico: usa a URL atual do próprio app
+      const baseUrl = window.location.origin + window.location.pathname;
+      const url = `${baseUrl}?v=${currentlyPlayingVideo.videoId}`;
       const text = `🎥 ${title} — ${author}\nAssista sem anúncios no LivrePlay Video!`;
 
       if (navigator.share) {
@@ -1916,9 +2698,11 @@
       if (isFav) {
         favorites = favorites.filter(v => v.videoId !== video.videoId);
         btn.classList.remove('favorited');
+        showToast('Removido dos favoritos');
       } else {
         favorites.unshift(video);
         btn.classList.add('favorited');
+        showToast('❤️ Adicionado aos favoritos');
       }
       
       localStorage.setItem('livreplay_favorites', JSON.stringify(favorites));
@@ -1985,10 +2769,8 @@
           div.onclick = () => playVideo(item.videoId, item.title);
           div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
 
-          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
           const prefetchStream = () => {
             if (!streamUrlCache.has(item.videoId)) {
-              console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
               fetchStreamUrlFromGateway(item.videoId).catch(() => {});
             }
           };
@@ -2029,10 +2811,8 @@
           div.onclick = () => playVideo(item.videoId, item.title);
           div.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
 
-          // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
           const prefetchStream = () => {
             if (!streamUrlCache.has(item.videoId)) {
-              console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
               fetchStreamUrlFromGateway(item.videoId).catch(() => {});
             }
           };
@@ -2077,10 +2857,8 @@
         card.onclick = () => playVideo(item.videoId, item.title);
         card.onkeypress = (e) => { if (e.key === 'Enter') playVideo(item.videoId, item.title); };
 
-        // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
         const prefetchStream = () => {
           if (!streamUrlCache.has(item.videoId)) {
-            console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
             fetchStreamUrlFromGateway(item.videoId).catch(() => {});
           }
         };
@@ -2098,7 +2876,7 @@
       });
     }
 
-    // === LÓGICA DE RECOMENDADOS AO FIM DO VÍDEO (NETFLIX/YOUTUBE STYLE OVERLAY) ===
+    // === LÓGICA DE RECOMENDADOS AO FIM DO VÍDEO ===
     function showRecommendationsOverlay() {
       const overlayGrid = document.getElementById('overlayGrid');
       const overlay = document.getElementById('recommendationsOverlay');
@@ -2121,7 +2899,6 @@
       
       overlay.style.display = 'flex';
       
-      // Mostra no máximo 6 recomendados
       const limit = Math.min(relatedVideos.length, 6);
       for (let i = 0; i < limit; i++) {
         const item = relatedVideos[i];
@@ -2142,10 +2919,8 @@
           }
         };
 
-        // 🔮 Pré-busca inteligente por Toque (Mobile) ou Hover (Desktop) para latência zero no clique
         const prefetchStream = () => {
           if (!streamUrlCache.has(item.videoId)) {
-            console.log(`🔮 Pré-buscando URL via toque/hover para ${item.videoId}`);
             fetchStreamUrlFromGateway(item.videoId).catch(() => {});
           }
         };
@@ -2166,7 +2941,6 @@
     function replayCurrentVideo() {
       document.getElementById('recommendationsOverlay').style.display = 'none';
       
-      // Limpa progresso ao repetir
       if (currentlyPlayingVideo) {
         let progress = JSON.parse(localStorage.getItem('livreplay_playback_progress') || '{}');
         delete progress[currentlyPlayingVideo.videoId];
@@ -2189,15 +2963,19 @@
 
     function exitBrowser() {
       document.getElementById('recommendationsOverlay').style.display = 'none';
-      // Para e reseta a âncora de áudio silenciosa / real de background
       silentAudio.pause();
       silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
       silentAudio.loop = true;
       isBackgroundMode = false;
       currentAudioStreamUrl = null;
       currentlyPlayingVideo = null;
+      isAudioOnly = false;
+      isMinimized = false;
       
-      // Limpa os dados do controle de mídia do sistema
+      document.getElementById('audioOnlyBtn').classList.remove('active');
+      document.getElementById('audioOnlyPanel').classList.remove('active');
+      document.getElementById('browserView').classList.remove('minimized-mode');
+      
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = null;
         navigator.mediaSession.playbackState = 'none';
@@ -2222,7 +3000,6 @@
 
     // Monitora o carregamento do iframe para desativar o spinner automaticamente
     window.addEventListener('DOMContentLoaded', async () => {
-      // Pré-carrega as instâncias Invidious dinamicamente para maior velocidade
       await loadDynamicInstances();
 
       const iframe = document.getElementById('browserIframe');
@@ -2231,8 +3008,11 @@
       });
       document.getElementById('urlInput').focus();
       renderUserSections();
+      renderThemePills();
+      renderFavChannels();
+      setupGestureZones();
 
-      // Suporte a Deep Links para SEO e indexação extrema do Google
+      // Suporte a Deep Links
       try {
         const params = new URLSearchParams(window.location.search);
         const query = params.get('q') || params.get('search');
