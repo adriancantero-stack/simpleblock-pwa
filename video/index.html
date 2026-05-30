@@ -2477,7 +2477,8 @@
       // Habilita a API Javascript do YouTube
       const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1${startParam}`;
       
-      document.getElementById('activeUrl').innerText = videoItem.title;
+      const dateText = videoItem.publishedText ? ` • ${videoItem.publishedText}` : '';
+      document.getElementById('activeUrl').innerText = videoItem.title + dateText;
       document.getElementById('activeUrl').style.display = '';
       
       const isFollowed = isChannelFollowed(videoItem.author);
@@ -2962,11 +2963,12 @@
         card.addEventListener('mouseenter', prefetchStream, { once: true });
         card.addEventListener('touchstart', prefetchStream, { once: true, passive: true });
         
+        const dateText = item.publishedText ? ` • ${item.publishedText}` : '';
         card.innerHTML = `
           <img class="mini-thumb" src="${thumb}" alt="${item.title}" loading="lazy">
           <div class="mini-details">
             <h4 class="mini-title">${item.title}</h4>
-            <p class="mini-author">${item.author}</p>
+            <p class="mini-author">${item.author}${dateText}</p>
           </div>
         `;
         sidebarGrid.appendChild(card);
