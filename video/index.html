@@ -2464,15 +2464,7 @@
         }, 1000);
       }
 
-      // Dispara a busca em background da stream de áudio real
-      prefetchAudioStream(videoId);
 
-      // Inicia a âncora de áudio silencioso
-      silentAudio.play().then(() => {
-        console.log('Sessão de áudio em segundo plano ativa');
-      }).catch(err => {
-        console.log('Autoplay silencioso aguardando interação física:', err);
-      });
 
       // Habilita a API Javascript do YouTube
       const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1${startParam}`;
