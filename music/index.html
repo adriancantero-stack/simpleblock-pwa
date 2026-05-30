@@ -297,7 +297,7 @@
 
     .music-card {
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
       padding: 8px 12px;
       border-radius: 8px;
       cursor: pointer;
@@ -312,9 +312,15 @@
       overflow: hidden;
     }
     .music-card:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(29, 185, 84, 0.1);
+      border-color: rgba(29, 185, 84, 0.3);
+      box-shadow: 0 0 15px rgba(29, 185, 84, 0.15);
       transform: none;
-      box-shadow: none;
+    }
+    .music-card.active-track {
+      background: rgba(29, 185, 84, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
     }
 
     .art-wrapper {
@@ -811,7 +817,7 @@
       .view-container { padding: 12px; gap: 16px; }
       .music-grid { display: flex; flex-direction: column; gap: 8px; }
       .music-card { padding: 6px 8px; border-radius: 8px; gap: 12px; }
-      .music-card:hover { transform: none; background: rgba(255, 255, 255, 0.03); }
+      .music-card:hover { transform: none; background: rgba(29, 185, 84, 0.1); border-color: rgba(29, 185, 84, 0.3); box-shadow: 0 0 15px rgba(29, 185, 84, 0.15); }
       .music-title { font-size: 13px; }
       .music-author { font-size: 11px; }
       .art-wrapper { width: 40px; height: 40px; min-width: 40px; min-height: 40px; margin-bottom: 0; }
@@ -1671,6 +1677,7 @@
 
         const card = document.createElement('div');
         card.className = 'music-card';
+        if (activeTrackId === videoId) card.classList.add('active-track');
         card.dataset.videoId = videoId;
         card.onclick = () => playMusic(item, cleanTitle, cleanQueue);
 
@@ -1733,9 +1740,11 @@
       // Remove loading state de qualquer botão anterior
       document.querySelectorAll('.play-float-btn.loading').forEach(b => b.classList.remove('loading'));
       
+      document.querySelectorAll('.music-card.active-track').forEach(c => c.classList.remove('active-track'));
       const card = document.querySelector(`.music-card[data-video-id="${videoId}"]`);
       let loadingBtn = null;
       if (card) {
+        card.classList.add('active-track');
         loadingBtn = card.querySelector('.play-float-btn');
       }
 
