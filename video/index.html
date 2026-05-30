@@ -2263,27 +2263,11 @@
       silentAudio.play().catch(() => {});
     }
 
-    // Transição Híbrida de Background
+    // Transição Híbrida de Background (Desativada no desktop para permitir que o iframe continue tocando)
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        if (currentlyPlayingVideo && !silentAudio.paused) {
-          isBackgroundMode = true;
-          sendPlayerCommand('pauseVideo');
-          console.log('Entrou em segundo plano. Vídeo do Iframe pausado, áudio nativo continua tocando.');
-        }
-      } else {
-        if (isBackgroundMode) {
-          isBackgroundMode = false;
-          const currentTime = silentAudio.currentTime;
-          
-          sendPlayerCommand('seekTo', [currentTime, true]);
-          
-          if (!silentAudio.paused) {
-            sendPlayerCommand('playVideo');
-          }
-          console.log('Retornou do background. Sincronizado vídeo em:', currentTime);
-        }
-      }
+      // Deixamos o navegador gerenciar o background. 
+      // Em computadores, iframes do YouTube continuam tocando normalmente em abas ocultas.
+      // Se forçarmos o pause aqui, o usuário fica com áudio mudo no desktop.
     });
 
     // Escuta eventos de fim do áudio nativo em background
